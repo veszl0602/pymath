@@ -216,13 +216,13 @@ def build(fn, text):
     if fn in ("limit", "Limit"):
         need_e(); need_p("다가가는 값")
         if fn == "Limit":
-            dd = f", '{dr}'" if dr else ""
+            dd = f", '{dr}'" if dr else ("" if p in (oo, -oo) else ", '+-'")
             return f"L = Limit({pr(e)}, {v}, {pr(p)}{dd})\nprint(L)\nprint(L.doit())"
         if p in (oo, -oo):
             return f"limit({pr(e)}, {v}, {pr(p)})"
         if dr:
             return f"limit({pr(e)}, {v}, {pr(p)}, '{dr}')"
-        return f"print(limit({pr(e)}, {v}, {pr(p)}, '-'))   # 좌극한\nprint(limit({pr(e)}, {v}, {pr(p)}, '+'))   # 우극한"
+        return f"limit({pr(e)}, {v}, {pr(p)}, '+-')   # 양쪽 극한 (좌·우가 다르면 오류)"
     if fn in ("diff", "Derivative"):
         need_e(); o = d.get("order", 1); oo_ = f", {o}" if o > 1 else ""
         if fn == "Derivative":
