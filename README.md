@@ -6,8 +6,6 @@
 - `fig/`: 예제 실행 결과 그래프
 - `py/`: 브라우저에서 SymPy 1.14를 실행하는 Pyodide 파일, 실행기(`runner.py`), 문장으로 예시 코드를 만드는 규칙(`gen.py`)
 - `katex/`: 수식 글꼴
-- `config.js`: AI 중계 주소 (비어 있으면 AI 기능 꺼짐)
-- `proxy/`: AI 중계(Cloudflare Worker) 코드와 설정 방법
 
 ## 올리는 법 (GitHub Pages)
 저장소 Settings → Pages → Source를 `Deploy from a branch`, 브랜치 `main`, 폴더 `/ (root)`로 두면 `https://<아이디>.github.io/<저장소>/` 주소가 생깁니다.
