@@ -213,6 +213,116 @@ def build(fn, text):
             _need("행렬을 찾지 못했어요. [[1, 2], [3, 4]]처럼 적어 주세요.")
         return "[" + ", ".join("[" + ", ".join(map(pr, r)) + "]" for r in M) + "]"
 
+    # ---- 수와 식·경우의 수 등: 함수마다 따로 만든 틀 ----
+    tn = _norm(T)
+    def numsrc():
+        # 숫자로만 된 식은 계산되기 전 모양 그대로 코드에 적는다
+        for c in _chunks(tn):
+            c = c.strip()
+            if re.fullmatch(r"[0-9+\-*/^(). ]*(?:sqrt\([0-9]+\)[0-9+\-*/^(). ]*)*", c.replace("sqrt", "sqrt")) and re.search(r"\d", c):
+                return c.replace("^", "**")
+        return None
+    if fn == "doit":
+        return build("Sum", text)
+    if fn == "Rational":
+        c = numsrc()
+        if not c or "/" not in c:
+            _need("분수가 든 계산을 적어 주세요. 예: 1/3 + 1/6")
+        r_ = re.sub(r"(\d+)\s*/\s*(\d+)", r"Rational(\1, \2)", c)
+        return f"print({c})   # 파이썬 나눗셈: 소수\nprint({r_})   # Rational: 정확한 분수"
+    if fn == "sqrt":
+        c = numsrc()
+        if c and "sqrt" in c:
+            return f"r_ = {c}\nprint(r_)   # 정확한 값\nprint(N(r_))   # 소수"
+        need_e()
+        return f"print(sqrt({pr(e)}))\nprint(sqrt({pr(e)}**2))"
+    if fn == "math.sqrt":
+        m = re.search(r"sqrt\(?\s*(-?\d+(?:\.\d+)?)", tn) or re.search(r"(-?\d+(?:\.\d+)?)", tn)
+        if not m:
+            _need("수를 적어 주세요. 예: √2를 소수로")
+        q = m.group(1)
+        return f"import math\nprint(math.sqrt({q}))   # 소수\nprint(sqrt({q}))   # SymPy: 정확한 값" if not q.startswith("-") else \
+               f"import math\ntry: print(math.sqrt({q}))\nexcept ValueError as err: print('math :', err)\nprint(sqrt({q}))   # SymPy: 허수 단위 I"
+    if fn == "log":
+        need_e()
+        mb = re.search(r"밑\s*(?:이|은|을)?\s*(\d+|e)", T)
+        arg = e.args[0] if getattr(e, "func", None).__name__ == "log" else e
+        if mb:
+            return f"print(log({pr(arg)}, {mb.group(1) if mb.group(1) != 'e' else 'E'}))\nprint(N(log({pr(arg)}, {mb.group(1) if mb.group(1) != 'e' else 'E'})))"
+        return f"print(log({pr(arg)}))\nprint(N(log({pr(arg)})))"
+    if fn == "Abs":
+        need_e()
+        inner = e.args[0] if isinstance(e, Abs) else e
+        if "a" in d:
+            a_, b_ = pr(d["a"]), pr(d["b"])
+            return f"print(integrate(Abs({pr(inner)}), ({v}, {a_}, {b_})))   # 넓이 (절댓값)\nprint(integrate({pr(inner)}, ({v}, {a_}, {b_})))   # 그냥 정적분"
+        if p is not None:
+            return f"g = Abs({pr(inner)})\nprint(g.subs({v}, {pr(p)}))\nprint(limit((g.subs({v}, {pr(p)} + h) - g.subs({v}, {pr(p)}))/h, h, 0, '-'), limit((g.subs({v}, {pr(p)} + h) - g.subs({v}, {pr(p)}))/h, h, 0, '+'))   # 좌·우 미분계수"
+        return f"Abs({pr(inner)})"
+    if fn == "floor":
+        need_e(); need_p("점")
+        return f"g = {pr(e)}\nprint(limit(g, {v}, {pr(p)}, '-'), limit(g, {v}, {pr(p)}, '+'), g.subs({v}, {pr(p)}))   # 좌극한, 우극한, 함숫값"
+    if fn == "Piecewise":
+        m = re.search(r"([a-z])\s*(<=|<|>=|>)\s*(-?[0-9./]+)\s*(?:이면|일\s*때)\s*(.+?)\s*,\s*(?:아니면|그\s*외|나머지)\s*(?:에는|는)?\s*(.+)", tn)
+        if not m:
+            _need("x<1이면 x^2, 아니면 x+2처럼 적어 주세요.")
+        vv, op, c0, e1, e2 = m.groups()
+        f1, f2, c = _parse(e1.strip(" 이다")), _parse(e2.strip(" 이다")), _parse(c0)
+        if f1 is None or f2 is None or c is None:
+            _need("x<1이면 x^2, 아니면 x+2처럼 적어 주세요.")
+        return (f"h = symbols('h', positive=True)\ng = Piecewise(({pr(f1)}, {vv} {op} {pr(c)}), ({pr(f2)}, True))\nprint(g)\n"
+                f"print(limit(g.subs({vv}, {pr(c)} - h), h, 0, '+'), limit(g.subs({vv}, {pr(c)} + h), h, 0, '+'), g.subs({vv}, {pr(c)}))   # 좌극한, 우극한, 함숫값")
+    if fn == "as_sum":
+        need_e(); a, b = _ab(d, 0, 1)
+        mn = re.search(r"\bn\s*=\s*(\d+)", tn)
+        nn = mn.group(1) if mn else "4"
+        vv = Symbol("x") if Symbol("x") in d["free"] else v
+        return (f"I_ = Integral({pr(e)}, ({vv}, {pr(a)}, {pr(b)}))\nprint(I_.doit())   # 정확한 값\n"
+                f"for m_ in ['left', 'right', 'midpoint', 'trapezoid']:\n    print(m_, I_.as_sum({nn}, method=m_))")
+    if fn in ("math.comb", "binomial", "expand_func", "factorial"):
+        mc = re.search(r"(\d+|[a-z])\s*C\s*(\d+|[a-z])", T)
+        mf = re.search(r"(\d+|[a-z])\s*!", T)
+        if fn == "factorial" or (fn == "math.comb" and mf and not mc):
+            if not mf:
+                _need("5!처럼 적어 주세요.")
+            q = mf.group(1)
+            if q.isdigit():
+                return f"import math\nprint(math.factorial({q}))\nprint(factorial({q}))"
+            return f"print(factorial({q}))\nprint(factorial({q}) / factorial({q} - 2))   # {q}P2\nprint(simplify(factorial({q}) / factorial({q} - 2)))"
+        if not mc:
+            _need("6C2나 nC2처럼 적어 주세요.")
+        nq, rq = mc.groups()
+        if nq.isdigit() and rq.isdigit():
+            return f"import math\nprint(math.comb({nq}, {rq}))\nprint(binomial({nq}, {rq}))"
+        if fn == "math.comb":
+            _need("math.comb에는 수만 넣을 수 있어요. 예: 6C2 (문자는 binomial)")
+        return f"c_ = binomial({nq}, {rq})\nprint(c_)\nprint(expand_func(c_))   # 식으로 펼치기"
+    if fn == "refine":
+        need_e()
+        q = "Q.negative" if "음수" in T else "Q.positive"
+        return f"print(simplify({pr(e)}))   # 가정 없이\nprint(refine({pr(e)}, {q}({v})))   # 가정을 붙여 정리"
+    if fn == "expand_log":
+        need_e()
+        names = " ".join(map(str, d["free"])) or "x"
+        return f"print(expand_log({pr(e)}))   # 가정 없이\n{', '.join(map(str, d['free']))} = symbols('{names}', positive=True)\nprint(expand_log({pr(e)}))   # 양수 가정"
+    if fn in ("cancel", "collect", "srepr"):
+        need_e()
+        if fn == "cancel":
+            return f"print(cancel({pr(e)}))\nprint(factor({pr(e)}))"
+        if fn == "collect":
+            mv = re.search(r"\b([a-z])\s*(?:에|로)\s*(?:대해|대하여|정리|관해)", tn)
+            return f"collect(expand({pr(e)}), {mv.group(1) if mv else v})"
+        return f"print(srepr({pr(e)}))"
+    if fn in ("gcd", "div"):
+        ex = d["exprs"][:2]
+        if len(ex) < 2:
+            _need("두 식을 적어 주세요. 예: x^2 - 1과 x^2 + 2x + 1")
+        if fn == "gcd":
+            return f"gcd({pr(ex[0])}, {pr(ex[1])})"
+        return f"q_, r_ = div({pr(ex[0])}, {pr(ex[1])}, {v})\nprint(q_)   # 몫\nprint(r_)   # 나머지"
+    if fn == "LUdecomposition":
+        M = mat()
+        return f"L, U, _ = Matrix({M}).LUdecomposition()\nprint(L)\nprint(U)\nprint(L * U == Matrix({M}))"
     if fn in ("limit", "Limit"):
         need_e(); need_p("다가가는 값")
         if fn == "Limit":
@@ -373,7 +483,9 @@ def build(fn, text):
         need_e(); a, b = _ab(d)
         if fn == "plot":
             return f"plot({pr(e)}, ({v}, {pr(a)}, {pr(b)}))"
-        s = f"xs = np.linspace(float({pr(a)}), float({pr(b)}), 400)\nys = lambdify({v}, {pr(e)}, 'numpy')(xs)\nplt.plot(xs, ys)\n"
+        mc = re.search(r"(\d+)\s*개", T)
+        cnt = int(mc.group(1)) if mc else 400
+        s = f"xs = np.linspace(float({pr(a)}), float({pr(b)}), {cnt})\nys = lambdify({v}, {pr(e)}, 'numpy')(xs)\nplt.plot(xs, ys)\n"
         if fn == "plt.fill_between":
             s += "plt.fill_between(xs, ys, alpha=0.3)\n"
         return s + "plt.show()"
@@ -388,6 +500,8 @@ def build(fn, text):
             _need("x = cos t, y = sin t처럼 두 식을 적어 주세요.")
         return f"plot_parametric({pr(ex[0])}, {pr(ex[1])}, (t, 0, 2*pi), aspect_ratio=(1, 1))"
     if fn == "polar":
+        if d["eqs"] and str(d["eqs"][0][0]) == "r":
+            e = d["eqs"][0][1]
         need_e()
         return f"th = np.linspace(0, 2*np.pi, 400)\nr_ = lambdify(t, {pr(e)}, 'numpy')(th)\nplt.subplot(projection='polar')\nplt.plot(th, r_ * np.ones_like(th)); plt.show()"
     if fn in ("Matrix", "det", "inv", "eigenvals", "np.array", "np.linalg", "LUsolve"):
@@ -402,7 +516,9 @@ def build(fn, text):
             return f"Matrix({M}).eigenvals()"
         if fn == "LUsolve":
             n = len(d["M"])
-            return f"A = Matrix({M})\nb_ = Matrix({[1] * n})   # 오른쪽 값\nA.LUsolve(b_)"
+            mb = re.search(r"\]\s*\]\s*.*?\[\s*(-?[0-9.,/\s-]+)\]", text)
+            bv = "[" + ", ".join(v.strip() for v in mb.group(1).split(",")) + "]" if mb else str([1] * n)
+            return f"A = Matrix({M})\nb_ = Matrix({bv})   # 오른쪽 값\nA.LUsolve(b_)"
         if fn == "np.array":
             return f"An = np.array({M})\nprint(An @ An)   # 행렬곱\nprint(An * An)   # 성분끼리 곱"
         return f"An = np.array({M}, dtype=float)\nprint(np.linalg.det(An))\nprint(np.linalg.inv(An))"
@@ -420,7 +536,7 @@ def build(fn, text):
         a = "positive=True" if "양수" in T else "integer=True" if "정수" in T else "real=True"
         names = " ".join(map(str, d["free"])) or "x"
         lhs = ", ".join(map(str, d["free"])) or "x"
-        return f"{pr(lhs)}{',' if len(d['free']) == 1 else ''} = symbols('{names}', {pr(a)})\nsimplify({pr(e)})"
+        return f"print(simplify({pr(e)}))   # 가정 없이\n{lhs} = symbols('{names}', {a})\nprint(simplify({pr(e)}))   # 가정을 붙이면"
     if fn == "Function":
         return build("rsolve", text)
     if fn == "Piecewise":
