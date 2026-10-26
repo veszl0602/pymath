@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="katex/katex.min.css">
 <style>
 /* 원본 PyMath(Lovable) 디자인: 흰 바탕, 진녹색 버튼·태그, 연녹색 히어로, 남색 코드 블록 */
 :root{
@@ -46,9 +47,10 @@ nav.main{display:flex;gap:2px;margin-left:auto;flex-wrap:wrap}
 nav.main a{font-size:14.5px;text-decoration:none;color:var(--muted);padding:7px 12px;border-radius:8px;font-weight:500}
 nav.main a[aria-current="page"]{background:var(--brand);color:var(--brand-ink)}
 nav.main a:not([aria-current]):hover{color:var(--brand);background:var(--brand-soft2)}
-.help-btn{width:36px;height:36px;border-radius:99px;border:1.5px solid var(--brand);background:var(--surface);color:var(--brand);font-weight:800;font-size:17px;cursor:pointer;flex:none}
-.help-btn:hover{background:var(--brand);color:var(--brand-ink)}
-@media (max-width:760px){.brand small{display:none}nav.main{order:3;width:100%;margin-left:0;overflow-x:auto;flex-wrap:nowrap}nav.main a{white-space:nowrap}.help-btn{margin-left:auto}}
+.gear{width:38px;height:38px;border-radius:99px;border:1px solid var(--line);background:var(--surface);color:var(--muted);cursor:pointer;flex:none;display:grid;place-items:center}
+.gear:hover{color:var(--brand);border-color:var(--brand)}
+.gear svg{width:20px;height:20px}
+@media (max-width:760px){.brand small{display:none}nav.main{order:3;width:100%;margin-left:0;overflow-x:auto;flex-wrap:nowrap}nav.main a{white-space:nowrap}.gear{margin-left:auto}}
 h1,h2,h3{letter-spacing:-.02em;line-height:1.3;text-wrap:balance}
 h1{font-size:clamp(28px,4.6vw,44px);font-weight:800;margin:0 0 10px}
 h2{font-size:22px;font-weight:800;margin:0 0 12px}
@@ -98,8 +100,11 @@ code{font-family:var(--mono);font-size:.88em;background:var(--brand-soft2);borde
 .show{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
 @media (max-width:760px){.show{grid-template-columns:minmax(0,1fr)}}
 .prob{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px;display:grid;gap:14px;align-content:start}
-.prob .f{font-family:"Times New Roman",Georgia,serif;font-style:italic;font-size:clamp(28px,4vw,40px);line-height:1.25}
-.prob .f span{font-family:var(--sans);font-style:normal;font-size:17px;color:var(--muted)}
+.prob .f{font-size:clamp(20px,2.6vw,27px);min-height:96px;display:grid;place-items:center;overflow-x:auto;overflow-y:hidden;padding:6px 0}
+.prob .f .katex-display{margin:0}
+.prob .ask{color:var(--muted);font-size:16px;margin:-6px 0 0;text-align:center}
+.panel .ptitle{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:18px;font-weight:700}
+.panel .ptitle .katex{font-size:1.05em}
 .prob button.go{justify-self:start;border:1.5px solid var(--brand);background:var(--surface);color:var(--brand);border-radius:10px;padding:10px 16px;font-weight:700;cursor:pointer}
 .prob button.go[aria-expanded="true"],.prob button.go:hover{background:var(--brand);color:var(--brand-ink)}
 .panel{margin-top:16px;border:1.5px solid var(--brand);border-radius:14px;padding:18px;background:var(--brand-soft2);display:grid;gap:16px}
@@ -130,8 +135,6 @@ code{font-family:var(--mono);font-size:.88em;background:var(--brand-soft2);borde
 .tcard b{font-size:15.5px}
 .tcard span{font-size:13px;color:var(--muted)}
 .subh{font-size:14px;color:var(--muted);margin:0 0 10px;font-weight:500}
-.pits{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:8px}
-.pits a{text-decoration:none;color:var(--ink);font-size:14.5px;background:var(--warn-soft);border-radius:10px;padding:10px 14px}
 /* detail */
 .page{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:48px;padding-block:32px 64px}
 @media (max-width:980px){.page{grid-template-columns:minmax(0,1fr)}.rail{order:2}}
@@ -259,6 +262,49 @@ dialog::backdrop{background:rgba(10,20,15,.45)}
 .box h3{color:var(--brand)}
 .box p{margin:0;font-size:15px}
 .flash{box-shadow:0 0 0 3px var(--brand)}
+/* 설정 */
+.dlg h2{margin:0}
+.set{display:grid;gap:16px}
+.set .row{display:grid;gap:6px}
+.set .row>span{font-size:14px;color:var(--muted)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;width:max-content;max-width:100%}
+.seg button{border:0;background:var(--surface);padding:8px 14px;font-size:14.5px;cursor:pointer;border-right:1px solid var(--line)}
+.seg button:last-child{border-right:0}
+.seg button[aria-pressed="true"]{background:var(--brand);color:var(--brand-ink);font-weight:700}
+.sw{display:flex;gap:10px;align-items:center;font-size:15px;cursor:pointer}
+.sw input{width:18px;height:18px;accent-color:var(--brand)}
+.dlg .acts{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:center}
+.dlg .x.ghost{background:var(--surface);color:var(--muted);border:1px solid var(--line)}
+:root.noln pre.code .l{padding-left:0}:root.noln pre.code .l::before{display:none}
+/* 자동완성 */
+.sugwrap{position:relative;width:min(760px,100%)}
+.sugwrap .searchbar{width:100%}
+.sug{position:absolute;left:12px;right:12px;top:calc(100% + 4px);z-index:5;list-style:none;margin:0;padding:6px;background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:0 16px 40px -16px rgba(0,0,0,.35);text-align:left}
+.sug li{padding:8px 12px;border-radius:8px;cursor:pointer;font-size:15px;display:flex;justify-content:space-between;gap:10px}
+.sug li span{color:var(--muted);font-size:12.5px}
+.sug li[aria-selected="true"],.sug li:hover{background:var(--brand-soft2);color:var(--brand)}
+.fixnote{font-size:14px;color:var(--muted);text-align:center}
+.fixnote b{color:var(--brand)}
+/* 알고 가야 할 점 */
+ul.know{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+ul.know li{border-left:4px solid var(--warn);background:var(--warn-soft);border-radius:0 10px 10px 0;padding:12px 16px}
+ul.know b{display:block;color:var(--warn);font-size:15.5px;margin-bottom:2px}
+ul.know p{margin:0;font-size:15px}
+ul.know details summary{cursor:pointer;font-size:13.5px;color:var(--warn);margin-top:6px}
+ul.know details .codebox{margin-top:8px}
+.desc{font-size:16.5px;margin:14px 0 0}
+.optt{margin-top:12px}
+.optt td:first-child{white-space:nowrap}
+.mdetail .codebox{margin-bottom:4px}
+.mdetail .say{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px}
+.mdetail .say div{background:var(--brand-soft2);border-radius:10px;padding:10px 12px;font-size:14.5px}
+.mdetail .say div b{display:block;font-size:12.5px;color:var(--muted);font-weight:500}
+.mkrow{display:flex;gap:8px;flex-wrap:wrap}
+.mkrow input{flex:1 1 260px;min-width:0;font:inherit;padding:11px 14px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink)}
+.mkrow input:focus{outline:none;border-color:var(--brand)}
+.shot{display:flex;gap:10px;align-items:center;font-size:14px;color:var(--muted)}
+.shot img{width:64px;height:64px;object-fit:cover;border-radius:8px;border:1px solid var(--line)}
+.ainote{font-size:14px;background:var(--brand-soft2);border-radius:10px;padding:10px 14px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
@@ -273,20 +319,19 @@ dialog::backdrop{background:rgba(10,20,15,.45)}
     <a href="#tree" data-v="tree">함수 사전</a>
     <a href="#about" data-v="about">안내서 소개</a>
   </nav>
-  <button class="help-btn" id="helpBtn" type="button" aria-label="SymPy 기본 사용법" title="SymPy 기본 사용법">?</button>
+  <button class="gear" id="gearBtn" type="button" aria-label="설정" title="설정"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
 </div></header>
 <main id="view"></main>
-<dialog id="help" aria-labelledby="helpT"><div class="dlg">
-  <h2 id="helpT" style="margin:0">처음 쓴다면 이것만</h2>
-  <ol>
-    <li><code>from sympy import *</code> 를 맨 위에 쓴다.</li>
-    <li><code>x = symbols('x')</code> 로 문자를 먼저 만든다.</li>
-    <li>분수는 <code>Rational(1, 2)</code>. 그냥 <code>1/2</code>는 0.5(소수)가 된다.</li>
-    <li>대문자 <code>Sum · Limit · Integral</code>은 식을 적어 두고 <code>.doit()</code>으로 계산한다. 소문자는 바로 계산한다.</li>
-    <li>방정식은 <code>Eq(좌변, 우변)</code>. <code>=</code>는 쓸 수 없다.</li>
-  </ol>
-  <p class="muted" style="margin:0;font-size:14px">SymPy는 √2, π를 기호 그대로 계산하는 라이브러리, NumPy·SciPy는 소수로 빠르게 계산하는 라이브러리다. 구글 코랩에 모두 설치되어 있다.</p>
-  <button class="x" type="button" id="helpX">닫기</button>
+<dialog id="settings" aria-labelledby="setT"><div class="dlg">
+  <h2 id="setT">설정</h2>
+  <div class="set">
+    <div class="row"><span>화면</span><div class="seg" data-set="theme"><button type="button" data-val="system">기기 설정</button><button type="button" data-val="light">밝게</button><button type="button" data-val="dark">어둡게</button></div></div>
+    <div class="row"><span>글자 크기</span><div class="seg" data-set="size"><button type="button" data-val="1">보통</button><button type="button" data-val="1.12">크게</button><button type="button" data-val="1.25">아주 크게</button></div></div>
+    <label class="sw"><input type="checkbox" id="setLn"> 코드 줄 번호 보기</label>
+    <label class="sw"><input type="checkbox" id="setPre"> 사이트를 열 때 파이썬 미리 준비하기 <span class="muted" style="font-size:13px">(첫 실행이 빨라짐, 약 15MB)</span></label>
+    <p class="status" id="setPy" style="margin:0"></p>
+  </div>
+  <div class="acts"><button class="x ghost" type="button" id="setReset">처음 설정으로</button><button class="x" type="button" id="setX">닫기</button></div>
 </div></dialog>
 
 <script>
@@ -757,25 +802,6 @@ const GUIDE = [
 ];
 
 // 홈 화면의 '같은 문제, 여러 방법'
-const SHOW = [
-{ id: "eq", course: "대수 · 지수방정식", prob: "3<sup>2x</sup> − 6·3<sup>x</sup> − 27 = 0", plain: "을 풀어라.", lab: "expeq",
-  methods: [
-    { name: "solve", f: ["solve", "Eq"], code: "solve(Eq(3**(2*x) - 6*3**x - 27, 0), x)", out: "[2, 1 + I*pi/log(3)]", say: "복소수 해까지 함께 준다. 고등학교 문제의 답은 2 하나다." },
-    { name: "solveset", f: ["solveset"], code: "solveset(Eq(3**(2*x) - 6*3**x - 27, 0), x, domain=S.Reals)", out: "{2}", say: "해를 찾을 범위를 실수로 정하면 2만 나온다." },
-    { name: "3ˣ = t 치환", f: ["solve", "math.log"], code: "solve(t**2 - 6*t - 27, t)   # t = 3**x > 0", out: "[-3, 9]  →  3ˣ = 9,  x = 2", say: "교과서 풀이와 같다. t > 0 조건은 사람이 챙겨야 한다." },
-    { name: "nsolve + nsimplify", f: ["nsolve", "nsimplify"], code: "r = nsolve(Eq(3**(2*x) - 6*3**x - 27, 0), x, 2.5)\nnsimplify(r)", out: "2.00000000000000\n2", say: "근삿값을 구한 뒤 정확한 수로 되돌린다. 근이 간단한 수일 때만 통한다." }
-  ] },
-{ id: "area", course: "미적분Ⅰ · 정적분", prob: "∫<sub>0</sub><sup>π</sup> sin x dx", plain: "의 값을 구하라.", lab: "simpson",
-  methods: [
-    { name: "integrate", f: ["integrate"], code: "integrate(sin(x), (x, 0, pi))", out: "2", say: "정확한 값을 바로 준다." },
-    { name: "Integral + doit", f: ["Integral", "doit"], code: "I = Integral(sin(x), (x, 0, pi))\nI, I.doit()", out: "(Integral(sin(x), (x, 0, pi)), 2)", say: "식을 먼저 적어 두고 계산하므로 풀이를 정리하기 좋다." },
-    { name: "linspace + 사다리꼴", f: ["np.linspace", "np.trapezoid"], code: "xs = np.linspace(0, np.pi, 5)   # 구간 4개\nnp.trapezoid(np.sin(xs), xs)", out: "1.8961188979370398", say: "구간을 나눠 사다리꼴로 근사한다. 오차가 0.1 정도 남는다." },
-    { name: "심프슨 공식", f: ["simpson", "np.linspace"], code: "simpson(np.sin(xs), x=xs)", out: "2.0045597549844207", say: "같은 점 5개로 오차가 0.005까지 줄었다(심화)." },
-    { name: "quad", f: ["quad"], code: "quad(np.sin, 0, np.pi)", out: "(2.0, 2.220446049250313e-14)", say: "근삿값과 함께 오차가 얼마나 되는지도 알려 준다." }
-  ] }
-];
-
-// 카드 부제(짧게)와 §4 비교 노트(짧게)
 const SHORT = {
 "for": ["반복해서 값 구하기", "값 하나면 충분하다. n에 대한 식이 필요하면 Sum."],
 "sum": ["숫자 여러 개 더하기", "정확한 분수 합은 Sum, 식으로 된 합은 Sum().doit()."],
@@ -857,31 +883,173 @@ const SHORT = {
 "plt.fill_between": ["넓이 색칠", "값은 integrate로."]
 };
 
+/* ---------- 같은 문제, 여러 방법 (새로고침마다 두 개를 고른다) ---------- */
+const SHOW = [
+{ id: "eq", course: "대수 · 지수방정식", tex: "3^{2x}-6\\cdot 3^{x}-27=0", plain: "방정식을 풀어라.", lab: "expeq",
+  methods: [
+    { name: "solve", f: ["solve", "Eq"], code: "solve(Eq(3**(2*x) - 6*3**x - 27, 0), x)", out: "[2, 1 + I*pi/log(3)]", say: "복소수 해까지 준다." },
+    { name: "solveset", f: ["solveset"], code: "solveset(Eq(3**(2*x) - 6*3**x - 27, 0), x, domain=S.Reals)", out: "{2}", say: "실수 범위로 정하면 2만 나온다." },
+    { name: "3ˣ = t 치환", f: ["solve"], code: "solve(t**2 - 6*t - 27, t)   # t = 3**x > 0", out: "[-3, 9]  →  3ˣ = 9,  x = 2", say: "교과서 풀이. t > 0은 직접 챙긴다." },
+    { name: "nsolve + nsimplify", f: ["nsolve", "nsimplify"], code: "r = nsolve(Eq(3**(2*x) - 6*3**x - 27, 0), x, 2.5)\nnsimplify(r)", out: "2.00000000000000\n2", say: "근삿값을 구한 뒤 정확한 수로 되돌린다." }
+  ] },
+{ id: "area", course: "미적분Ⅰ · 정적분", tex: "\\int_{0}^{\\pi}\\sin x\\,dx", plain: "정적분의 값을 구하라.", lab: "simpson",
+  methods: [
+    { name: "integrate", f: ["integrate"], code: "integrate(sin(x), (x, 0, pi))", out: "2", say: "정확한 값." },
+    { name: "Integral + doit", f: ["Integral", "doit"], code: "I = Integral(sin(x), (x, 0, pi))\nprint(I)\nprint(I.doit())", out: "Integral(sin(x), (x, 0, pi))\n2", say: "식을 먼저 보여 주고 계산한다." },
+    { name: "사다리꼴", f: ["np.linspace", "np.trapezoid"], code: "xs = np.linspace(0, np.pi, 5)   # 구간 4개\nnp.trapezoid(np.sin(xs), xs)", out: "1.8961188979370398", say: "구간 4개로는 오차 0.1." },
+    { name: "심프슨", f: ["simpson", "np.linspace"], code: "simpson(np.sin(xs), x=xs)", out: "2.0045597549844207", say: "같은 점으로 오차 0.005." },
+    { name: "quad", f: ["quad"], code: "quad(np.sin, 0, np.pi)", out: "(2.0, 2.220446049250313e-14)", say: "근삿값과 오차 크기." }
+  ] },
+{ id: "geo", course: "미적분Ⅱ · 급수", tex: "\\sum_{k=0}^{\\infty}\\left(\\frac{1}{2}\\right)^{k}", plain: "급수의 합을 구하라.", lab: "geo",
+  methods: [
+    { name: "for 문 (소수)", f: ["for"], code: "s = 0\nfor k in range(51):\n    s += 0.5**k\ns", out: "1.9999999999999991", say: "51항까지 더해도 2가 아니다." },
+    { name: "Sum().doit()", f: ["Sum", "doit", "Rational"], code: "Sum(Rational(1, 2)**k, (k, 0, oo)).doit()", out: "2", say: "무한급수를 정확히 계산한다." },
+    { name: "부분합의 극한", f: ["Sum", "limit"], code: "S_n = Sum(Rational(1, 2)**k, (k, 0, n - 1)).doit()\nS_n\nlimit(S_n, n, oo)", out: "2 - 2/2**n\n2", say: "교과서 정의 그대로." },
+    { name: "is_convergent", f: ["is_convergent"], code: "Sum(Rational(1, 2)**k, (k, 0, oo)).is_convergent()", out: "True", say: "수렴하는지만 판정한다." }
+  ] },
+{ id: "fac", course: "공통수학1 · 인수분해", tex: "x^{4}-x^{2}-2", plain: "복소수 범위에서 인수분해하라.", lab: "factor",
+  methods: [
+    { name: "factor", f: ["factor"], code: "factor(x**4 - x**2 - 2)", out: "(x**2 - 2)*(x**2 + 1)", say: "기본은 유리수 범위." },
+    { name: "extension=√2", f: ["factor", "sqrt"], code: "factor(x**4 - x**2 - 2, extension=sqrt(2))", out: "(x - sqrt(2))*(x + sqrt(2))*(x**2 + 1)", say: "실수 범위까지." },
+    { name: "extension=[√2, i]", f: ["factor"], code: "factor(x**4 - x**2 - 2, extension=[sqrt(2), I])", out: "(x - sqrt(2))*(x + sqrt(2))*(x - I)*(x + I)", say: "복소수 범위까지. 정답." },
+    { name: "domain='RR'", f: ["factor"], code: "factor(x**4 - x**2 - 2, domain='RR')", out: "2.0*(0.5*x**2 - 1.0)*(1.0*x**2 + 1.0)", say: "이름과 달리 쪼개지 않는다." },
+    { name: "solve로 근 먼저", f: ["solve"], code: "solve(x**4 - x**2 - 2, x)", out: "[-sqrt(2), sqrt(2), -I, I]", say: "어떤 수가 필요한지 알려 준다." }
+  ] },
+{ id: "abs", course: "미적분Ⅰ · 함수의 극한", tex: "\\lim_{x\\to 0}\\frac{|x|}{x}", plain: "극한값을 구하라.", lab: "dir", labSet: { "#df": "|x|/x" },
+  methods: [
+    { name: "limit", f: ["limit", "Abs"], code: "limit(Abs(x)/x, x, 0)", out: "1", say: "방향을 안 쓰면 우극한만 본다." },
+    { name: "dir='-'", f: ["limit"], code: "limit(Abs(x)/x, x, 0, '-')", out: "-1", say: "좌극한." },
+    { name: "dir='+-'", f: ["limit"], code: "limit(Abs(x)/x, x, 0, '+-')", out: "ValueError: The limit does not exist since left hand limit = -1 and right hand limit = 1", say: "양쪽이 달라 극한이 없다. 정답." },
+    { name: "값 넣어 보기", f: ["for"], code: "[abs(h)/h for h in [0.1, 0.001, -0.001, -0.1]]", out: "[1.0, 1.0, -1.0, -1.0]", say: "0에 다가가는 값을 직접 본다." }
+  ] },
+{ id: "min", course: "미적분Ⅰ · 최댓값과 최솟값", tex: "f(x)=x^{3}-3x\\quad(-3\\le x\\le 3)", plain: "최솟값을 구하라.", lab: "minimum",
+  methods: [
+    { name: "f′ = 0 + 끝점", f: ["diff", "solve", "subs"], code: "f = x**3 - 3*x\nsolve(diff(f, x), x)\n[f.subs(x, c) for c in [-3, -1, 1, 3]]", out: "[-1, 1]\n[-18, 2, -2, 18]", say: "극값과 끝점을 비교한다." },
+    { name: "minimum", f: ["minimum", "Interval"], code: "minimum(x**3 - 3*x, x, Interval(-3, 3))", out: "-18", say: "닫힌 구간의 최솟값을 바로." },
+    { name: "minimize_scalar", f: ["minimize_scalar", "lambdify"], code: "r = minimize_scalar(lambdify(x, x**3 - 3*x), bounds=(-3, 3), method='bounded')\nprint(r.x, r.fun)", out: "1.0000012327722716 -1.9999999999954405", say: "극소(−2)에 머문다. 틀린 답." }
+  ] },
+{ id: "e", course: "미적분Ⅱ · 수열의 극한", tex: "\\lim_{n\\to\\infty}\\left(1+\\frac{1}{n}\\right)^{n}", plain: "극한값을 구하라.", lab: null,
+  methods: [
+    { name: "limit", f: ["limit"], code: "limit((1 + 1/n)**n, n, oo)", out: "E", say: "정확한 값 e." },
+    { name: "값 넣어 보기", f: ["for"], code: "[(1 + 1/m)**m for m in [10, 1000, 100000]]", out: "[2.5937424601000023, 2.7169239322355936, 2.7182682371922975]", say: "n이 커지면 e에 다가간다." },
+    { name: "N", f: ["N"], code: "N(E, 10)", out: "2.718281828", say: "e의 소수 값." }
+  ] }
+];
+
+/* ---------- 함수마다 한 줄 설명 (카드·제목 아래) ---------- */
+const ONE = {
+"for": "수열의 항·합을 하나씩 계산", "sum": "여러 수를 한 번에 더하기", "float": "정확한 수를 소수로 바꾸기", "math.log": "로그값을 소수로 구하기",
+"symbols": "x, y 같은 문자 만들기", "Rational": "분수를 정확하게 쓰기", "Eq": "등식(방정식) 세우기", "Function": "aₙ처럼 이름만 있는 함수 만들기",
+"diff": "도함수 구하기", "Derivative": "미분할 식을 그대로 적어 보이기", "expand": "식을 전개하기", "expand_trig": "삼각함수를 덧셈정리로 펼치기",
+"subs": "식에 값 대입하기", "doit": "적어 둔 Sum·Limit·Integral 계산하기", "rewrite": "다른 함수로 바꿔 쓰기", "N": "정확한 값을 소수로 나타내기",
+"sympify": "문자열을 수식으로 바꾸기", "equals": "두 식이 같은지 확인하기", "sqrt": "제곱근을 정확하게 쓰기", "log": "로그를 정확한 값으로 계산하기",
+"Abs": "절댓값", "Piecewise": "구간별로 정의된 함수 만들기", "floor": "가우스 기호 [x]", "Sum": "수열의 합을 공식으로 만들기",
+"summation": "수열의 합을 바로 계산하기", "is_convergent": "급수가 수렴하는지 판정하기", "Limit": "극한을 식으로 적어 보이기", "limit": "극한값 구하기",
+"SeqFormula": "일반항으로 수열 만들기", "Integral": "적분할 식을 그대로 적어 보이기", "integrate": "부정적분·정적분 구하기", "as_sum": "구분구적법의 합 만들기",
+"continuous_domain": "함수가 연속인 구간 구하기", "singularities": "함수가 정의되지 않는 점 찾기", "is_increasing": "증가·감소 판정하기", "stationary_points": "f′(x) = 0인 점 찾기",
+"minimum": "구간에서 최솟값·최댓값 구하기", "factor": "인수분해 (실수·복소수 범위 포함)", "Poly": "다항식의 차수·계수 다루기", "nroots": "다항방정식의 모든 근을 소수로",
+"real_roots": "다항방정식의 실근만 구하기", "roots": "근과 중근의 개수 구하기", "together": "분수식 통분하기", "apart": "부분분수로 나누기",
+"simplify": "식을 간단히 정리하기", "nsimplify": "소수 답을 분수·무리수로 되돌리기", "trigsimp": "삼각함수 식 간단히·합성하기", "fu": "삼각함수 식 자동 정리",
+"TR": "삼각함수 공식을 하나씩 적용하기", "solve": "방정식 풀기", "nsolve": "손으로 못 푸는 방정식의 근삿값", "solveset": "실수 해·구간 안의 해·부등식 풀기",
+"linsolve": "연립일차방정식 풀기", "nonlinsolve": "일차가 아닌 연립방정식 풀기", "rsolve": "점화식에서 일반항 구하기", "decompogen": "합성함수를 바깥·안쪽으로 나누기",
+"Interval": "구간 [a, b] 만들기", "Matrix": "행렬을 정확하게 계산하기", "det": "행렬식 구하기", "inv": "역행렬 구하기", "eigenvals": "고윳값 구하기 (심화)",
+"LUsolve": "행렬로 연립방정식 풀기", "plot": "y = f(x) 그래프 그리기", "plot_implicit": "x² + y² = 1 같은 식 그대로 그리기", "plot_parametric": "매개변수 곡선 그리기",
+"lambdify": "SymPy 식을 숫자 계산용 함수로 바꾸기", "np.linspace": "구간을 같은 간격으로 나눈 점들", "np.trapezoid": "사다리꼴로 넓이 근삿값", "np.array": "NumPy로 행렬 만들기",
+"np.linalg": "행렬식·역행렬을 소수로 계산", "np.roots": "계수만으로 다항방정식의 근 구하기", "simpson": "심프슨 공식으로 넓이 근삿값 (심화)", "quad": "정적분 값을 소수로 구하기",
+"minimize_scalar": "극소점을 수치로 찾기", "hilbert": "힐베르트 행렬 만들기 (오차 실험)", "plt.plot": "점을 이어 그래프 그리기", "polar": "극방정식 그래프 (심화)",
+"plt.fill_between": "넓이를 색칠해 보이기"
+};
+
+/* ---------- 함수마다 알고 가야 할 점 (없으면 FUNCS의 warn 한 줄을 쓴다) ---------- */
+const P_ = {
+  lim_dir: { t: "방향을 안 쓰면 우극한만 계산한다", d: "limit(1/x, x, 0)은 극한이 없는데도 oo를 준다. 양쪽 극한은 dir='+-'.", cell: "2-3" },
+  pw: { t: "구간별 함수의 좌극한이 틀린 적이 있다", d: "x < 1에서 x², x ≥ 1에서 x + 2인 함수의 x = 1 좌극한은 1인데 3이 나왔다(SymPy 1.14). limit(f.subs(x, 1 - h), h, 0)으로 다시 확인한다.", cell: "8-9" },
+  c: { t: "적분상수가 없다", d: "결과에 + C가 붙지 않는다. 조건이 있으면 + c를 붙이고 solve로 c를 구한다.", cell: "2-15" },
+  area: { t: "정적분 값 ≠ 넓이", d: "∫₀²π sin x dx = 0이지만 넓이는 4. 넓이는 Abs를 씌워 적분한다.", cell: "7-16" },
+  erf: { t: "erf가 나오면 소수로", d: "∫₀¹ e^(−x²) dx는 √π·erf(1)/2로 나온다. 값은 N(...) = 0.7468 또는 quad.", cell: "7-18" },
+  absd: { t: "미분 불가능한 점에서도 값을 낸다", d: "diff(Abs(x), x)는 sign(x)라 x = 0에서 0. 실제로는 미분 불가능하다. 좌·우 극한으로 확인한다.", cell: "2-9" },
+  h: { t: "h를 너무 작게 하면 오히려 틀린다", d: "소수로 계산한 할선 기울기 오차: h = 10⁻⁸에서 6.1×10⁻⁹, h = 10⁻¹⁵에서 0.33. Rational(1, 10**k)는 계속 정확해진다.", cell: "3-14" },
+  half: { t: "0.5 대신 Rational(1, 2)", d: "0.5를 51번 더한 등비급수는 1.9999999999999991. Rational로 하면 정확히 2.", cell: "1-14" },
+  eq: { t: "틀린 공식도 그대로 출력한다", d: "Eq는 식을 적어 둘 뿐이다. 맞는지는 simplify(좌변 − 우변)이 0인지, 또는 equals로 확인한다.", cell: "4-11" },
+  tancot: { t: "줄이지 못하는 식이 있다", d: "tan a + cot a는 trigsimp·simplify·fu 모두 그대로 둔다. TR2 → together → trigsimp 순서로 하면 2/sin 2a.", cell: "4-6" },
+  tr9: { t: "합을 곱으로는 바꾸지 않는다", d: "sin a + sin b를 곱으로 바꾸려면 TR9.", cell: "4-10" },
+  inf: { t: "해가 무수히 많아도 몇 개만 준다", d: "solve(sin(x), x)는 [0, pi]뿐이다. 모든 해는 solveset.", cell: "5-5" },
+  cplx: { t: "복소수 해까지 준다", d: "3^(2x) − 6·3^x − 27 = 0은 [2, 1 + I*pi/log(3)]. 실수 해만 보려면 solveset(…, domain=S.Reals).", cell: "5-22" },
+  real: { t: "real=True는 식을 다시 만들어야 적용된다", d: "문자만 real=True로 바꾸고 예전 식을 solve하면 []가 나온다. 식을 새 문자로 다시 만든다.", cell: "5-22" },
+  x0: { t: "초기값에 따라 다른 근이 나온다", d: "x³ − 6x² + 11x − 6 = 0: 초기값 0.5 → 1, 1.6 → 2, 2.6 → 3. 그래프로 근 위치를 먼저 본다.", cell: "5-12" },
+  guess: { t: "깔끔한 수일 때만 믿는다", d: "2.0000은 2가 되지만 2.30988…은 115494073000503/50000000000000이 된다. 원래 식에 넣어 확인한다.", cell: "5-25" },
+  dec: { t: "3ˣ가 든 식을 틀리게 나눈다", d: "3^(2x) − 6·3^x − 27 → [x² − 6x − 27, x^x, 3]. 다시 합성하면 540(SymPy 1.14). 치환은 손으로 한다.", cell: "5-26" },
+  nonlin: { t: "비선형 점화식은 못 푼다", d: "aₙ₊₁ = aₙ²은 ValueError. for 문으로 항을 구해 규칙을 찾는다.", cell: "1-13" },
+  logrs: { t: "로그를 취하면 풀리기도 한다", d: "aₙ₊₁ = 2ⁿaₙ은 cₙ = log₂aₙ으로 두면 cₙ₊₁ = cₙ + n이 되어 풀린다.", cell: "5-20" },
+  cbrt: { t: "세제곱근이 든 답은 검산한다", d: "x³ + y³ = 3xy를 solve로 y에 대해 풀면 x = 2에서 검산이 실패한다(복소수 주값). 실근은 nroots로 y ≈ −2.951.", cell: "6-11" },
+  adap: { t: "adaptive=False는 없는 곡선을 그린다", d: "x² + y² = 1에서 반지름 1이 아닌 곡선이 함께 그려졌다(SymPy 1.14). 기본값을 쓴다.", cell: "6-14" },
+  pts: { t: "점이 적으면 그래프가 틀린다", d: "sin(1/x)를 점 30개로 그리면 0 근처 진동이 사라진다. 5000개로 늘린다.", cell: "6-17" },
+  simp3: { t: "3차함수까지는 n = 2로도 정확", d: "∫₀²(x³ − 2x + 1)dx = 2. n = 2에서 사다리꼴 3.0, 심프슨 2.0.", cell: "7-13" },
+  open: { t: "열린 구간에서는 하한을 준다", d: "(0, 1)에서 1/x는 최솟값이 없는데 minimum은 1을 준다.", cell: "8-19" },
+  stat: { t: "f′ = 0이라고 극값은 아니다", d: "x³은 x = 0에서 f′ = f″ = 0. 앞뒤 f′의 부호가 모두 양수라 극값이 아니다. 극대·극소는 직접 판정한다.", cell: "9-7" },
+  trap: { t: "극소점에 머물러 최솟값을 놓친다", d: "[−3, 3]에서 x³ − 3x의 최솟값은 x = −3에서 −18인데 x = 1(값 −2)을 준다. 끝점 값과 비교한다.", cell: "9-9" },
+  star: { t: "*는 행렬곱이 아니다", d: "An * An = [[1, 4], [9, 16]] (성분끼리). 행렬곱은 An @ An = [[7, 10], [15, 22]].", cell: "10-2" },
+  sing: { t: "거의 특이한 행렬에서 오류 없이 틀린다", d: "[[1, 2], [2, 4.0000000001]]의 역행렬에 소수 오차가 섞인다. SymPy는 정확한 분수.", cell: "10-11" },
+  hil: { t: "12×12 힐베르트 행렬", d: "NumPy로 H × H⁻¹을 구하면 단위행렬과 0.089만큼 다르다. SymPy는 오차 0.", cell: "10-13" },
+  rr: { t: "domain='RR'·'CC'는 실수·복소수 범위가 아니다", d: "x⁴ − x² − 2 → 2.0*(0.5*x**2 − 1.0)*(1.0*x**2 + 1.0). 계수만 소수가 된다. extension이나 gaussian을 쓴다.", cell: "11-5" },
+  ext: { t: "extension은 넣어 준 수만 쓴다", d: "extension=sqrt(2)만 주면 (x − √2)(x + √2)(x² + 1)에서 멈춘다. 복소수까지는 extension=[sqrt(2), I].", cell: "11-3" },
+  gens: { t: "gens 밖의 문자는 쪼개지 않는다", d: "x²y² − x² − y² + 1을 gens=[x]로 하면 (x − 1)(x + 1)(y² − 1).", cell: "11-8" },
+  proof: { t: "대입 검증은 증명이 아니다", d: "∑k² 공식을 n = 1~50에 넣어 맞아도 그 50개만 확인한 것이다. Sum(...).doit()과 simplify로 모든 n에 대해 보인다.", cell: "1-19" }
+};
+const KNOW = {
+  limit: ["lim_dir", "pw"], Limit: ["lim_dir"], Piecewise: ["pw"], integrate: ["c", "area", "erf"], Integral: ["c", "erf"], diff: ["absd"], Abs: ["absd", "area"],
+  float: ["h"], Rational: ["half", "h"], sum: ["half"], Eq: ["eq"], equals: ["eq"], simplify: ["tancot", "eq"], trigsimp: ["tancot", "tr9"], fu: ["tancot"], TR: ["tr9", "tancot"],
+  solve: ["inf", "cplx"], solveset: ["inf"], symbols: ["real"], nsolve: ["x0"], nsimplify: ["guess"], decompogen: ["dec"], rsolve: ["nonlin", "logrs"], nroots: ["cbrt"],
+  plot_implicit: ["adap"], "np.linspace": ["pts"], "plt.plot": ["pts"], simpson: ["simp3"], "np.trapezoid": ["simp3"], minimum: ["open", "trap"], stationary_points: ["stat"],
+  minimize_scalar: ["trap"], "np.array": ["star"], Matrix: ["star"], "np.linalg": ["sing", "hil"], hilbert: ["hil"], factor: ["rr", "ext", "gens"], Sum: ["proof", "half"]
+};
+
+/* ---------- 방법 비교: 방법마다 보여 줄 실행 예제 ---------- */
+const CMPX = {
+  1: ["1-2", "1-4", "1-7", "1-9", "1-11"], 2: ["2-1", "2-12", "2-4", "2-15", "2-13"], 3: ["3-4", "3-5", "3-14", "3-14"],
+  4: ["4-1", "4-2", "4-3", "4-8", "4-12"], 5: ["5-1", "5-6", "5-3", "5-10", "5-24", "5-11", "5-13"], 6: ["6-1", "6-2", "6-3", "6-4"],
+  7: ["7-1", "7-2", "7-3", "7-7", "7-9", "7-10"], 8: ["8-1", "8-5", "8-6", "8-14", "8-17"], 9: ["9-1", "9-2", "9-3", "9-5", "9-9", "9-8"],
+  10: ["10-3", "10-4", "10-6", "10-18"], 11: ["11-1", "11-2", "11-4", "11-5", "11-5", "11-7", "11-8", "11-9", "11-10"]
+};
+
+/* ---------- 검색 자동완성에 쓰는 낱말 ---------- */
+const VOCAB_EXTRA = ["극한", "좌극한", "우극한", "미분", "도함수", "미분계수", "접선", "적분", "정적분", "부정적분", "넓이", "인수분해", "복소수", "실수", "방정식", "부등식", "연립방정식",
+  "지수방정식", "로그방정식", "삼각함수", "덧셈정리", "합성", "수열", "수열의 합", "점화식", "일반항", "급수", "시그마", "등차수열", "등비수열", "연속", "사잇값", "최댓값", "최솟값",
+  "극대", "극소", "극값", "증가", "감소", "그래프", "원의 방정식", "매개변수", "행렬", "역행렬", "행렬식", "근삿값", "중근", "항등식", "부분분수", "통분", "전개", "대입", "절댓값"];
+
 const CELLS = [{"id": "1-0", "topic": 1, "title": "[1] 준비", "code": "from sympy import *\nfrom itertools import count, islice\nk, n = symbols('k n', integer=True, positive=True)", "output": "", "error": null}, {"id": "1-1", "topic": 1, "title": "등차수열의 합 ① for 문 (a=2, d=3, 10항)", "code": "total = 0\nfor i in range(10): total += 2 + 3*i\ntotal", "output": "155", "error": null}, {"id": "1-2", "topic": 1, "title": "등차수열의 합 ② sum", "code": "sum(2 + 3*i for i in range(10))", "output": "155", "error": null}, {"id": "1-3", "topic": 1, "title": "등차수열의 합 ③ Sum (n 이 숫자)", "code": "Sum(2 + (k-1)*3, (k, 1, 10)).doit()", "output": "155", "error": null}, {"id": "1-4", "topic": 1, "title": "등차수열의 합 ④ Sum (n 이 문자) → 공식", "code": "S_n = Sum(2 + (k-1)*3, (k, 1, n)).doit()\nfactor(S_n)", "output": "n*(3*n + 1)/2", "error": null}, {"id": "1-5", "topic": 1, "title": "일반항 ① 파이썬 함수", "code": "def a(m): return 3*m + 1\n[a(m) for m in range(1, 6)]", "output": "[4, 7, 10, 13, 16]", "error": null}, {"id": "1-6", "topic": 1, "title": "일반항 ② 제너레이터 (무한수열 흉내)", "code": "seq = (3*m + 1 for m in count(1))\nlist(islice(seq, 5))", "output": "[4, 7, 10, 13, 16]", "error": null}, {"id": "1-7", "topic": 1, "title": "일반항 ③ SeqFormula", "code": "s = SeqFormula(3*n + 1, (n, 1, oo))\nprint(s[:5]); print(s.coeff(7))", "output": "[4, 7, 10, 13, 16]\n22", "error": null}, {"id": "1-8", "topic": 1, "title": "SeqFormula 끼리 연산 (등차 + 등비)", "code": "s2 = SeqFormula(2**n, (n, 1, oo))\n(s + s2)[:5]", "output": "[6, 11, 18, 29, 48]", "error": null}, {"id": "1-9", "topic": 1, "title": "점화식 a(n+1) = 2a(n) + 3, a(0)=1 ① for 문", "code": "v = [1]\nfor _ in range(5): v.append(2*v[-1] + 3)\nv", "output": "[1, 5, 13, 29, 61, 125]", "error": null}, {"id": "1-10", "topic": 1, "title": "점화식 ② 재귀 함수", "code": "def r(m): return 1 if m == 0 else 2*r(m-1) + 3\n[r(m) for m in range(6)]", "output": "[1, 5, 13, 29, 61, 125]", "error": null}, {"id": "1-11", "topic": 1, "title": "점화식 ③ rsolve → 일반항", "code": "f = Function('f')\nrsolve(f(n+1) - 2*f(n) - 3, f(n), {f(0): 1})", "output": "4*2**n - 3", "error": null}, {"id": "1-12", "topic": 1, "title": "rsolve 로 피보나치", "code": "rsolve(f(n+2) - f(n+1) - f(n), f(n), {f(0): 0, f(1): 1})", "output": "-sqrt(5)*(1/2 - sqrt(5)/2)**n/5 + sqrt(5)*(1/2 + sqrt(5)/2)**n/5", "error": null}, {"id": "1-13", "topic": 1, "title": "rsolve 의 한계 : 비선형 점화식", "code": "try: rsolve(f(n+1) - f(n)**2, f(n), {f(0): 2})\nexcept Exception as e: print('오류:', type(e).__name__)", "output": "오류: ValueError", "error": null}, {"id": "1-14", "topic": 1, "title": "등비급수 ① 부분합 관찰 (r = 1/2)", "code": "p = 0.0\nfor i in range(51): p += 0.5**i\np", "output": "1.9999999999999991", "error": null}, {"id": "1-15", "topic": 1, "title": "등비급수 ② 부분합 → limit", "code": "Sn = Sum(Rational(1, 2)**k, (k, 0, n)).doit()\nprint(Sn); print(limit(Sn, n, oo))", "output": "2 - 2*2**(-n - 1)\n2", "error": null}, {"id": "1-16", "topic": 1, "title": "등비급수 ③ 무한급수 직접 / 수렴 판정", "code": "print(Sum(Rational(1, 2)**k, (k, 1, oo)).doit())\nprint(Sum(Rational(3, 2)**k, (k, 1, oo)).is_convergent())", "output": "1\nFalse", "error": null}, {"id": "1-17", "topic": 1, "title": "등비급수 ④ 공비를 문자로 → 수렴 조건까지", "code": "rr = symbols('r')\nSum(rr**k, (k, 0, oo)).doit()", "output": "Piecewise((1/(1 - r), Abs(r) < 1), (Sum(r**k, (k, 0, oo)), True))", "error": null}, {"id": "1-18", "topic": 1, "title": "시그마 공식 자동 생성 (∑k, ∑k², ∑k³, ∑k⁴)", "code": "for e in range(1, 5):\n    print(e, factor(Sum(k**e, (k, 1, n)).doit()))", "output": "1 n*(n + 1)/2\n2 n*(n + 1)*(2*n + 1)/6\n3 n**2*(n + 1)**2/4\n4 n*(n + 1)*(2*n + 1)*(3*n**2 + 3*n - 1)/30", "error": null}, {"id": "1-19", "topic": 1, "title": "시그마 공식 : 50개 대입 검증 vs 기호 증명", "code": "print(all(sum(i**2 for i in range(1, N+1)) == N*(N+1)*(2*N+1)//6 for N in range(1, 51)))\nprint(simplify(Sum(k**2, (k, 1, n)).doit() - n*(n+1)*(2*n+1)/6) == 0)", "output": "True\nTrue", "error": null}, {"id": "1-20", "topic": 1, "title": "망원급수 : apart 로 쪼갠 뒤 합", "code": "print(apart(1/(k*(k+1)), k))\nprint(simplify(Sum(1/(k*(k+1)), (k, 1, n)).doit()))", "output": "-1/(k + 1) + 1/k\nn/(n + 1)", "error": null}, {"id": "2-0", "topic": 2, "title": "[2] 준비", "code": "from sympy import *\nx, h = symbols('x h')", "output": "", "error": null}, {"id": "2-1", "topic": 2, "title": "Limit + doit", "code": "L = Limit(sin(2*x)/(3*x), x, 0)\nprint(L)\nprint(L.doit())", "output": "Limit(sin(2*x)/(3*x), x, 0, dir='+')\n2/3", "error": null}, {"id": "2-2", "topic": 2, "title": "limit", "code": "limit(sin(2*x)/(3*x), x, 0)", "output": "2/3", "error": null}, {"id": "2-3", "topic": 2, "title": "극한 방향: 기본값은 '+'", "code": "print(limit(1/x, x, 0))\nprint(limit(1/x, x, 0, dir='-'))\nprint(limit(1/x, x, 0, dir='+-'))", "output": "oo\n-oo\nzoo", "error": null}, {"id": "2-4", "topic": 2, "title": "미분 ① 정의", "code": "f = x**2 + x\nlimit((f.subs(x, x+h) - f)/h, h, 0, dir='+-')", "output": "2*x + 1", "error": null}, {"id": "2-5", "topic": 2, "title": "미분 ② Derivative + doit", "code": "Derivative(f, x).doit()", "output": "2*x + 1", "error": null}, {"id": "2-6", "topic": 2, "title": "미분 ③ diff", "code": "diff(f, x)", "output": "2*x + 1", "error": null}, {"id": "2-7", "topic": 2, "title": "|x|, x=0 : 정의 (좌·우)", "code": "print(limit(Abs(h)/h, h, 0, dir='-'))\nprint(limit(Abs(h)/h, h, 0, dir='+'))", "output": "-1\n1", "error": null}, {"id": "2-8", "topic": 2, "title": "|x|, x=0 : 정의 (양쪽) → 오류", "code": "try: limit(Abs(h)/h, h, 0, dir='+-')\nexcept ValueError as e: print('오류:', e)", "output": "오류: The limit does not exist since left hand limit = -1 and right hand limit = 1", "error": null}, {"id": "2-9", "topic": 2, "title": "|x|, x=0 : diff → 0 (틀린 답)", "code": "xr = symbols('xr', real=True)\nd = diff(Abs(xr), xr)\nprint(d, d.subs(xr, 0))", "output": "sign(xr) 0", "error": null}, {"id": "2-10", "topic": 2, "title": "추상함수 f(x)", "code": "F = Function('f')\nprint(diff(F(x), x))\nprint(Derivative(F(x), x).as_finite_difference(h))", "output": "Derivative(f(x), x)\n-f(-h/2 + x)/h + f(h/2 + x)/h", "error": null}, {"id": "2-11", "topic": 2, "title": "적분 ① Integral + doit", "code": "I = Integral(x**2, (x, 0, 1))\nprint(I)\nprint(I.doit())", "output": "Integral(x**2, (x, 0, 1))\n1/3", "error": null}, {"id": "2-12", "topic": 2, "title": "적분 ② integrate", "code": "integrate(x**2, (x, 0, 1))", "output": "1/3", "error": null}, {"id": "2-13", "topic": 2, "title": "못 푸는 적분 → evalf", "code": "J = Integral(exp(-x**2)*sin(x**3), (x, 0, 1))\nprint(J.doit())\nprint(J.evalf())", "output": "Integral(exp(-x**2)*sin(x**3), (x, 0, 1))\n0.125012519603065", "error": null}, {"id": "3-0", "topic": 3, "title": "[3] 준비", "code": "from sympy import *\nimport numpy as np\nimport matplotlib.pyplot as plt\nx, h, y = symbols('x h y', real=True)", "output": "", "error": null}, {"id": "3-1", "topic": 3, "title": "입력 (엔터만 치면 x**2-3*x+1, x=1)", "code": "f = sympify(input('f(x) = ') or 'x**2-3*x+1', locals={'x': x})\na = sympify(input('x = ') or '1')\nfa = f.subs(x, a)", "output": "", "error": null}, {"id": "3-2", "topic": 3, "title": "할선 기울기 함수", "code": "def slope(hh):\n    return (f.subs(x, a+hh) - fa) / hh", "output": "", "error": null}, {"id": "3-3", "topic": 3, "title": "h 줄이기 (오른쪽, 왼쪽)", "code": "H = [Rational(1, 2**k) for k in range(8)]\nfor hh in H:\n    print(hh, round(float(slope(hh)), 5), round(float(slope(-hh)), 5))", "output": "1 0.0 -2.0\n1/2 -0.5 -1.5\n1/4 -0.75 -1.25\n1/8 -0.875 -1.125\n1/16 -0.9375 -1.0625\n1/32 -0.96875 -1.03125\n1/64 -0.98438 -1.01562\n1/128 -0.99219 -1.00781", "error": null}, {"id": "3-4", "topic": 3, "title": "정의 : h → 0", "code": "try:\n    m = limit(slope(h), h, 0, dir='+-')\nexcept ValueError:\n    m = nan; print('미분 불가능')\nprint('기울기 :', m)", "output": "기울기 : -1", "error": null}, {"id": "3-5", "topic": 3, "title": "diff 와 비교", "code": "print('diff   :', diff(f, x).subs(x, a))", "output": "diff   : -1", "error": null}, {"id": "3-6", "topic": 3, "title": "접선의 방정식", "code": "T = Eq(y - fa, m*(x - a))\nprint(simplify(T))\nprint(solve(T, y))", "output": "Eq(x, -y)\n[-x]", "error": null}, {"id": "3-7", "topic": 3, "title": "그래프 준비", "code": "f_np = lambdify(x, f, 'numpy')\naf, faf = float(a), float(fa)\nxs = np.linspace(af-3, af+3, 400)", "output": "", "error": null}, {"id": "3-8", "topic": 3, "title": "오른쪽 할선 (h > 0)", "code": "plt.plot(xs, f_np(xs), 'k')\nfor hh in H: plt.plot(xs, float(slope(hh))*(xs-af) + faf, 'b', alpha=.3)\nplt.plot(xs, float(m)*(xs-af) + faf, 'r--')\nplt.ylim(f_np(xs).min()-1, f_np(xs).max()+1); plt.show()", "output": "", "error": null}, {"id": "3-9", "topic": 3, "title": "왼쪽 할선 (h < 0)", "code": "plt.plot(xs, f_np(xs), 'k')\nfor hh in H: plt.plot(xs, float(slope(-hh))*(xs-af) + faf, 'g', alpha=.3)\nplt.plot(xs, float(m)*(xs-af) + faf, 'r--')\nplt.ylim(f_np(xs).min()-1, f_np(xs).max()+1); plt.show()", "output": "", "error": null}, {"id": "3-10", "topic": 3, "title": "애니메이션 ① 바탕 (코랩/주피터)", "code": "from matplotlib.animation import FuncAnimation\nfrom IPython.display import HTML\nfig, ax = plt.subplots(); plt.close(fig)\nax.plot(xs, f_np(xs), 'k'); ax.set_ylim(f_np(xs).min()-1, f_np(xs).max()+1);", "output": "", "error": "ModuleNotFoundError"}, {"id": "3-11", "topic": 3, "title": "애니메이션 ② 접선, 할선", "code": "ax.plot(xs, float(m)*(xs-af) + faf, 'r--')\nline, = ax.plot([], [], 'b')\ntxt = ax.text(0.05, 0.9, '', transform=ax.transAxes)\nhf = np.geomspace(1, 1e-3, 40)", "output": "", "error": "NameError"}, {"id": "3-12", "topic": 3, "title": "애니메이션 ③ h 바꾸기", "code": "def update(i):\n    s = (f_np(af + hf[i]) - faf) / hf[i]\n    line.set_data(xs, s*(xs-af) + faf)\n    txt.set_text(f'h={hf[i]:.4f}  slope={s:.4f}')", "output": "", "error": null}, {"id": "3-13", "topic": 3, "title": "애니메이션 ④ 재생", "code": "anim = FuncAnimation(fig, update, frames=40, interval=120)\nHTML(anim.to_jshtml())", "output": "", "error": "NameError"}, {"id": "3-14", "topic": 3, "title": "h 더 줄이기 : 정확한 수 vs 소수", "code": "for k in [1, 4, 8, 12, 15]:\n    e1 = abs(N(slope(Rational(1, 10**k)) - m, 30))\n    e2 = abs((f_np(af + 10.0**-k) - faf)/10.0**-k - float(m))\n    print(f'1e-{k}  {float(e1):.1e}  {e2:.1e}')", "output": "1e-1  1.0e-01  1.0e-01\n1e-4  1.0e-04  1.0e-04\n1e-8  1.0e-08  6.1e-09\n1e-12  1.0e-12  8.9e-05\n1e-15  1.0e-15  3.3e-01", "error": null}, {"id": "4-0", "topic": 4, "title": "[4] 준비", "code": "from sympy import *\nfrom sympy.simplify.fu import TR2, TR7, TR8, TR9\na, b = symbols('a b')", "output": "", "error": null}, {"id": "4-1", "topic": 4, "title": "펼치기 : expand_trig", "code": "print(expand_trig(sin(a+b)))\nprint(expand_trig(cos(2*a)))\nprint(expand_trig(tan(a+b)))", "output": "sin(a)*cos(b) + sin(b)*cos(a)\n2*cos(a)**2 - 1\n(tan(a) + tan(b))/(-tan(a)*tan(b) + 1)", "error": null}, {"id": "4-2", "topic": 4, "title": "펼치기 : expand(trig=True)", "code": "print(expand(sin(a+b), trig=True))\nprint(expand(cos(2*a), trig=True))\nprint(expand(tan(a+b), trig=True))", "output": "sin(a)*cos(b) + sin(b)*cos(a)\n2*cos(a)**2 - 1\ntan(a)/(-tan(a)*tan(b) + 1) + tan(b)/(-tan(a)*tan(b) + 1)", "error": null}, {"id": "4-3", "topic": 4, "title": "모으기 : 합성", "code": "e = sqrt(3)*sin(a) + cos(a)\nprint(trigsimp(e))\nprint(simplify(e))\nprint(fu(e))", "output": "2*sin(a + pi/6)\n2*sin(a + pi/6)\n2*sin(a + pi/6)", "error": null}, {"id": "4-4", "topic": 4, "title": "모으기 : cos⁴ - sin⁴", "code": "e = cos(a)**4 - sin(a)**4\nprint(trigsimp(e))\nprint(simplify(e))\nprint(fu(e))", "output": "cos(2*a)\ncos(2*a)\ncos(2*a)", "error": null}, {"id": "4-5", "topic": 4, "title": "셋 다 못 줄이는 식", "code": "e = tan(a) + cot(a)\nprint(trigsimp(e))\nprint(simplify(e))\nprint(fu(e))", "output": "tan(a) + cot(a)\ntan(a) + cot(a)\ntan(a) + cot(a)", "error": null}, {"id": "4-6", "topic": 4, "title": "단계를 지정하면 풀림", "code": "s1 = TR2(e)\ns2 = together(s1)\nprint(s1, '→', s2, '→', trigsimp(s2))", "output": "sin(a)/cos(a) + cos(a)/sin(a) → (sin(a)**2 + cos(a)**2)/(sin(a)*cos(a)) → 2/sin(2*a)", "error": null}, {"id": "4-7", "topic": 4, "title": "rewrite", "code": "print(sin(a).rewrite(cos))\nprint(cos(a).rewrite(sin))\nprint(sin(a).rewrite(exp))", "output": "cos(a - pi/2)\nsin(a + pi/2)\n-I*(exp(I*a) - exp(-I*a))/2", "error": null}, {"id": "4-8", "topic": 4, "title": "곱 → 합차 (TR8)", "code": "print(TR8(sin(a)*cos(b)))\nprint(TR8(cos(a)*cos(b)))\nprint(TR8(sin(a)*sin(b)))", "output": "sin(a - b)/2 + sin(a + b)/2\ncos(a - b)/2 + cos(a + b)/2\ncos(a - b)/2 - cos(a + b)/2", "error": null}, {"id": "4-9", "topic": 4, "title": "반각 (TR7)", "code": "print(TR7(cos(a)**2))\nprint(TR7(cos(a/2)**2))", "output": "cos(2*a)/2 + 1/2\ncos(a)/2 + 1/2", "error": null}, {"id": "4-10", "topic": 4, "title": "합차 → 곱 : trigsimp vs TR9", "code": "print(trigsimp(sin(a) + sin(b)))\nprint(TR9(sin(a) + sin(b)))", "output": "sin(a) + sin(b)\n2*sin(a/2 + b/2)*cos(a/2 - b/2)", "error": null}, {"id": "4-11", "topic": 4, "title": "Eq 는 틀린 공식도 출력", "code": "right = Eq(sin(a/2)**2, (1 - cos(a))/2)\nwrong = Eq(sin(a/2)**2, (1 + cos(a))/2)\nprint(right); print(wrong)", "output": "Eq(sin(a/2)**2, 1/2 - cos(a)/2)\nEq(sin(a/2)**2, cos(a)/2 + 1/2)", "error": null}, {"id": "4-12", "topic": 4, "title": "검증 : simplify, equals", "code": "print(simplify(right.lhs - right.rhs), simplify(wrong.lhs - wrong.rhs))\nprint(right.lhs.equals(right.rhs), wrong.lhs.equals(wrong.rhs))", "output": "0 -cos(a)\nTrue False", "error": null}, {"id": "4-13", "topic": 4, "title": "75° : 정확값 vs 소수", "code": "import numpy as np\nprint(sin(75*pi/180), np.sin(np.deg2rad(75)))\nprint(tan(75*pi/180), np.tan(np.deg2rad(75)))", "output": "sqrt(2)/4 + sqrt(6)/4 0.9659258262890683\nsqrt(3) + 2 3.7320508075688776", "error": null}, {"id": "4-14", "topic": 4, "title": "공식 검증 : 숫자 대입", "code": "g = lambdify((a, b), sin(a)*cos(b) - (sin(a+b) + sin(a-b))/2)\nA, B = np.random.uniform(-10, 10, (2, 1000))\nprint(np.abs(g(A, B)).max())", "output": "8.951173136040325e-16", "error": null}, {"id": "4-15", "topic": 4, "title": "공식 검증 : 기호 증명", "code": "simplify(sin(a)*cos(b) - (sin(a+b) + sin(a-b))/2)", "output": "0", "error": null}, {"id": "5-0", "topic": 5, "title": "[5] 준비", "code": "from sympy import *\nimport numpy as np\nx, y, n = symbols('x y n')", "output": "", "error": null}, {"id": "5-1", "topic": 5, "title": "solve : 결과가 리스트", "code": "solve(x**2 - 5*x + 6, x)", "output": "[2, 3]", "error": null}, {"id": "5-2", "topic": 5, "title": "solveset : 결과가 집합", "code": "solveset(x**2 - 5*x + 6, x)", "output": "{2, 3}", "error": null}, {"id": "5-3", "topic": 5, "title": "roots : 중근의 개수까지", "code": "e = (x - 1)**2 * (x + 2)\nprint(solve(e, x))\nprint(roots(e, x))", "output": "[-2, 1]\n{-2: 1, 1: 2}", "error": null}, {"id": "5-4", "topic": 5, "title": "복소해 : solve vs solveset(실수)", "code": "print(solve(x**2 + 1, x))\nprint(solveset(x**2 + 1, x, S.Reals))", "output": "[-I, I]\nEmptySet", "error": null}, {"id": "5-5", "topic": 5, "title": "해가 무수히 많을 때 : sin(x) = 0", "code": "print(solve(sin(x), x))\nprint(solveset(sin(x), x))", "output": "[0, pi]\nUnion(ImageSet(Lambda(_n, 2*_n*pi), Integers), ImageSet(Lambda(_n, 2*_n*pi + pi), Integers))", "error": null}, {"id": "5-6", "topic": 5, "title": "구간 지정 : solveset + Interval", "code": "solveset(sin(x), x, Interval(-2*pi, 2*pi))", "output": "{0, -2*pi, -pi, pi, 2*pi}", "error": null}, {"id": "5-7", "topic": 5, "title": "부등식 : solve vs solveset", "code": "print(solve(x**2 - x - 2 < 0, x))\nprint(solveset(x**2 - x - 2 < 0, x, S.Reals))", "output": "(-1 < x) & (x < 2)\nInterval.open(-1, 2)", "error": null}, {"id": "5-8", "topic": 5, "title": "초월방정식 (교재 예제 6.27) : solve → 오류", "code": "g = sin(x) - (x - pi/2)\ntry: solve(g, x)\nexcept NotImplementedError as e: print('오류:', e)", "output": "오류: multiple generators [x, sin(x)]\nNo algorithms are implemented to solve equation -x + sin(x) + pi/2", "error": null}, {"id": "5-9", "topic": 5, "title": "초월방정식 : solveset → 풀지 못하고 조건만 남김", "code": "solveset(g, x, Interval(0, pi))", "output": "ConditionSet(x, Eq(-x + sin(x) + pi/2, 0), Interval(0, pi))", "error": null}, {"id": "5-10", "topic": 5, "title": "초월방정식 : nsolve → 근삿값", "code": "nsolve(g, x, 2)", "output": "2.30988146001006", "error": null}, {"id": "5-11", "topic": 5, "title": "초월방정식 : linspace (교재 방식)", "code": "k = np.linspace(2, 2.5, 101)\ngk = np.sin(k) - (k - np.pi/2)\nk[np.argmin(np.abs(gk))]", "output": "np.float64(2.31)", "error": null}, {"id": "5-12", "topic": 5, "title": "nsolve 는 초기값에 따라 다른 근을 준다", "code": "f = x**3 - 6*x**2 + 11*x - 6        # 근 : 1, 2, 3\nfor guess in [0.5, 1.5, 1.6, 2.6]:\n    print(guess, '→', nsolve(f, x, guess))", "output": "0.5 → 1.00000000000000\n1.5 → 2.00000000000000\n1.6 → 2.00000000000000\n2.6 → 3.00000000000000", "error": null}, {"id": "5-13", "topic": 5, "title": "연립방정식 : solve vs linsolve (해 1개)", "code": "eqs = [x + y - 3, x - y - 1]\nprint(solve(eqs, [x, y]))\nprint(linsolve(eqs, [x, y]))", "output": "{x: 2, y: 1}\n{(2, 1)}", "error": null}, {"id": "5-14", "topic": 5, "title": "연립방정식 : 해가 무수히 많을 때", "code": "eqs = [x + y - 1, 2*x + 2*y - 2]\nprint(solve(eqs, [x, y]))\nprint(linsolve(eqs, [x, y]))", "output": "{x: 1 - y}\n{(1 - y, y)}", "error": null}, {"id": "5-15", "topic": 5, "title": "연립방정식 : 해가 없을 때", "code": "eqs = [x + y - 1, x + y - 2]\nprint(solve(eqs, [x, y]))\nprint(linsolve(eqs, [x, y]))", "output": "[]\nEmptySet", "error": null}, {"id": "5-16", "topic": 5, "title": "비선형 연립 : solve vs nonlinsolve", "code": "eqs = [x**2 + y**2 - 5, y - x - 1]\nprint(solve(eqs, [x, y]))\nprint(nonlinsolve(eqs, [x, y]))", "output": "[(-2, -1), (1, 2)]\n{(-2, -1), (1, 2)}", "error": null}, {"id": "5-17", "topic": 5, "title": "점화식 : solve 는 이항만 함", "code": "a = Function('a')\nsolve(a(n+1) - a(n) - 3, a(n))", "output": "[a(n + 1) - 3]", "error": null}, {"id": "5-18", "topic": 5, "title": "점화식 : rsolve 는 일반항을 구함", "code": "rsolve(a(n+1) - a(n) - 3, a(n), {a(1): 2})", "output": "3*n - 1", "error": null}, {"id": "5-19", "topic": 5, "title": "rsolve 실패 (교재 예제 6.9) : a(n+1) = 2ⁿ a(n)", "code": "try: rsolve(a(n+1) - 2**n * a(n), a(n), {a(1): 1})\nexcept ValueError as e: print('오류:', e)", "output": "오류: Polynomial or rational function expected, got '-2**n'", "error": null}, {"id": "5-20", "topic": 5, "title": "로그를 취하면 rsolve 가 풂 : c(n) = log₂ a(n)", "code": "c = Function('c')\ncn = rsolve(c(n+1) - c(n) - n, c(n), {c(1): 0})\nprint('a(n) =', 2**cn)", "output": "a(n) = 2**(n*(n - 1)/2)", "error": null}, {"id": "6-0", "topic": 6, "title": "[6] 준비", "code": "from sympy import *\nimport numpy as np\nimport matplotlib.pyplot as plt\nx, y, t = symbols('x y t')", "output": "", "error": null}, {"id": "6-1", "topic": 6, "title": "단위원 ① 함수 : 위·아래 반원 두 개", "code": "plot(sqrt(1 - x**2), -sqrt(1 - x**2), (x, -1, 1),\n     aspect_ratio=(1, 1), size=(4, 4))", "output": "", "error": null}, {"id": "6-2", "topic": 6, "title": "단위원 ② 음함수 : x² + y² = 1", "code": "plot_implicit(Eq(x**2 + y**2, 1), (x, -1.5, 1.5), (y, -1.5, 1.5),\n              aspect_ratio=(1, 1), size=(4, 4))", "output": "", "error": null}, {"id": "6-3", "topic": 6, "title": "단위원 ③ 매개변수 : (cos t, sin t)", "code": "plot_parametric(cos(t), sin(t), (t, 0, 2*pi),\n                aspect_ratio=(1, 1), size=(4, 4))", "output": "", "error": null}, {"id": "6-4", "topic": 6, "title": "단위원 ④ 극방정식 : r = 1 (sympy 에 전용 함수 없음 → matplotlib)", "code": "th = np.linspace(0, 2*np.pi, 400)\nplt.subplot(projection='polar')\nplt.plot(th, np.ones_like(th)); plt.show()", "output": "", "error": null}, {"id": "6-5", "topic": 6, "title": "심장형 ① 극방정식 : r = 1 + cosθ", "code": "r = 1 + np.cos(th)\nplt.subplot(projection='polar')\nplt.plot(th, r); plt.show()", "output": "", "error": null}, {"id": "6-6", "topic": 6, "title": "심장형 ② 매개변수 : (r cosθ, r sinθ)", "code": "R = 1 + cos(t)\nplot_parametric(R*cos(t), R*sin(t), (t, 0, 2*pi),\n                aspect_ratio=(1, 1), size=(4, 4))", "output": "", "error": null}, {"id": "6-7", "topic": 6, "title": "심장형 ③ 음함수 : (x²+y²-x)² = x²+y²", "code": "plot_implicit(Eq((x**2 + y**2 - x)**2, x**2 + y**2), (x, -1, 2.5), (y, -1.5, 1.5),\n              aspect_ratio=(1, 1), size=(4, 4))", "output": "", "error": null}, {"id": "6-8", "topic": 6, "title": "데카르트 엽선 ① 음함수 : x³ + y³ = 3xy", "code": "plot_implicit(Eq(x**3 + y**3, 3*x*y), (x, -3, 3), (y, -3, 3), size=(4, 4))", "output": "", "error": null}, {"id": "6-9", "topic": 6, "title": "데카르트 엽선 ② 매개변수 : 음함수를 y = f(x) 로 못 푸는 곡선", "code": "X = 3*t / (1 + t**3)\nY = 3*t**2 / (1 + t**3)\nplot_parametric(X, Y, (t, -0.8, 30), xlim=(-3, 3), ylim=(-3, 3), size=(4, 4))", "output": "", "error": null}, {"id": "6-10", "topic": 6, "title": "엽선을 solve 로 y 에 대해 풀면?", "code": "e = x**3 + y**3 - 3*x*y\nsol = solve(e, y)\nprint(sol[0])", "output": "x*(-3/((-1/2 - sqrt(3)*I/2)*(27/2 + 27*sqrt(3)*I/2)**(1/3)) - (-1/2 - sqrt(3)*I/2)*(27/2 + 27*sqrt(3)*I/2)**(1/3)/3)", "error": null}, {"id": "6-11", "topic": 6, "title": "검증 : x=2 에서 solve 의 답을 원식에 넣으면 0 이어야 함", "code": "for s in sol:\n    print(N(e.subs(y, s).subs(x, 2), 5))", "output": "4.1676 - 0.e-12*I\n18.385 + 0.e-12*I\n-22.553 + 0.e-18*I", "error": null}, {"id": "6-12", "topic": 6, "title": "x=2 의 실제 근 (nroots)", "code": "Poly(e.subs(x, 2), y).nroots()", "output": "[-2.95137303559144, 1.47568651779572 - 0.730035681602057*I, 1.47568651779572 + 0.730035681602057*I]", "error": null}, {"id": "6-13", "topic": 6, "title": "음함수 그리기 방식 ① adaptive=True (기본값) : x² + y² = 1", "code": "plot_implicit(Eq(x**2 + y**2, 1), (x, -2, 2), (y, -2, 2),\n              size=(3, 3), title='adaptive=True')", "output": "", "error": null}, {"id": "6-14", "topic": 6, "title": "음함수 그리기 방식 ② adaptive=False : 반지름 1 이 아닌 곡선들이 그려짐", "code": "plot_implicit(Eq(x**2 + y**2, 1), (x, -2, 2), (y, -2, 2),\n              adaptive=False, size=(3, 3), title='adaptive=False')", "output": "", "error": null}, {"id": "6-15", "topic": 6, "title": "같은 함수 : sympy plot vs matplotlib + linspace", "code": "f = sin(x) / x\nplot(f, (x, -10, 10), size=(4, 3))", "output": "", "error": null}, {"id": "6-16", "topic": 6, "title": "(이어서) matplotlib + linspace", "code": "xs = np.linspace(-10, 10, 400)\nplt.plot(xs, lambdify(x, f)(xs)); plt.show()", "output": "", "error": null}, {"id": "6-17", "topic": 6, "title": "linspace 점 개수의 영향 : sin(1/x)", "code": "xs = np.linspace(0.01, 1, 30)\nplt.plot(xs, np.sin(1/xs)); plt.title('30 points'); plt.show()", "output": "", "error": null}, {"id": "6-18", "topic": 6, "title": "(이어서) 점을 늘리면", "code": "xs = np.linspace(0.01, 1, 5000)\nplt.plot(xs, np.sin(1/xs)); plt.title('5000 points'); plt.show()", "output": "", "error": null}, {"id": "6-19", "topic": 6, "title": "(이어서) sympy plot 기본값 : 1000개 점을 고르게", "code": "plot(sin(1/x), (x, 0.01, 1), size=(4, 3))", "output": "", "error": null}, {"id": "6-20", "topic": 6, "title": "(이어서) sympy plot adaptive=True : 필요한 곳에 점을 더 찍음", "code": "plot(sin(1/x), (x, 0.01, 1), adaptive=True, size=(4, 3))", "output": "", "error": null}, {"id": "7-0", "topic": 7, "title": "[7] 준비 ①", "code": "from sympy import *\nimport numpy as np\nimport matplotlib.pyplot as plt", "output": "", "error": null}, {"id": "7-0b", "topic": 7, "title": "[7] 준비 ②", "code": "from scipy.integrate import simpson, quad\nx = symbols('x')\nn, k = symbols('n k', integer=True, positive=True)", "output": "", "error": null}, {"id": "7-1", "topic": 7, "title": "정확값 : integrate", "code": "integrate(x**2, (x, 0, 1))", "output": "1/3", "error": null}, {"id": "7-2", "topic": 7, "title": "구분구적법 ① Sum + limit (교재 방식)", "code": "S_n = Sum((k/n)**2 * (1/n), (k, 1, n)).doit()\nprint(S_n)\nprint(limit(S_n, n, oo))", "output": "(n**3/3 + n**2/2 + n/6)/n**3\n1/3", "error": null}, {"id": "7-3", "topic": 7, "title": "구분구적법 ② as_sum : n 을 문자로 둔 채 합을 만듦", "code": "R = Integral(x**2, (x, 0, 1)).as_sum(n, method='right')\nprint(R)\nprint(limit(R, n, oo))", "output": "(n**3/3 + n**2/2 + n/6)/n**3\n1/3", "error": null}, {"id": "7-4", "topic": 7, "title": "as_sum 으로 네 가지 방법 비교 (n = 4)", "code": "I = Integral(x**2, (x, 0, 1))\nfor m in ['left', 'right', 'midpoint', 'trapezoid']:\n    print(m, I.as_sum(4, method=m))", "output": "left 7/32\nright 15/32\nmidpoint 21/64\ntrapezoid 11/32", "error": null}, {"id": "7-5", "topic": 7, "title": "as_sum 에 'simpson' 은 없다", "code": "try: I.as_sum(4, method='simpson')\nexcept ValueError as e: print('오류:', e)", "output": "오류: Unknown method simpson", "error": null}, {"id": "7-6", "topic": 7, "title": "사다리꼴 ① 직접 구현", "code": "def trap(f, a, b, n):\n    xs = np.linspace(a, b, n + 1)\n    ys = f(xs)\n    return (b - a) / n * (ys[0]/2 + ys[1:-1].sum() + ys[-1]/2)", "output": "", "error": null}, {"id": "7-7", "topic": 7, "title": "사다리꼴 ② numpy.trapezoid", "code": "xs = np.linspace(0, np.pi, 5)\nprint(trap(np.sin, 0, np.pi, 4))\nprint(np.trapezoid(np.sin(xs), xs))", "output": "1.8961188979370398\n1.8961188979370398", "error": null}, {"id": "7-8", "topic": 7, "title": "심프슨 ① 직접 구현 (n 은 짝수)", "code": "def simp(f, a, b, n):\n    xs = np.linspace(a, b, n + 1); ys = f(xs)\n    return (b - a) / (3*n) * (ys[0] + 4*ys[1:-1:2].sum() + 2*ys[2:-1:2].sum() + ys[-1])", "output": "", "error": null}, {"id": "7-9", "topic": 7, "title": "심프슨 ② scipy.integrate.simpson", "code": "print(simp(np.sin, 0, np.pi, 4))\nprint(simpson(np.sin(xs), x=xs))", "output": "2.0045597549844207\n2.0045597549844207", "error": null}, {"id": "7-10", "topic": 7, "title": "수치적분 ③ scipy quad / Integral.evalf", "code": "print(quad(np.sin, 0, np.pi))\nprint(Integral(sin(x), (x, 0, pi)).evalf())", "output": "(2.0, 2.220446049250313e-14)\n2.00000000000000", "error": null}, {"id": "7-11", "topic": 7, "title": "n 에 따른 오차 비교 : ∫₀^π sin x dx = 2", "code": "for m in [2, 4, 8, 16, 32]:\n    print(m, abs(trap(np.sin, 0, np.pi, m) - 2), abs(simp(np.sin, 0, np.pi, m) - 2))", "output": "2 0.42920367320510344 0.09439510239319526\n4 0.1038811020629602 0.0045597549844207386\n8 0.025768398054449193 0.00026916994838765973\n16 0.006429656227660452 1.6591047935499148e-05\n32 0.0016066390298552502 1.0333694127062643e-06", "error": null}, {"id": "7-12", "topic": 7, "title": "오차 그래프 (로그 눈금)", "code": "ms = [2, 4, 8, 16, 32, 64]\nplt.loglog(ms, [abs(trap(np.sin, 0, np.pi, m) - 2) for m in ms], 'o-', label='trapezoid')\nplt.loglog(ms, [abs(simp(np.sin, 0, np.pi, m) - 2) for m in ms], 's-', label='simpson')\nplt.xlabel('n'); plt.ylabel('error'); plt.legend(); plt.show()", "output": "", "error": null}, {"id": "7-13", "topic": 7, "title": "심프슨은 3차함수까지 n=2 로도 정확하다", "code": "f3 = lambda t: t**3 - 2*t + 1\nprint('정확   :', integrate(x**3 - 2*x + 1, (x, 0, 2)))\nprint(trap(f3, 0, 2, 2), simp(f3, 0, 2, 2))", "output": "정확   : 2\n3.0 2.0", "error": null}, {"id": "7-14", "topic": 7, "title": "시각화 ① 직사각형 (오른쪽 끝점)", "code": "X = np.linspace(0, np.pi, 300); xb = np.linspace(0, np.pi, 7)\nplt.plot(X, np.sin(X), 'k')\nplt.bar(xb[1:], np.sin(xb[1:]), width=-np.pi/6, align='edge', alpha=.3, edgecolor='b')\nplt.title('right Riemann sum'); plt.show()", "output": "", "error": null}, {"id": "7-15", "topic": 7, "title": "시각화 ② 사다리꼴", "code": "plt.plot(X, np.sin(X), 'k')\nplt.fill_between(xb, np.sin(xb), alpha=.3, edgecolor='r')\nplt.plot(xb, np.sin(xb), 'ro-'); plt.title('trapezoid'); plt.show()", "output": "", "error": null}, {"id": "7-16", "topic": 7, "title": "정적분 ≠ 넓이 : sin x 를 0 ~ 2π", "code": "print('정적분 :', integrate(sin(x), (x, 0, 2*pi)))\nprint('넓이   :', integrate(Abs(sin(x)), (x, 0, 2*pi)))", "output": "정적분 : 0\n넓이   : 4", "error": null}, {"id": "7-17", "topic": 7, "title": "두 곡선 사이 넓이 : y = x², y = x + 2", "code": "p = solve(x**2 - (x + 2), x)\nprint('교점 :', p)\nprint('넓이 :', integrate((x + 2) - x**2, (x, p[0], p[1])))", "output": "교점 : [-1, 2]\n넓이 : 9/2", "error": null}, {"id": "7-18", "topic": 7, "title": "기호적분 결과가 교육과정 밖 함수일 때 : e^(-x²)", "code": "r = integrate(exp(-x**2), (x, 0, 1))\nprint(r)                     # erf : 고교 과정에 없는 함수\nprint(N(r))", "output": "sqrt(pi)*erf(1)/2\n0.746824132812427", "error": null}, {"id": "7-19", "topic": 7, "title": "(이어서) 같은 값을 수치로", "code": "g = lambda t: np.exp(-t**2)\nprint(trap(g, 0, 1, 10), simp(g, 0, 1, 10), quad(g, 0, 1)[0])", "output": "0.7462107961317495 0.7468249482544436 0.7468241328124271", "error": null}, {"id": "8-0", "topic": 8, "title": "[8] 준비", "code": "from sympy import *\nfrom sympy.calculus.util import continuous_domain\nimport numpy as np\nx = symbols('x')", "output": "", "error": null}, {"id": "8-1", "topic": 8, "title": "연속 판정 함수 (좌극한 = 우극한 = 함숫값)", "code": "def check(f, a):\n    L, R, v = limit(f, x, a, '-'), limit(f, x, a, '+'), f.subs(x, a)\n    print('좌', L, '| 우', R, '| 함숫값', v, '→', L == R == v)", "output": "", "error": null}, {"id": "8-2", "topic": 8, "title": "연속인 경우", "code": "check(x**2 + 1, 1)", "output": "좌 2 | 우 2 | 함숫값 2 → True", "error": null}, {"id": "8-3", "topic": 8, "title": "극한은 있지만 함숫값이 없는 경우", "code": "check((x**2 - 1)/(x - 1), 1)\ncheck(sin(x)/x, 0)", "output": "좌 2 | 우 2 | 함숫값 nan → False\n좌 1 | 우 1 | 함숫값 nan → False", "error": null}, {"id": "8-4", "topic": 8, "title": "좌·우극한이 다른 경우 (가우스 기호)", "code": "check(floor(x), 1)", "output": "좌 0 | 우 1 | 함숫값 1 → False", "error": null}, {"id": "8-5", "topic": 8, "title": "연속 구간 자동 계산 : continuous_domain", "code": "print(continuous_domain(1/(x - 1), x, S.Reals))\nprint(continuous_domain(sqrt(x), x, S.Reals))\nprint(continuous_domain(sin(x)/x, x, S.Reals))", "output": "Union(Interval.open(-oo, 1), Interval.open(1, oo))\nInterval(0, oo)\nUnion(Interval.open(-oo, 0), Interval.open(0, oo))", "error": null}, {"id": "8-6", "topic": 8, "title": "불연속점 찾기 : singularities", "code": "print(singularities(1/(x**2 - 1), x))\nprint(singularities(tan(x), x, Interval(0, 2*pi)))", "output": "{-1, 1}\n{pi/2, 3*pi/2}", "error": null}, {"id": "8-7", "topic": 8, "title": "continuous_domain 의 한계 : floor 는 못 함", "code": "try: continuous_domain(floor(x), x, Interval(0, 3))\nexcept NotImplementedError: print('floor → 판단 불가')", "output": "floor → 판단 불가", "error": null}, {"id": "8-8", "topic": 8, "title": "구간별 함수 (Piecewise)", "code": "f = Piecewise((x**2, x < 1), (x + 2, True))\nprint(f)\nprint(f.subs(x, 0.5), f.subs(x, 1), f.subs(x, 2))", "output": "Piecewise((x**2, x < 1), (x + 2, True))\n0.250000000000000 3 4", "error": null}, {"id": "8-9", "topic": 8, "title": "Piecewise 의 좌극한 : 1 이어야 하는데 3 이 나온다 (오류!)", "code": "print('좌극한  :', limit(f, x, 1, '-'))\nprint('우극한  :', limit(f, x, 1, '+'))\nprint('양쪽    :', limit(f, x, 1, '+-'))", "output": "좌극한  : 3\n우극한  : 3\n양쪽    : 3", "error": null}, {"id": "8-10", "topic": 8, "title": "h 를 이용해 직접 확인하면 바르게 나온다", "code": "h = symbols('h', positive=True)\nprint('좌극한 :', limit(f.subs(x, 1 - h), h, 0))\nprint('우극한 :', limit(f.subs(x, 1 + h), h, 0))", "output": "좌극한 : 1\n우극한 : 3", "error": null}, {"id": "8-11", "topic": 8, "title": "그래프로도 확인", "code": "plot(f, (x, -1, 3), size=(4, 3))", "output": "", "error": null}, {"id": "8-12", "topic": 8, "title": "continuous_domain 도 Piecewise 는 못 함", "code": "try: continuous_domain(f, x, S.Reals)\nexcept NotImplementedError: print('Piecewise → 판단 불가')", "output": "Piecewise → 판단 불가", "error": null}, {"id": "8-13", "topic": 8, "title": "사잇값 정리 ① 부호 확인 : x³ + x - 1 = 0 은 (0, 1) 에 근이 있다", "code": "g = x**3 + x - 1\nprint(g.subs(x, 0), g.subs(x, 1))", "output": "-1 1", "error": null}, {"id": "8-14", "topic": 8, "title": "사잇값 정리 ② nsolve", "code": "nsolve(g, x, 0.5)", "output": "0.682327803828019", "error": null}, {"id": "8-15", "topic": 8, "title": "사잇값 정리 ③ 이분법 직접 구현", "code": "gf = lambdify(x, g); a, b = 0, 1\nfor _ in range(30):\n    m = (a + b) / 2; a, b = (m, b) if gf(a)*gf(m) > 0 else (a, m)\nprint(m)", "output": "0.6823278041556478", "error": null}, {"id": "8-16", "topic": 8, "title": "사잇값 정리 ④ 정확한 근 : solve 는 복소근까지 3개", "code": "print([N(r, 6) for r in solve(g, x)])", "output": "[-0.341164 - 1.16154*I, -0.341164 + 1.16154*I, 0.682328]", "error": null}, {"id": "8-17", "topic": 8, "title": "사잇값 정리 ⑤ 실근만 : solveset(실수) / real_roots", "code": "print(solveset(g, x, S.Reals))\nprint(real_roots(g))", "output": "{-1/(3*(1/2 + sqrt(93)/18)**(1/3)) + (1/2 + sqrt(93)/18)**(1/3)}\n[CRootOf(x**3 + x - 1, 0)]", "error": null}, {"id": "8-18", "topic": 8, "title": "최대·최소 정리 : 닫힌 구간에서 maximum, minimum", "code": "q = x**3 - 3*x\nprint(maximum(q, x, Interval(-2, 3)), minimum(q, x, Interval(-2, 3)))", "output": "18 -2", "error": null}, {"id": "8-19", "topic": 8, "title": "열린 구간 (0,1) 의 1/x : 최솟값이 없는데 1 을 돌려줌 (하한을 줌)", "code": "print(maximum(1/x, x, Interval.open(0, 1)))\nprint(minimum(1/x, x, Interval.open(0, 1)))", "output": "oo\n1", "error": null}, {"id": "9-0", "topic": 9, "title": "[9] 준비", "code": "from sympy import *\nimport numpy as np\nfrom scipy.optimize import minimize_scalar\nx = symbols('x'); f = x**3 - 3*x", "output": "", "error": null}, {"id": "9-1", "topic": 9, "title": "방법 ① f'(x) = 0 을 solve", "code": "cp = solve(diff(f, x), x)\ncp", "output": "[-1, 1]", "error": null}, {"id": "9-2", "topic": 9, "title": "방법 ② stationary_points", "code": "stationary_points(f, x)", "output": "{-1, 1}", "error": null}, {"id": "9-3", "topic": 9, "title": "이계도함수로 극대·극소 판정", "code": "for c in cp:\n    print(c, f.subs(x, c), '극대' if diff(f, x, 2).subs(x, c) < 0 else '극소')", "output": "-1 2 극대\n1 -2 극소", "error": null}, {"id": "9-4", "topic": 9, "title": "증가·감소 판정 : is_increasing / is_decreasing", "code": "print(is_increasing(f, Interval(1, oo)))\nprint(is_decreasing(f, Interval(-1, 1)))", "output": "True\nTrue", "error": null}, {"id": "9-5", "topic": 9, "title": "증가·감소 구간 : solveset 으로 부등식 풀기", "code": "print(solveset(diff(f, x) > 0, x, S.Reals))\nprint(solveset(diff(f, x) < 0, x, S.Reals))", "output": "Union(Interval.open(-oo, -1), Interval.open(1, oo))\nInterval.open(-1, 1)", "error": null}, {"id": "9-6", "topic": 9, "title": "함정 : f'(x) = 0 이라고 극값은 아니다 (x³)", "code": "g = x**3\nprint(stationary_points(g, x))\nprint(diff(g, x, 2).subs(x, 0))     # 0 → 이계도함수로 판정 불가", "output": "{0}\n0", "error": null}, {"id": "9-7", "topic": 9, "title": "(이어서) 부호 변화로 확인", "code": "gp = diff(g, x)\nprint(gp.subs(x, -0.1), gp.subs(x, 0.1))   # 둘 다 양수 → 극값 아님", "output": "0.0300000000000000 0.0300000000000000", "error": null}, {"id": "9-8", "topic": 9, "title": "수치 방법 : scipy minimize_scalar", "code": "fn = lambdify(x, f)\nr = minimize_scalar(fn, bounds=(0, 3), method='bounded')\nprint(r.x, r.fun)", "output": "1.0000007330905558 -1.9999999999983877", "error": null}, {"id": "9-9", "topic": 9, "title": "구간 [-3, 3] : 수치 방법은 극소(x=1)에 머문다", "code": "r = minimize_scalar(fn, bounds=(-3, 3), method='bounded')\nprint('minimize_scalar :', r.x, r.fun)\nprint('minimum         :', minimum(f, x, Interval(-3, 3)))   # 실제 최솟값 (x=-3)", "output": "minimize_scalar : 1.0000012327722716 -1.9999999999954405\nminimum         : -18", "error": null}, {"id": "9-10", "topic": 9, "title": "수치 방법 ② linspace 로 가장 작은 값 찾기 (교재 방식)", "code": "xs = np.linspace(-3, 3, 1201)\nys = fn(xs)\nprint(xs[ys.argmin()], ys.min())", "output": "-3.0 -18.0", "error": null}, {"id": "9-11", "topic": 9, "title": "그래프 : f 와 f' 를 함께", "code": "plot(f, diff(f, x), (x, -2.5, 2.5), ylim=(-5, 5), legend=True, size=(5, 4))", "output": "", "error": null}, {"id": "10-0", "topic": 10, "title": "[10] 준비", "code": "from sympy import *\nimport numpy as np\nA = Matrix([[1, 2], [3, 4]])\nAn = np.array([[1, 2], [3, 4]])", "output": "", "error": null}, {"id": "10-1", "topic": 10, "title": "곱셈 : SymPy 의 * 는 행렬곱", "code": "A * A", "output": "Matrix([[7, 10], [15, 22]])", "error": null}, {"id": "10-2", "topic": 10, "title": "곱셈 : NumPy 의 * 는 성분끼리 곱 (함정!)", "code": "print(An * An)\nprint(An @ An)", "output": "[[ 1  4]\n [ 9 16]]\n[[ 7 10]\n [15 22]]", "error": null}, {"id": "10-3", "topic": 10, "title": "행렬식 ① SymPy : 정확한 정수", "code": "print(A.det(), det(A))\nprint(Determinant(A), '→', Determinant(A).doit())", "output": "-2 -2\nDeterminant(Matrix([\n[1, 2],\n[3, 4]])) → -2", "error": null}, {"id": "10-4", "topic": 10, "title": "행렬식 ② NumPy : 소수 오차", "code": "np.linalg.det(An)", "output": "np.float64(-2.0000000000000004)", "error": null}, {"id": "10-5", "topic": 10, "title": "행렬식 계산 알고리즘 비교 (결과는 같음)", "code": "for m in ['bareiss', 'berkowitz', 'lu']:\n    print(m, A.det(method=m))", "output": "bareiss -2\nberkowitz -2\nlu -2", "error": null}, {"id": "10-6", "topic": 10, "title": "역행렬 ① SymPy 세 가지 표기", "code": "print(A.inv())\nprint(A**-1)\nprint(Inverse(A).doit())", "output": "Matrix([[-2, 1], [3/2, -1/2]])\nMatrix([[-2, 1], [3/2, -1/2]])\nMatrix([[-2, 1], [3/2, -1/2]])", "error": null}, {"id": "10-7", "topic": 10, "title": "역행렬 ② NumPy", "code": "np.linalg.inv(An)", "output": "array([[-2. ,  1. ],\n       [ 1.5, -0.5]])", "error": null}, {"id": "10-8", "topic": 10, "title": "역행렬 알고리즘 비교 : 가우스 / LU / 수반행렬", "code": "for m in ['GE', 'LU', 'ADJ']:\n    print(m, A.inv(method=m))", "output": "GE Matrix([[-2, 1], [3/2, -1/2]])\nLU Matrix([[-2, 1], [3/2, -1/2]])\nADJ Matrix([[-2, 1], [3/2, -1/2]])", "error": null}, {"id": "10-9", "topic": 10, "title": "특이행렬 : SymPy", "code": "B = Matrix([[1, 2], [2, 4]])\ntry: B.inv()\nexcept Exception as e: print('SymPy :', type(e).__name__)", "output": "SymPy : NonInvertibleMatrixError", "error": null}, {"id": "10-10", "topic": 10, "title": "특이행렬 : NumPy", "code": "try: np.linalg.inv(np.array([[1, 2], [2, 4]]))\nexcept Exception as e: print('NumPy :', type(e).__name__)", "output": "NumPy : LinAlgError", "error": null}, {"id": "10-11", "topic": 10, "title": "거의 특이한 행렬 : NumPy 는 오류 없이 거대한 값", "code": "np.linalg.inv(np.array([[1, 2], [2, 4.0000000001]]))", "output": "array([[ 3.99999967e+10, -1.99999983e+10],\n       [-1.99999983e+10,  9.99999917e+09]])", "error": null}, {"id": "10-12", "topic": 10, "title": "(이어서) SymPy 는 정확한 분수로", "code": "Matrix([[1, 2], [2, 4 + Rational(1, 10**10)]]).inv()", "output": "Matrix([[40000000001, -20000000000], [-20000000000, 10000000000]])", "error": null}, {"id": "10-13", "topic": 10, "title": "힐베르트 행렬 (12×12) : NumPy 로 H × H⁻¹", "code": "from scipy.linalg import hilbert\nHn = hilbert(12)\nerr = np.abs(Hn @ np.linalg.inv(Hn) - np.eye(12)).max()\nprint('단위행렬과의 최대 오차 :', err)", "output": "단위행렬과의 최대 오차 : 0.08924405658676608", "error": null}, {"id": "10-14", "topic": 10, "title": "(이어서) SymPy 로 H × H⁻¹", "code": "H = Matrix(12, 12, lambda i, j: Rational(1, i + j + 1))\nH * H.inv() == eye(12)", "output": "True", "error": null}, {"id": "10-15", "topic": 10, "title": "문자가 들어간 행렬", "code": "a = symbols('a')\nM = Matrix([[a, 1], [1, a]])\nprint(factor(M.det()))\nprint(simplify(M.inv()))", "output": "(a - 1)*(a + 1)\nMatrix([[a/(a**2 - 1), -1/(a**2 - 1)], [-1/(a**2 - 1), a/(a**2 - 1)]])", "error": null}, {"id": "10-16", "topic": 10, "title": "(이어서) 역행렬이 없는 a 의 값", "code": "solve(M.det(), a)", "output": "[-1, 1]", "error": null}, {"id": "10-17", "topic": 10, "title": "연립방정식 ① solve / linsolve", "code": "x, y = symbols('x y')\nprint(solve([x + 2*y - 5, 3*x + 4*y - 6], [x, y]))\nprint(linsolve((A, Matrix([5, 6])), [x, y]))", "output": "{x: -4, y: 9/2}\n{(-4, 9/2)}", "error": null}, {"id": "10-18", "topic": 10, "title": "연립방정식 ② 역행렬 / LUsolve / NumPy", "code": "print(A.inv() * Matrix([5, 6]))\nprint(A.LUsolve(Matrix([5, 6])))\nprint(np.linalg.solve(An, [5, 6]))", "output": "Matrix([[-4], [9/2]])\nMatrix([[-4], [9/2]])\n[-4.   4.5]", "error": null}, {"id": "10-19", "topic": 10, "title": "LU 분해 (교재)", "code": "L, U, _ = A.LUdecomposition()\nprint(L); print(U); print(L * U == A)", "output": "Matrix([[1, 0], [3, 1]])\nMatrix([[1, 2], [0, -2]])\nTrue", "error": null}, {"id": "10-20", "topic": 10, "title": "고유값 : SymPy (중복도 포함) vs NumPy", "code": "C = Matrix([[2, 1], [1, 2]])\nprint(C.eigenvals())\nprint(np.linalg.eigvals(np.array([[2, 1], [1, 2]])))", "output": "{3: 1, 1: 1}\n[3.+0.j 1.+0.j]", "error": null}, {"id": "10-21", "topic": 10, "title": "고유값이 무리수일 때", "code": "D = Matrix([[1, 1], [1, 0]])\nprint(D.eigenvals())\nprint(np.linalg.eigvals(np.array([[1, 1], [1, 0]])))", "output": "{1/2 - sqrt(5)/2: 1, 1/2 + sqrt(5)/2: 1}\n[ 1.61803399+0.j -0.61803399+0.j]", "error": null}, {"id": "11-0", "topic": 11, "title": "[11] 준비", "code": "from sympy import *\nimport numpy as np\nx, y = symbols('x y')", "output": "", "error": null}, {"id": "11-1", "topic": 11, "title": "기본값 : 유리수 범위에서만 인수분해", "code": "print(factor(x**2 - 5))\nprint(factor(x**4 - x**2 - 2))", "output": "x**2 - 5\n(x**2 - 2)*(x**2 + 1)", "error": null}, {"id": "11-2", "topic": 11, "title": "extension : 무리수·허수를 범위에 넣기", "code": "print(factor(x**2 - 5, extension=[sqrt(5)]))\nprint(factor(x**2 + 1, extension=[I]))", "output": "(x - sqrt(5))*(x + sqrt(5))\n(x - I)*(x + I)", "error": null}, {"id": "11-3", "topic": 11, "title": "extension 은 넣어 준 수만 쓴다", "code": "print(factor(x**4 - x**2 - 2, extension=sqrt(2)))\nprint(factor(x**4 - x**2 - 2, extension=[sqrt(2), I]))", "output": "(x - sqrt(2))*(x + sqrt(2))*(x**2 + 1)\n(x - sqrt(2))*(x + sqrt(2))*(x - I)*(x + I)", "error": null}, {"id": "11-4", "topic": 11, "title": "gaussian=True : 허수 i 까지만 (루트는 쓰지 않음)", "code": "print(factor(x**4 - 1, gaussian=True))\nprint(factor(x**4 - x**2 - 2, gaussian=True))", "output": "(x - 1)*(x + 1)*(x - I)*(x + I)\n(x - I)*(x + I)*(x**2 - 2)", "error": null}, {"id": "11-5", "topic": 11, "title": "domain : ZZ, QQ, RR, CC", "code": "for d in ['ZZ', 'QQ', 'RR', 'CC']:\n    print(d, factor(x**4 - x**2 - 2, domain=d))", "output": "ZZ (x**2 - 2)*(x**2 + 1)\nQQ (x**2 - 2)*(x**2 + 1)\nRR 2.0*(0.5*x**2 - 1.0)*(1.0*x**2 + 1.0)\nCC 1.0*x**4 - 1.0*x**2 - 2.0", "error": null}, {"id": "11-6", "topic": 11, "title": "실수 범위 인수분해 : 근을 먼저 보고 extension 에 넣기", "code": "print(solve(x**4 - x**2 - 2, x))\nprint(factor(x**4 - x**2 - 2, extension=sqrt(2)))", "output": "[-sqrt(2), sqrt(2), -I, I]\n(x - sqrt(2))*(x + sqrt(2))*(x**2 + 1)", "error": null}, {"id": "11-7", "topic": 11, "title": "modulus : 계수를 소수 p 로 나눈 나머지로", "code": "print(factor(x**2 + 1, modulus=2))\nprint(factor(7*x**2 + 15*x + 8), '|', factor(7*x**2 + 15*x + 8, modulus=7))", "output": "(x + 1)**2\n(x + 1)*(7*x + 8) | x + 1", "error": null}, {"id": "11-8", "topic": 11, "title": "gens : 정한 문자만 변수로, 나머지는 상수 취급", "code": "e = x**2*y**2 - x**2 - y**2 + 1\nprint(factor(e))\nprint(factor(e, gens=[x]))\nprint(factor(e, gens=[y]))", "output": "(x - 1)*(x + 1)*(y - 1)*(y + 1)\n(x - 1)*(x + 1)*(y**2 - 1)\n(x**2 - 1)*(y - 1)*(y + 1)", "error": null}, {"id": "11-9", "topic": 11, "title": "fraction : 분수식에서 분자·분모를 각각 다룰지", "code": "print(factor(x**2/(x*y) + y**2/(x*y)))\nprint(factor(x**2/(x*y) + y**2/(x*y), fraction=False))", "output": "(x**2 + y**2)/(x*y)\nx/y + y/x", "error": null}, {"id": "11-10", "topic": 11, "title": "deep : 함수 안쪽까지 인수분해", "code": "print(factor(sin(x**2 + 2*x + 1)))\nprint(factor(sin(x**2 + 2*x + 1), deep=True))", "output": "sin(x**2 + 2*x + 1)\nsin((x + 1)**2)", "error": null}, {"id": "11-11", "topic": 11, "title": "together 의 deep : 함수·지수 안쪽까지 통분", "code": "print(together(x**(1/y + 1/x)))\nprint(together(x**(1/y + 1/x), deep=True))", "output": "x**(1/y + 1/x)\nx**((x + y)/(x*y))", "error": null}, {"id": "11-12", "topic": 11, "title": "NumPy roots 와 비교 : 근의 근삿값만 준다", "code": "print(np.roots([1, 0, -1, 0, -2]))", "output": "[ 1.41421356+0.j -1.41421356+0.j  0.        +1.j  0.        -1.j]", "error": null}, {"id": "5-21", "topic": 5, "title": "지수방정식 (중간발표·학습 기록) : solve 는 복소수 해까지", "code": "f_x = Eq(3**(2*x) - 6*3**x - 27, 0)\nprint(solve(f_x, x))", "output": "[2, 1 + I*pi/log(3)]", "error": null}, {"id": "5-22", "topic": 5, "title": "실수 해만 : solveset(domain=S.Reals) 또는 real=True 로 다시 정의", "code": "print(solveset(f_x, x, domain=S.Reals))\nxr = symbols('x', real=True)\nprint(solve(f_x, xr))                                  # 식은 예전 x 로 만들어졌다\nprint(solve(Eq(3**(2*xr) - 6*3**xr - 27, 0), xr))      # 식을 새 문자로 다시 만들면 됨", "output": "{2}\n[]\n[2]", "error": null}, {"id": "5-23", "topic": 5, "title": "3^x = t 로 치환 (중간발표 방식)", "code": "import math\nfor t in solve(f_x, 3**x):\n    if float(t) > 0: print(math.log(float(t), 3))", "output": "2.0", "error": null}, {"id": "5-24", "topic": 5, "title": "nsolve + nsimplify : 소수를 정확한 수로 되돌리기", "code": "print(nsolve(f_x, x, 2.5), nsimplify(nsolve(f_x, x, 2.5)))\ng_x = Eq(x**log(x, 10), cbrt(100*x))\nprint(solve(g_x, x))\nprint(nsimplify(nsolve(g_x, x, 8)), nsimplify(nsolve(g_x, x, 0.2)))", "output": "2.00000000000000 2\n[10, 10**(1/3)/10]\n10 10**(1/3)/10", "error": null}, {"id": "5-25", "topic": 5, "title": "nsimplify 는 '깔끔한 수'일 때만 통한다", "code": "r = nsolve(sin(x) - (x - pi/2), x, 2)\nprint(r, '→', nsimplify(r))", "output": "2.30988146001006 → 115494073000503/50000000000000", "error": null}, {"id": "5-26", "topic": 5, "title": "decompogen : 식의 합성 구조 보기 (3^x 에서는 틀린 분해)", "code": "from sympy.solvers.decompogen import compogen\nd = decompogen(3**(2*x) - 6*3**x - 27, x)\nprint(d, '→ 다시 합성하면', compogen(d, x))\nd2 = decompogen(exp(2*x) - exp(x), x)\nprint(d2, '→ 다시 합성하면', compogen(d2, x))", "output": "[x**2 - 6*x - 27, x**x, 3] → 다시 합성하면 540\n[x**2 - x, exp(x)] → 다시 합성하면 exp(2*x) - exp(x)", "error": null}, {"id": "2-14", "topic": 2, "title": "부정적분 : Integral·integrate 모두 적분상수를 생략한다", "code": "c = symbols('c')\nprint(Integral(3*x**2, x).doit(), integrate(3*x**2, x))", "output": "x**3 x**3", "error": null}, {"id": "2-15", "topic": 2, "title": "적분상수를 직접 붙여 조건으로 구하기 (교재 예제 8.3)", "code": "F = integrate(4*x**3 - 2*x + 1, x) + c\nprint(F)\nprint(solve(Eq(F.subs(x, 0), 2), c), '→', F.subs(c, 2))", "output": "c + x**4 - x**2 + x\n[2] → x**4 - x**2 + x + 2", "error": null}];
 const FIGS = {"3-8": ["3_8_1.png"], "3-9": ["3_9_1.png"], "6-13": ["6_13_1.png"], "6-14": ["6_14_1.png"], "6-15": ["6_15_1.png"], "6-16": ["6_16_1.png"], "6-17": ["6_17_1.png"], "6-18": ["6_18_1.png"], "6-19": ["6_19_1.png"], "6-1": ["6_1_1.png"], "6-20": ["6_20_1.png"], "6-2": ["6_2_1.png"], "6-3": ["6_3_1.png"], "6-4": ["6_4_1.png"], "6-5": ["6_5_1.png"], "6-6": ["6_6_1.png"], "6-7": ["6_7_1.png"], "6-8": ["6_8_1.png"], "6-9": ["6_9_1.png"], "7-12": ["7_12_1.png"], "7-14": ["7_14_1.png"], "7-15": ["7_15_1.png"], "8-11": ["8_11_1.png"], "9-11": ["9_11_1.png"]};
+const TEX = {"eq":"<span class=\"katex-display\"><span class=\"katex\"><span class=\"katex-mathml\"><math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><semantics><mrow><msup><mn>3</mn><mrow><mn>2</mn><mi>x</mi></mrow></msup><mo>−</mo><mn>6</mn><mo>⋅</mo><msup><mn>3</mn><mi>x</mi></msup><mo>−</mo><mn>27</mn><mo>=</mo><mn>0</mn></mrow><annotation encoding=\"application/x-tex\">3^{2x}-6\\cdot 3^{x}-27=0</annotation></semantics></math></span><span class=\"katex-html\" aria-hidden=\"true\"><span class=\"base\"><span class=\"strut\" style=\"height:0.9474em;vertical-align:-0.0833em;\"></span><span class=\"mord\"><span class=\"mord\">3</span><span class=\"msupsub\"><span class=\"vlist-t\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.8641em;\"><span style=\"top:-3.113em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\"><span class=\"mord mtight\">2</span><span class=\"mord mathnormal mtight\">x</span></span></span></span></span></span></span></span></span><span class=\"mspace\" style=\"margin-right:0.2222em;\"></span><span class=\"mbin\">−</span><span class=\"mspace\" style=\"margin-right:0.2222em;\"></span></span><span class=\"base\"><span class=\"strut\" style=\"height:0.6444em;\"></span><span class=\"mord\">6</span><span class=\"mspace\" style=\"margin-right:0.2222em;\"></span><span class=\"mbin\">⋅</span><span class=\"mspace\" style=\"margin-right:0.2222em;\"></span></span><span class=\"base\"><span class=\"strut\" style=\"height:0.7977em;vertical-align:-0.0833em;\"></span><span class=\"mord\"><span class=\"mord\">3</span><span class=\"msupsub\"><span class=\"vlist-t\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.7144em;\"><span style=\"top:-3.113em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\"><span class=\"mord mathnormal mtight\">x</span></span></span></span></span></span></span></span></span><span class=\"mspace\" style=\"margin-right:0.2222em;\"></span><span class=\"mbin\">−</span><span class=\"mspace\" style=\"margin-right:0.2222em;\"></span></span><span class=\"base\"><span class=\"strut\" style=\"height:0.6444em;\"></span><span class=\"mord\">27</span><span class=\"mspace\" style=\"margin-right:0.2778em;\"></span><span class=\"mrel\">=</span><span class=\"mspace\" style=\"margin-right:0.2778em;\"></span></span><span class=\"base\"><span class=\"strut\" style=\"height:0.6444em;\"></span><span class=\"mord\">0</span></span></span></span></span>","eq_i":"<span class=\"katex\"><span class=\"katex-mathml\"><math xmlns=\"http://www.w3.org/1998/Math/MathML\"><semantics><mrow><msup><mn>3</mn><mrow><mn>2</mn><mi>x</mi></mrow></msup><mo>−</mo><mn>6</mn><mo>⋅</mo><msup><mn>3</mn><mi>x</mi></msup><mo>−</mo><mn>27</mn><mo>=</mo><mn>0</mn></mrow><annotation encoding=\"application/x-tex\">3^{2x}-6\\cdot 3^{x}-27=0</annotation></semantics></math></span><span class=\"katex-html\" aria-hidden=\"true\"><span class=\"base\"><span class=\"strut\" style=\"height:0.8974em;vertical-align:-0.0833em;\"></span><span class=\"mord\"><span class=\"mord\">3</span><span class=\"msupsub\"><span class=\"vlist-t\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.8141em;\"><span style=\"top:-3.063em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\"><span class=\"mord mtight\">2</span><span class=\"mord mathnormal mtight\">x</span></span></span></span></span></span></span></span></span><span class=\"mspace\" style=\"margin-right:0.2222em;\"></span><span class=\"mbin\">−</span><span class=\"mspace\" style=\"margin-right:0.2222em;\"></span></span><span class=\"base\"><span class=\"strut\" style=\"height:0.6444em;\"></span><span class=\"mord\">6</span><span class=\"mspace\" style=\"margin-right:0.2222em;\"></span><span class=\"mbin\">⋅</span><span class=\"mspace\" style=\"margin-right:0.2222em;\"></span></span><span class=\"base\"><span class=\"strut\" style=\"height:0.7477em;vertical-align:-0.0833em;\"></span><span class=\"mord\"><span class=\"mord\">3</span><span class=\"msupsub\"><span class=\"vlist-t\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.6644em;\"><span style=\"top:-3.063em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\"><span class=\"mord mathnormal mtight\">x</span></span></span></span></span></span></span></span></span><span class=\"mspace\" style=\"margin-right:0.2222em;\"></span><span class=\"mbin\">−</span><span class=\"mspace\" style=\"margin-right:0.2222em;\"></span></span><span class=\"base\"><span class=\"strut\" style=\"height:0.6444em;\"></span><span class=\"mord\">27</span><span class=\"mspace\" style=\"margin-right:0.2778em;\"></span><span class=\"mrel\">=</span><span class=\"mspace\" style=\"margin-right:0.2778em;\"></span></span><span class=\"base\"><span class=\"strut\" style=\"height:0.6444em;\"></span><span class=\"mord\">0</span></span></span></span>","area":"<span class=\"katex-display\"><span class=\"katex\"><span class=\"katex-mathml\"><math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><semantics><mrow><msubsup><mo>∫</mo><mn>0</mn><mi>π</mi></msubsup><mi>sin</mi><mo>⁡</mo><mi>x</mi><mtext> </mtext><mi>d</mi><mi>x</mi></mrow><annotation encoding=\"application/x-tex\">\\int_{0}^{\\pi}\\sin x\\,dx</annotation></semantics></math></span><span class=\"katex-html\" aria-hidden=\"true\"><span class=\"base\"><span class=\"strut\" style=\"height:2.3262em;vertical-align:-0.9119em;\"></span><span class=\"mop\"><span class=\"mop op-symbol large-op\" style=\"margin-right:0.44445em;position:relative;top:-0.0011em;\">∫</span><span class=\"msupsub\"><span class=\"vlist-t vlist-t2\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:1.4143em;\"><span style=\"top:-1.7881em;margin-left:-0.4445em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\"><span class=\"mord mtight\">0</span></span></span></span><span style=\"top:-3.8129em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\"><span class=\"mord mathnormal mtight\" style=\"margin-right:0.03588em;\">π</span></span></span></span></span><span class=\"vlist-s\">​</span></span><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.9119em;\"><span></span></span></span></span></span></span><span class=\"mspace\" style=\"margin-right:0.1667em;\"></span><span class=\"mop\">sin</span><span class=\"mspace\" style=\"margin-right:0.1667em;\"></span><span class=\"mord mathnormal\">x</span><span class=\"mspace\" style=\"margin-right:0.1667em;\"></span><span class=\"mord mathnormal\">d</span><span class=\"mord mathnormal\">x</span></span></span></span></span>","area_i":"<span class=\"katex\"><span class=\"katex-mathml\"><math xmlns=\"http://www.w3.org/1998/Math/MathML\"><semantics><mrow><msubsup><mo>∫</mo><mn>0</mn><mi>π</mi></msubsup><mi>sin</mi><mo>⁡</mo><mi>x</mi><mtext> </mtext><mi>d</mi><mi>x</mi></mrow><annotation encoding=\"application/x-tex\">\\int_{0}^{\\pi}\\sin x\\,dx</annotation></semantics></math></span><span class=\"katex-html\" aria-hidden=\"true\"><span class=\"base\"><span class=\"strut\" style=\"height:1.2151em;vertical-align:-0.3558em;\"></span><span class=\"mop\"><span class=\"mop op-symbol small-op\" style=\"margin-right:0.19445em;position:relative;top:-0.0006em;\">∫</span><span class=\"msupsub\"><span class=\"vlist-t vlist-t2\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.8593em;\"><span style=\"top:-2.3442em;margin-left:-0.1945em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\"><span class=\"mord mtight\">0</span></span></span></span><span style=\"top:-3.2579em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\"><span class=\"mord mathnormal mtight\" style=\"margin-right:0.03588em;\">π</span></span></span></span></span><span class=\"vlist-s\">​</span></span><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.3558em;\"><span></span></span></span></span></span></span><span class=\"mspace\" style=\"margin-right:0.1667em;\"></span><span class=\"mop\">sin</span><span class=\"mspace\" style=\"margin-right:0.1667em;\"></span><span class=\"mord mathnormal\">x</span><span class=\"mspace\" style=\"margin-right:0.1667em;\"></span><span class=\"mord mathnormal\">d</span><span class=\"mord mathnormal\">x</span></span></span></span>","geo":"<span class=\"katex-display\"><span class=\"katex\"><span class=\"katex-mathml\"><math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><semantics><mrow><munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>0</mn></mrow><mi mathvariant=\"normal\">∞</mi></munderover><msup><mrow><mo fence=\"true\">(</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mo fence=\"true\">)</mo></mrow><mi>k</mi></msup></mrow><annotation encoding=\"application/x-tex\">\\sum_{k=0}^{\\infty}\\left(\\frac{1}{2}\\right)^{k}</annotation></semantics></math></span><span class=\"katex-html\" aria-hidden=\"true\"><span class=\"base\"><span class=\"strut\" style=\"height:2.9911em;vertical-align:-1.3021em;\"></span><span class=\"mop op-limits\"><span class=\"vlist-t vlist-t2\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:1.6514em;\"><span style=\"top:-1.8479em;margin-left:0em;\"><span class=\"pstrut\" style=\"height:3.05em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\"><span class=\"mord mathnormal mtight\" style=\"margin-right:0.03148em;\">k</span><span class=\"mrel mtight\">=</span><span class=\"mord mtight\">0</span></span></span></span><span style=\"top:-3.05em;\"><span class=\"pstrut\" style=\"height:3.05em;\"></span><span><span class=\"mop op-symbol large-op\">∑</span></span></span><span style=\"top:-4.3em;margin-left:0em;\"><span class=\"pstrut\" style=\"height:3.05em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\"><span class=\"mord mtight\">∞</span></span></span></span></span><span class=\"vlist-s\">​</span></span><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:1.3021em;\"><span></span></span></span></span></span><span class=\"mspace\" style=\"margin-right:0.1667em;\"></span><span class=\"minner\"><span class=\"minner\"><span class=\"mopen delimcenter\" style=\"top:0em;\"><span class=\"delimsizing size3\">(</span></span><span class=\"mord\"><span class=\"mopen nulldelimiter\"></span><span class=\"mfrac\"><span class=\"vlist-t vlist-t2\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:1.3214em;\"><span style=\"top:-2.314em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord\">2</span></span></span><span style=\"top:-3.23em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"frac-line\" style=\"border-bottom-width:0.04em;\"></span></span><span style=\"top:-3.677em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord\">1</span></span></span></span><span class=\"vlist-s\">​</span></span><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.686em;\"><span></span></span></span></span></span><span class=\"mclose nulldelimiter\"></span></span><span class=\"mclose delimcenter\" style=\"top:0em;\"><span class=\"delimsizing size3\">)</span></span></span><span class=\"msupsub\"><span class=\"vlist-t\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:1.689em;\"><span style=\"top:-3.9029em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\"><span class=\"mord mathnormal mtight\" style=\"margin-right:0.03148em;\">k</span></span></span></span></span></span></span></span></span></span></span></span></span>","geo_i":"<span class=\"katex\"><span class=\"katex-mathml\"><math xmlns=\"http://www.w3.org/1998/Math/MathML\"><semantics><mrow><msubsup><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>0</mn></mrow><mi mathvariant=\"normal\">∞</mi></msubsup><msup><mrow><mo fence=\"true\">(</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mo fence=\"true\">)</mo></mrow><mi>k</mi></msup></mrow><annotation encoding=\"application/x-tex\">\\sum_{k=0}^{\\infty}\\left(\\frac{1}{2}\\right)^{k}</annotation></semantics></math></span><span class=\"katex-html\" aria-hidden=\"true\"><span class=\"base\"><span class=\"strut\" style=\"height:1.439em;vertical-align:-0.35em;\"></span><span class=\"mop\"><span class=\"mop op-symbol small-op\" style=\"position:relative;top:0em;\">∑</span><span class=\"msupsub\"><span class=\"vlist-t vlist-t2\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.8043em;\"><span style=\"top:-2.4003em;margin-left:0em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\"><span class=\"mord mathnormal mtight\" style=\"margin-right:0.03148em;\">k</span><span class=\"mrel mtight\">=</span><span class=\"mord mtight\">0</span></span></span></span><span style=\"top:-3.2029em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\"><span class=\"mord mtight\">∞</span></span></span></span></span><span class=\"vlist-s\">​</span></span><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.2997em;\"><span></span></span></span></span></span></span><span class=\"mspace\" style=\"margin-right:0.1667em;\"></span><span class=\"minner\"><span class=\"minner\"><span class=\"mopen delimcenter\" style=\"top:0em;\"><span class=\"delimsizing size1\">(</span></span><span class=\"mord\"><span class=\"mopen nulldelimiter\"></span><span class=\"mfrac\"><span class=\"vlist-t vlist-t2\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.8451em;\"><span style=\"top:-2.655em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\"><span class=\"mord mtight\">2</span></span></span></span><span style=\"top:-3.23em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"frac-line\" style=\"border-bottom-width:0.04em;\"></span></span><span style=\"top:-3.394em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\"><span class=\"mord mtight\">1</span></span></span></span></span><span class=\"vlist-s\">​</span></span><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.345em;\"><span></span></span></span></span></span><span class=\"mclose nulldelimiter\"></span></span><span class=\"mclose delimcenter\" style=\"top:0em;\"><span class=\"delimsizing size1\">)</span></span></span><span class=\"msupsub\"><span class=\"vlist-t\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:1.089em;\"><span style=\"top:-3.3029em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\"><span class=\"mord mathnormal mtight\" style=\"margin-right:0.03148em;\">k</span></span></span></span></span></span></span></span></span></span></span></span>","fac":"<span class=\"katex-display\"><span class=\"katex\"><span class=\"katex-mathml\"><math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><semantics><mrow><msup><mi>x</mi><mn>4</mn></msup><mo>−</mo><msup><mi>x</mi><mn>2</mn></msup><mo>−</mo><mn>2</mn></mrow><annotation encoding=\"application/x-tex\">x^{4}-x^{2}-2</annotation></semantics></math></span><span class=\"katex-html\" aria-hidden=\"true\"><span class=\"base\"><span class=\"strut\" style=\"height:0.9474em;vertical-align:-0.0833em;\"></span><span class=\"mord\"><span class=\"mord mathnormal\">x</span><span class=\"msupsub\"><span class=\"vlist-t\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.8641em;\"><span style=\"top:-3.113em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\"><span class=\"mord mtight\">4</span></span></span></span></span></span></span></span></span><span class=\"mspace\" style=\"margin-right:0.2222em;\"></span><span class=\"mbin\">−</span><span class=\"mspace\" style=\"margin-right:0.2222em;\"></span></span><span class=\"base\"><span class=\"strut\" style=\"height:0.9474em;vertical-align:-0.0833em;\"></span><span class=\"mord\"><span class=\"mord mathnormal\">x</span><span class=\"msupsub\"><span class=\"vlist-t\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.8641em;\"><span style=\"top:-3.113em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\"><span class=\"mord mtight\">2</span></span></span></span></span></span></span></span></span><span class=\"mspace\" style=\"margin-right:0.2222em;\"></span><span class=\"mbin\">−</span><span class=\"mspace\" style=\"margin-right:0.2222em;\"></span></span><span class=\"base\"><span class=\"strut\" style=\"height:0.6444em;\"></span><span class=\"mord\">2</span></span></span></span></span>","fac_i":"<span class=\"katex\"><span class=\"katex-mathml\"><math xmlns=\"http://www.w3.org/1998/Math/MathML\"><semantics><mrow><msup><mi>x</mi><mn>4</mn></msup><mo>−</mo><msup><mi>x</mi><mn>2</mn></msup><mo>−</mo><mn>2</mn></mrow><annotation encoding=\"application/x-tex\">x^{4}-x^{2}-2</annotation></semantics></math></span><span class=\"katex-html\" aria-hidden=\"true\"><span class=\"base\"><span class=\"strut\" style=\"height:0.8974em;vertical-align:-0.0833em;\"></span><span class=\"mord\"><span class=\"mord mathnormal\">x</span><span class=\"msupsub\"><span class=\"vlist-t\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.8141em;\"><span style=\"top:-3.063em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\"><span class=\"mord mtight\">4</span></span></span></span></span></span></span></span></span><span class=\"mspace\" style=\"margin-right:0.2222em;\"></span><span class=\"mbin\">−</span><span class=\"mspace\" style=\"margin-right:0.2222em;\"></span></span><span class=\"base\"><span class=\"strut\" style=\"height:0.8974em;vertical-align:-0.0833em;\"></span><span class=\"mord\"><span class=\"mord mathnormal\">x</span><span class=\"msupsub\"><span class=\"vlist-t\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.8141em;\"><span style=\"top:-3.063em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\"><span class=\"mord mtight\">2</span></span></span></span></span></span></span></span></span><span class=\"mspace\" style=\"margin-right:0.2222em;\"></span><span class=\"mbin\">−</span><span class=\"mspace\" style=\"margin-right:0.2222em;\"></span></span><span class=\"base\"><span class=\"strut\" style=\"height:0.6444em;\"></span><span class=\"mord\">2</span></span></span></span>","abs":"<span class=\"katex-display\"><span class=\"katex\"><span class=\"katex-mathml\"><math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><semantics><mrow><munder><mrow><mi>lim</mi><mo>⁡</mo></mrow><mrow><mi>x</mi><mo>→</mo><mn>0</mn></mrow></munder><mfrac><mrow><mi mathvariant=\"normal\">∣</mi><mi>x</mi><mi mathvariant=\"normal\">∣</mi></mrow><mi>x</mi></mfrac></mrow><annotation encoding=\"application/x-tex\">\\lim_{x\\to 0}\\frac{|x|}{x}</annotation></semantics></math></span><span class=\"katex-html\" aria-hidden=\"true\"><span class=\"base\"><span class=\"strut\" style=\"height:2.1441em;vertical-align:-0.7171em;\"></span><span class=\"mop op-limits\"><span class=\"vlist-t vlist-t2\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.6944em;\"><span style=\"top:-2.3829em;margin-left:0em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\"><span class=\"mord mathnormal mtight\">x</span><span class=\"mrel mtight\">→</span><span class=\"mord mtight\">0</span></span></span></span><span style=\"top:-3em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span><span class=\"mop\">lim</span></span></span></span><span class=\"vlist-s\">​</span></span><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.7171em;\"><span></span></span></span></span></span><span class=\"mspace\" style=\"margin-right:0.1667em;\"></span><span class=\"mord\"><span class=\"mopen nulldelimiter\"></span><span class=\"mfrac\"><span class=\"vlist-t vlist-t2\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:1.427em;\"><span style=\"top:-2.314em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord mathnormal\">x</span></span></span><span style=\"top:-3.23em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"frac-line\" style=\"border-bottom-width:0.04em;\"></span></span><span style=\"top:-3.677em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord\">∣</span><span class=\"mord mathnormal\">x</span><span class=\"mord\">∣</span></span></span></span><span class=\"vlist-s\">​</span></span><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.686em;\"><span></span></span></span></span></span><span class=\"mclose nulldelimiter\"></span></span></span></span></span></span>","abs_i":"<span class=\"katex\"><span class=\"katex-mathml\"><math xmlns=\"http://www.w3.org/1998/Math/MathML\"><semantics><mrow><msub><mrow><mi>lim</mi><mo>⁡</mo></mrow><mrow><mi>x</mi><mo>→</mo><mn>0</mn></mrow></msub><mfrac><mrow><mi mathvariant=\"normal\">∣</mi><mi>x</mi><mi mathvariant=\"normal\">∣</mi></mrow><mi>x</mi></mfrac></mrow><annotation encoding=\"application/x-tex\">\\lim_{x\\to 0}\\frac{|x|}{x}</annotation></semantics></math></span><span class=\"katex-html\" aria-hidden=\"true\"><span class=\"base\"><span class=\"strut\" style=\"height:1.355em;vertical-align:-0.345em;\"></span><span class=\"mop\"><span class=\"mop\">lim</span><span class=\"msupsub\"><span class=\"vlist-t vlist-t2\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.3011em;\"><span style=\"top:-2.55em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\"><span class=\"mord mathnormal mtight\">x</span><span class=\"mrel mtight\">→</span><span class=\"mord mtight\">0</span></span></span></span></span><span class=\"vlist-s\">​</span></span><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.15em;\"><span></span></span></span></span></span></span><span class=\"mspace\" style=\"margin-right:0.1667em;\"></span><span class=\"mord\"><span class=\"mopen nulldelimiter\"></span><span class=\"mfrac\"><span class=\"vlist-t vlist-t2\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:1.01em;\"><span style=\"top:-2.655em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\"><span class=\"mord mathnormal mtight\">x</span></span></span></span><span style=\"top:-3.23em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"frac-line\" style=\"border-bottom-width:0.04em;\"></span></span><span style=\"top:-3.485em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\"><span class=\"mord mtight\">∣</span><span class=\"mord mathnormal mtight\">x</span><span class=\"mord mtight\">∣</span></span></span></span></span><span class=\"vlist-s\">​</span></span><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.345em;\"><span></span></span></span></span></span><span class=\"mclose nulldelimiter\"></span></span></span></span></span>","min":"<span class=\"katex-display\"><span class=\"katex\"><span class=\"katex-mathml\"><math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><semantics><mrow><mi>f</mi><mo stretchy=\"false\">(</mo><mi>x</mi><mo stretchy=\"false\">)</mo><mo>=</mo><msup><mi>x</mi><mn>3</mn></msup><mo>−</mo><mn>3</mn><mi>x</mi><mspace width=\"1em\"/><mo stretchy=\"false\">(</mo><mo>−</mo><mn>3</mn><mo>≤</mo><mi>x</mi><mo>≤</mo><mn>3</mn><mo stretchy=\"false\">)</mo></mrow><annotation encoding=\"application/x-tex\">f(x)=x^{3}-3x\\quad(-3\\le x\\le 3)</annotation></semantics></math></span><span class=\"katex-html\" aria-hidden=\"true\"><span class=\"base\"><span class=\"strut\" style=\"height:1em;vertical-align:-0.25em;\"></span><span class=\"mord mathnormal\" style=\"margin-right:0.10764em;\">f</span><span class=\"mopen\">(</span><span class=\"mord mathnormal\">x</span><span class=\"mclose\">)</span><span class=\"mspace\" style=\"margin-right:0.2778em;\"></span><span class=\"mrel\">=</span><span class=\"mspace\" style=\"margin-right:0.2778em;\"></span></span><span class=\"base\"><span class=\"strut\" style=\"height:0.9474em;vertical-align:-0.0833em;\"></span><span class=\"mord\"><span class=\"mord mathnormal\">x</span><span class=\"msupsub\"><span class=\"vlist-t\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.8641em;\"><span style=\"top:-3.113em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\"><span class=\"mord mtight\">3</span></span></span></span></span></span></span></span></span><span class=\"mspace\" style=\"margin-right:0.2222em;\"></span><span class=\"mbin\">−</span><span class=\"mspace\" style=\"margin-right:0.2222em;\"></span></span><span class=\"base\"><span class=\"strut\" style=\"height:1em;vertical-align:-0.25em;\"></span><span class=\"mord\">3</span><span class=\"mord mathnormal\">x</span><span class=\"mspace\" style=\"margin-right:1em;\"></span><span class=\"mopen\">(</span><span class=\"mord\">−</span><span class=\"mord\">3</span><span class=\"mspace\" style=\"margin-right:0.2778em;\"></span><span class=\"mrel\">≤</span><span class=\"mspace\" style=\"margin-right:0.2778em;\"></span></span><span class=\"base\"><span class=\"strut\" style=\"height:0.7719em;vertical-align:-0.136em;\"></span><span class=\"mord mathnormal\">x</span><span class=\"mspace\" style=\"margin-right:0.2778em;\"></span><span class=\"mrel\">≤</span><span class=\"mspace\" style=\"margin-right:0.2778em;\"></span></span><span class=\"base\"><span class=\"strut\" style=\"height:1em;vertical-align:-0.25em;\"></span><span class=\"mord\">3</span><span class=\"mclose\">)</span></span></span></span></span>","min_i":"<span class=\"katex\"><span class=\"katex-mathml\"><math xmlns=\"http://www.w3.org/1998/Math/MathML\"><semantics><mrow><mi>f</mi><mo stretchy=\"false\">(</mo><mi>x</mi><mo stretchy=\"false\">)</mo><mo>=</mo><msup><mi>x</mi><mn>3</mn></msup><mo>−</mo><mn>3</mn><mi>x</mi><mspace width=\"1em\"/><mo stretchy=\"false\">(</mo><mo>−</mo><mn>3</mn><mo>≤</mo><mi>x</mi><mo>≤</mo><mn>3</mn><mo stretchy=\"false\">)</mo></mrow><annotation encoding=\"application/x-tex\">f(x)=x^{3}-3x\\quad(-3\\le x\\le 3)</annotation></semantics></math></span><span class=\"katex-html\" aria-hidden=\"true\"><span class=\"base\"><span class=\"strut\" style=\"height:1em;vertical-align:-0.25em;\"></span><span class=\"mord mathnormal\" style=\"margin-right:0.10764em;\">f</span><span class=\"mopen\">(</span><span class=\"mord mathnormal\">x</span><span class=\"mclose\">)</span><span class=\"mspace\" style=\"margin-right:0.2778em;\"></span><span class=\"mrel\">=</span><span class=\"mspace\" style=\"margin-right:0.2778em;\"></span></span><span class=\"base\"><span class=\"strut\" style=\"height:0.8974em;vertical-align:-0.0833em;\"></span><span class=\"mord\"><span class=\"mord mathnormal\">x</span><span class=\"msupsub\"><span class=\"vlist-t\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.8141em;\"><span style=\"top:-3.063em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\"><span class=\"mord mtight\">3</span></span></span></span></span></span></span></span></span><span class=\"mspace\" style=\"margin-right:0.2222em;\"></span><span class=\"mbin\">−</span><span class=\"mspace\" style=\"margin-right:0.2222em;\"></span></span><span class=\"base\"><span class=\"strut\" style=\"height:1em;vertical-align:-0.25em;\"></span><span class=\"mord\">3</span><span class=\"mord mathnormal\">x</span><span class=\"mspace\" style=\"margin-right:1em;\"></span><span class=\"mopen\">(</span><span class=\"mord\">−</span><span class=\"mord\">3</span><span class=\"mspace\" style=\"margin-right:0.2778em;\"></span><span class=\"mrel\">≤</span><span class=\"mspace\" style=\"margin-right:0.2778em;\"></span></span><span class=\"base\"><span class=\"strut\" style=\"height:0.7719em;vertical-align:-0.136em;\"></span><span class=\"mord mathnormal\">x</span><span class=\"mspace\" style=\"margin-right:0.2778em;\"></span><span class=\"mrel\">≤</span><span class=\"mspace\" style=\"margin-right:0.2778em;\"></span></span><span class=\"base\"><span class=\"strut\" style=\"height:1em;vertical-align:-0.25em;\"></span><span class=\"mord\">3</span><span class=\"mclose\">)</span></span></span></span>","e":"<span class=\"katex-display\"><span class=\"katex\"><span class=\"katex-mathml\"><math xmlns=\"http://www.w3.org/1998/Math/MathML\" display=\"block\"><semantics><mrow><munder><mrow><mi>lim</mi><mo>⁡</mo></mrow><mrow><mi>n</mi><mo>→</mo><mi mathvariant=\"normal\">∞</mi></mrow></munder><msup><mrow><mo fence=\"true\">(</mo><mn>1</mn><mo>+</mo><mfrac><mn>1</mn><mi>n</mi></mfrac><mo fence=\"true\">)</mo></mrow><mi>n</mi></msup></mrow><annotation encoding=\"application/x-tex\">\\lim_{n\\to\\infty}\\left(1+\\frac{1}{n}\\right)^{n}</annotation></semantics></math></span><span class=\"katex-html\" aria-hidden=\"true\"><span class=\"base\"><span class=\"strut\" style=\"height:2.4543em;vertical-align:-0.95em;\"></span><span class=\"mop op-limits\"><span class=\"vlist-t vlist-t2\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.6944em;\"><span style=\"top:-2.4em;margin-left:0em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\"><span class=\"mord mathnormal mtight\">n</span><span class=\"mrel mtight\">→</span><span class=\"mord mtight\">∞</span></span></span></span><span style=\"top:-3em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span><span class=\"mop\">lim</span></span></span></span><span class=\"vlist-s\">​</span></span><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.7em;\"><span></span></span></span></span></span><span class=\"mspace\" style=\"margin-right:0.1667em;\"></span><span class=\"minner\"><span class=\"minner\"><span class=\"mopen delimcenter\" style=\"top:0em;\"><span class=\"delimsizing size3\">(</span></span><span class=\"mord\">1</span><span class=\"mspace\" style=\"margin-right:0.2222em;\"></span><span class=\"mbin\">+</span><span class=\"mspace\" style=\"margin-right:0.2222em;\"></span><span class=\"mord\"><span class=\"mopen nulldelimiter\"></span><span class=\"mfrac\"><span class=\"vlist-t vlist-t2\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:1.3214em;\"><span style=\"top:-2.314em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord mathnormal\">n</span></span></span><span style=\"top:-3.23em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"frac-line\" style=\"border-bottom-width:0.04em;\"></span></span><span style=\"top:-3.677em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"mord\"><span class=\"mord\">1</span></span></span></span><span class=\"vlist-s\">​</span></span><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.686em;\"><span></span></span></span></span></span><span class=\"mclose nulldelimiter\"></span></span><span class=\"mclose delimcenter\" style=\"top:0em;\"><span class=\"delimsizing size3\">)</span></span></span><span class=\"msupsub\"><span class=\"vlist-t\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:1.5043em;\"><span style=\"top:-3.9029em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\"><span class=\"mord mathnormal mtight\">n</span></span></span></span></span></span></span></span></span></span></span></span></span>","e_i":"<span class=\"katex\"><span class=\"katex-mathml\"><math xmlns=\"http://www.w3.org/1998/Math/MathML\"><semantics><mrow><msub><mrow><mi>lim</mi><mo>⁡</mo></mrow><mrow><mi>n</mi><mo>→</mo><mi mathvariant=\"normal\">∞</mi></mrow></msub><msup><mrow><mo fence=\"true\">(</mo><mn>1</mn><mo>+</mo><mfrac><mn>1</mn><mi>n</mi></mfrac><mo fence=\"true\">)</mo></mrow><mi>n</mi></msup></mrow><annotation encoding=\"application/x-tex\">\\lim_{n\\to\\infty}\\left(1+\\frac{1}{n}\\right)^{n}</annotation></semantics></math></span><span class=\"katex-html\" aria-hidden=\"true\"><span class=\"base\"><span class=\"strut\" style=\"height:1.2543em;vertical-align:-0.35em;\"></span><span class=\"mop\"><span class=\"mop\">lim</span><span class=\"msupsub\"><span class=\"vlist-t vlist-t2\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.1514em;\"><span style=\"top:-2.55em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\"><span class=\"mord mathnormal mtight\">n</span><span class=\"mrel mtight\">→</span><span class=\"mord mtight\">∞</span></span></span></span></span><span class=\"vlist-s\">​</span></span><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.15em;\"><span></span></span></span></span></span></span><span class=\"mspace\" style=\"margin-right:0.1667em;\"></span><span class=\"minner\"><span class=\"minner\"><span class=\"mopen delimcenter\" style=\"top:0em;\"><span class=\"delimsizing size1\">(</span></span><span class=\"mord\">1</span><span class=\"mspace\" style=\"margin-right:0.2222em;\"></span><span class=\"mbin\">+</span><span class=\"mspace\" style=\"margin-right:0.2222em;\"></span><span class=\"mord\"><span class=\"mopen nulldelimiter\"></span><span class=\"mfrac\"><span class=\"vlist-t vlist-t2\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.8451em;\"><span style=\"top:-2.655em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\"><span class=\"mord mathnormal mtight\">n</span></span></span></span><span style=\"top:-3.23em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"frac-line\" style=\"border-bottom-width:0.04em;\"></span></span><span style=\"top:-3.394em;\"><span class=\"pstrut\" style=\"height:3em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\"><span class=\"mord mtight\">1</span></span></span></span></span><span class=\"vlist-s\">​</span></span><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.345em;\"><span></span></span></span></span></span><span class=\"mclose nulldelimiter\"></span></span><span class=\"mclose delimcenter\" style=\"top:0em;\"><span class=\"delimsizing size1\">)</span></span></span><span class=\"msupsub\"><span class=\"vlist-t\"><span class=\"vlist-r\"><span class=\"vlist\" style=\"height:0.9043em;\"><span style=\"top:-3.3029em;margin-right:0.05em;\"><span class=\"pstrut\" style=\"height:2.7em;\"></span><span class=\"sizing reset-size6 size3 mtight\"><span class=\"mord mtight\"><span class=\"mord mathnormal mtight\">n</span></span></span></span></span></span></span></span></span></span></span></span>"};
 </script>
+<script src="config.js"></script>
 <script>
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-const pad2 = n => String(n).padStart(2, "0");
 const CELL = Object.fromEntries(CELLS.map(c => [c.id, c]));
 ["3-10", "3-11", "3-12", "3-13"].forEach(id => { if (CELL[id]) { CELL[id].error = null; CELL[id].output = id === "3-13" ? "(코랩에서 실행하면 애니메이션이 재생됩니다)" : ""; } });
-const store = { get(k, d) { try { return localStorage.getItem(k) ?? d; } catch (e) { return d; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} } };
+const store = { get(k, d) { try { return localStorage.getItem(k) ?? d; } catch (e) { return d; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }, del(k) { try { localStorage.removeItem(k); } catch (e) {} } };
+const AI_URL = (window.PYMATH && window.PYMATH.aiUrl) || "";
+
+/* ---------- 군더더기 글귀 정리 ---------- */
+const clean = s => String(s || "").replace(/\s*\((?:교재|교과서)[^)]*\)/g, "").replace(/\s*\(\s*\d+-\d+[^)]*\)/g, "").replace(/(?:^|\s)\d+-\d+(?:에서|의|과|와)\s+/g, " ").replace(/^[^:：]*[:：]\s*(?=\S)/, m => /①|②|③|④|⑤/.test(m) ? m : "").trim();
+const ctitle = c => clean(c.title).replace(/\s+/g, " ");
 
 /* ---------- 데이터 정리 ---------- */
 const COURSES = ["공통수학1", "공통수학2", "대수", "미적분Ⅰ", "미적분Ⅱ"];
 const LIBS = { sympy: "SymPy", numpy: "NumPy", scipy: "SciPy", python: "Pure Python", matplotlib: "Matplotlib" };
-TOPICS.forEach(t => { t.courses = COURSES.filter(c => t.units.some(u => u.startsWith(c))); });
+TOPICS.forEach(t => { t.courses = COURSES.filter(c => t.units.some(u => u.startsWith(c))); t.compare.forEach(r => { r[0] = clean(r[0]); }); });
 const FN = Object.fromEntries(FUNCS.map(f => [f.k, f]));
 const reEsc = s => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 FUNCS.forEach(f => {
   f.re = new RegExp(f.pat || `(?<![\\w.])${reEsc(f.k)}\\(`);
-  f.sub = SHORT[f.k][0]; f.cmp = SHORT[f.k][1];
+  f.sub = ONE[f.k] || SHORT[f.k][0]; f.cmp = SHORT[f.k][1];
   f.cells = CELLS.filter(c => !/-0b?$/.test(c.id) && f.re.test(c.code)).map(c => c.id);
   f.topics = [...new Set(f.cells.map(id => CELL[id].topic))].sort((a, b) => a - b);
   f.courses = COURSES.filter(c => f.topics.some(n => TOPICS[n - 1].courses.includes(c)));
   f.guides = GUIDE.map((g, i) => g.tools.includes(f.k) ? i : -1).filter(i => i >= 0);
+  f.know = (KNOW[f.k] || []).map(k => P_[k]).filter(Boolean);
+  if (!f.know.length && f.warn) f.know = [{ t: "", d: f.warn }];
 });
 const usedIn = code => FUNCS.filter(f => f.re.test(code));
 const fhref = k => "#f/" + encodeURIComponent(k);
@@ -905,130 +1073,200 @@ function hl(code) {
   return out + esc(code.slice(last));
 }
 const lines = code => hl(code).split("\n").map(l => `<span class="l">${l || " "}</span>`).join("");
-function codeBox({ code, out, err, figs, label, cls, copyId, run, cellId }) {
-  return `<div class="codebox"><div class="bar"><span class="lbl ${cls || ""}">${esc(label || "python")}</span><span>${run && copyId ? `<button type="button" class="runb" data-edit="${esc(copyId)}" ${cellId ? `data-cell="${esc(cellId)}"` : ""}>고쳐서 실행</button> ` : ""}${copyId !== undefined ? `<button type="button" data-copy="${esc(copyId)}">복사</button>` : ""}</span></div>
+const COPY = {};
+let copySeq = 0;
+function codeBox({ code, out, err, figs, label, copyId, run = true, cellId }) {
+  const id = copyId || "k" + (++copySeq); COPY[id] = code;
+  return `<div class="codebox"><div class="bar"><span class="lbl">${esc(label || "python")}</span><span>${run ? `<button type="button" class="runb" data-edit="${esc(id)}" ${cellId ? `data-cell="${esc(cellId)}"` : ""}>고쳐서 실행</button> ` : ""}<button type="button" data-copy="${esc(id)}">복사</button></span></div>
     <pre class="code">${lines(code)}</pre>
     ${out ? `<pre class="out${err ? " err" : ""}">${esc(out)}</pre>` : ""}
     ${figs ? `<div class="figs">${figs}</div>` : ""}</div>`;
 }
-const COPY = {};
-function cellBox(id, exceptK) {
+function cellOut(c) { return c.error ? `${c.output ? c.output + "\n" : ""}${c.error}` : c.output; }
+function cellFigs(id) { const c = CELL[id]; return (FIGS[id] || []).map(f => `<img src="fig/${f}" alt="${esc(ctitle(c))} 그래프" loading="lazy">`).join(""); }
+function cellBox(id, exceptK, withAlso = true) {
   const c = CELL[id]; if (!c) return "";
-  const out = c.error ? `${c.output ? c.output + "\n" : ""}${c.error} 발생` : c.output;
-  const figs = (FIGS[id] || []).map(f => `<img src="fig/${f}" alt="${esc(c.title)} 그래프" loading="lazy">`).join("");
-  COPY["c" + id] = c.code;
   const prep = [CELL[c.topic + "-0"], CELL[c.topic + "-0b"]].filter(Boolean).map(p => p.code).join("\n");
   const also = usedIn(c.code).filter(f => f.k !== exceptK && !["for", "sum", "float", "symbols"].includes(f.k));
-  return `<div id="c${id}">${codeBox({ code: c.code, out, err: !!c.error, figs, label: `예제 ${id} · ${c.title} · 실행 확인됨 (SymPy 1.14)`, cls: "ok", copyId: "c" + id, run: true, cellId: id })}
-    ${prep ? `<details class="prep"><summary>먼저 실행할 준비 코드</summary>${codeBox({ code: prep, label: "준비 코드" })}</details>` : ""}
-    ${alsoBox(also)}</div>`;
+  return `<div>${codeBox({ code: c.code, out: cellOut(c), err: !!c.error, figs: cellFigs(id), label: ctitle(c), copyId: "c" + id, cellId: id })}
+    ${prep ? `<details class="prep"><summary>준비 코드 보기</summary>${codeBox({ code: prep, label: "준비 코드", run: false })}</details>` : ""}
+    ${withAlso ? alsoBox(also) : ""}</div>`;
 }
 function alsoBox(list) {
   if (!list.length) return "";
   return `<div class="also"><b>이 함수도 쓰였어요!</b>${list.slice(0, 6).map(f => `<a href="${fhref(f.k)}"><code>${esc(f.n)}</code><span class="muted">${esc(f.sub)}</span></a>`).join("")}</div>`;
 }
 
-/* ---------- 검색 ---------- */
-function words(q) { return q.toLowerCase().replace(/[?.!,]/g, " ").split(/\s+/).filter(w => w.length >= 1); }
+/* ---------- 오타를 고쳐 주는 검색 ---------- */
+const CHO = "ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ", JUNG = "ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣ", JONG = " ㄱㄲㄳㄴㄵㄶㄷㄹㄺㄻㄼㄽㄾㄿㅀㅁㅂㅄㅅㅆㅇㅈㅊㅋㅌㅍㅎ";
+function jamo(s) { let o = ""; for (const ch of s.toLowerCase()) { const c = ch.charCodeAt(0) - 0xac00; if (c >= 0 && c < 11172) { o += CHO[Math.floor(c / 588)] + JUNG[Math.floor(c % 588 / 28)] + (c % 28 ? JONG[c % 28] : ""); } else o += ch; } return o; }
+function lev(a, b) { const m = a.length, n = b.length; if (!m) return n; if (!n) return m; let p = [...Array(n + 1).keys()]; for (let i = 1; i <= m; i++) { const q = [i]; for (let j = 1; j <= n; j++) q[j] = Math.min(p[j] + 1, q[j - 1] + 1, p[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1)); p = q; } return p[n]; }
+const VOCAB = [...new Set([...VOCAB_EXTRA, ...GUIDE.flatMap(g => g.kw), ...FUNCS.map(f => f.k), ...TOPICS.flatMap(t => t.title.split(/[\s·:,]+/))].map(w => w.trim()).filter(w => w.length >= 2 && !/^[()]/.test(w)))];
+const VJ = VOCAB.map(w => [w, jamo(w)]);
+const tol = j => j.length <= 3 ? 0 : j.length <= 9 ? 1 : 2;
+function fixWord(w) {
+  if (w.length < 2) return w; const lw = w.toLowerCase(), j = jamo(w);
+  if (VOCAB.some(v => v.toLowerCase().includes(lw))) return w;
+  let best = null, bd = 99; VJ.forEach(([v, vj]) => { const d = Math.min(lev(j, vj), vj.length > j.length ? lev(j, vj.slice(0, j.length)) + 1 : 99); if (d < bd) { bd = d; best = v; } });
+  return bd <= tol(j) ? best : w;
+}
+function fixQuery(q) { const parts = q.split(/(\s+)/); let changed = false; const out = parts.map(p => { if (/^\s*$/.test(p)) return p; const f = fixWord(p.replace(/[?.!,]/g, "")); if (f !== p.replace(/[?.!,]/g, "")) { changed = true; return f; } return p; }).join(""); return { q: out, changed }; }
+function suggest(q, n = 6) {
+  const w = q.trim(); if (!w) return [];
+  const j = jamo(w), lw = w.toLowerCase();
+  return VJ.map(([v, vj]) => { const lv = v.toLowerCase(); let s = lv === lw ? -1 : lv.startsWith(lw) || vj.startsWith(j) ? 0 : lv.includes(lw) ? 1 : 9;
+    if (s === 9) { const d = Math.min(lev(j, vj), lev(j, vj.slice(0, j.length)) + 1); if (d <= Math.max(1, tol(j))) s = 2 + d; }
+    return [s, v]; }).filter(x => x[0] >= 0 && x[0] < 9).sort((a, b) => a[0] - b[0] || a[1].length - b[1].length).slice(0, n).map(x => x[1]);
+}
+function attachSuggest(input, onPick) {
+  const wrap = input.closest(".sugwrap"); if (!wrap) return;
+  const ul = document.createElement("ul"); ul.className = "sug"; ul.hidden = true; ul.setAttribute("role", "listbox"); wrap.append(ul);
+  input.setAttribute("role", "combobox"); input.setAttribute("aria-autocomplete", "list"); input.setAttribute("aria-expanded", "false");
+  let items = [], sel = -1;
+  const lastWord = () => { const m = input.value.match(/(\S*)$/); return m ? m[1] : ""; };
+  const close = () => { ul.hidden = true; input.setAttribute("aria-expanded", "false"); sel = -1; };
+  const draw = () => { ul.innerHTML = items.map((v, i) => `<li role="option" data-i="${i}" aria-selected="${i === sel}">${esc(v)}${FN[v] ? `<span>${esc(FN[v].sub)}</span>` : ""}</li>`).join(""); ul.hidden = !items.length; input.setAttribute("aria-expanded", String(!!items.length)); };
+  const pick = v => { input.value = input.value.replace(/(\S*)$/, v); close(); onPick(); };
+  input.addEventListener("input", () => { items = suggest(lastWord()); sel = -1; draw(); });
+  input.addEventListener("keydown", e => {
+    if (ul.hidden) return;
+    if (e.key === "ArrowDown") { sel = (sel + 1) % items.length; draw(); e.preventDefault(); }
+    else if (e.key === "ArrowUp") { sel = (sel - 1 + items.length) % items.length; draw(); e.preventDefault(); }
+    else if (e.key === "Enter" && sel >= 0) { pick(items[sel]); e.preventDefault(); }
+    else if (e.key === "Escape") close();
+  });
+  ul.addEventListener("mousedown", e => { const li = e.target.closest("li"); if (li) { e.preventDefault(); pick(items[+li.dataset.i]); } });
+  input.addEventListener("blur", () => setTimeout(close, 120));
+}
+function words(q) { return q.toLowerCase().replace(/[?.!,]/g, " ").split(/\s+/).filter(Boolean); }
 function scoreText(q, text, kws) {
   const t = text.toLowerCase(), ql = q.toLowerCase(); let s = 0;
   words(q).forEach(w => { if (w.length >= 2 || /[a-z]/.test(w)) { if (t.includes(w)) s += 2; else if (w.length >= 3 && t.includes(w.slice(0, -1))) s += 1; } });
   (kws || []).forEach(k => { if (ql.includes(k.toLowerCase())) s += 3; });
   return s;
 }
-function searchAll(q) {
-  if (!q.trim()) return null;
+function searchAll(q0) {
+  if (!q0.trim()) return null;
+  const { q, changed } = fixQuery(q0);
   const g = GUIDE.map((r, i) => [scoreText(q, r.s + " " + r.tools.join(" ") + " " + r.note, r.kw), i]).filter(x => x[0] > 0).sort((a, b) => b[0] - a[0]).slice(0, 4).map(x => x[1]);
   const t = TOPICS.map(t => [scoreText(q, [t.title, t.ask, ...t.when].join(" ")), t]).filter(x => x[0] > 1).sort((a, b) => b[0] - a[0]).slice(0, 3).map(x => x[1]);
   const f = FUNCS.map(f => [scoreText(q, [f.k, f.n, f.sub].join(" ")) + (q.toLowerCase().includes(f.k.toLowerCase()) && f.k.length > 2 ? 4 : 0), f]).filter(x => x[0] > 1).sort((a, b) => b[0] - a[0]).slice(0, 6).map(x => x[1]);
-  return { g, t, f };
+  return { g, t, f, fixed: changed ? q : null };
 }
-const guideCard = i => { const r = GUIDE[i]; return `<div class="rcard"><span class="s">${esc(r.s)}</span><div class="tags">${r.tools.map(k => fchip(k)).join("")}</div><span class="n">${esc(r.note)}</span><a class="t" href="#${TOPICS[r.t - 1].slug}">주제 ${pad2(r.t)} · ${esc(TOPICS[r.t - 1].title)} →</a></div>`; };
+const fixHTML = r => r && r.fixed ? `<p class="fixnote"><b>${esc(r.fixed)}</b>(으)로 찾았어요</p>` : "";
+const guideCard = i => { const r = GUIDE[i]; return `<div class="rcard"><span class="s">${esc(r.s)}</span><div class="tags">${r.tools.map(k => fchip(k)).join("")}</div><span class="n">${esc(r.note)}</span><a class="t" href="#${TOPICS[r.t - 1].slug}">${esc(TOPICS[r.t - 1].title)} →</a></div>`; };
 function resultsHTML(r) {
   if (!r) return "";
   if (!r.g.length && !r.t.length && !r.f.length) return `<p class="muted" style="text-align:center">맞는 항목이 없습니다. 짧은 낱말(예: 인수분해, 극한, 넓이)로 찾아 보세요.</p>`;
-  return (r.g.length ? `<div class="rgroup"><h3>문제 상황 → 쓸 도구</h3><div class="results">${r.g.map(guideCard).join("")}</div></div>` : "") +
+  return fixHTML(r) + (r.g.length ? `<div class="rgroup"><h3>문제 상황 → 쓸 도구</h3><div class="results">${r.g.map(guideCard).join("")}</div></div>` : "") +
     (r.t.length ? `<div class="rgroup"><h3>주제</h3><div class="results">${r.t.map(t => `<a class="rcard" style="text-decoration:none;color:inherit" href="#${t.slug}"><span class="s">${esc(t.title)}</span><span class="n">${esc(t.ask)}</span></a>`).join("")}</div></div>` : "") +
     (r.f.length ? `<div class="rgroup"><h3>함수</h3><div class="tags">${r.f.map(f => fchip(f.k)).join("")}</div></div>` : "");
 }
 
 /* ---------- 브라우저에서 파이썬 실행 (Pyodide + SymPy 1.14, 웹 워커) ---------- */
 const PY = {
-  w: null, ready: null, seq: 0, wait: {},
+  w: null, ready: null, seq: 0, wait: {}, ver: "",
   start() {
     if (this.w) return this.ready;
     this.w = new Worker("py/worker.js");
-    this.w.onmessage = e => { const m = e.data; if (m.type === "ready") { this._ok && this._ok(m); return; } if (m.type === "progress") { document.dispatchEvent(new CustomEvent("py-progress", { detail: m.text })); return; } const cb = this.wait[m.id]; if (cb) { delete this.wait[m.id]; cb(m); } };
+    this.w.onmessage = e => { const m = e.data; if (m.type === "ready") { this.ver = m.ver || ""; this._ok && this._ok(m); updPyStatus(); return; } if (m.type === "progress") { document.dispatchEvent(new CustomEvent("py-progress", { detail: m.text })); return; } const cb = this.wait[m.id]; if (cb) { delete this.wait[m.id]; cb(m); } };
     this.w.onerror = () => { this.kill("파이썬을 불러오지 못했습니다. 인터넷 연결을 확인해 주세요."); };
     this.ready = new Promise((ok, no) => { this._ok = ok; this._no = no; });
+    updPyStatus();
     return this.ready;
   },
-  kill(msg) { if (this.w) this.w.terminate(); this.w = null; if (this._no) this._no(new Error(msg)); Object.values(this.wait).forEach(cb => cb({ err: msg })); this.wait = {}; this.ready = null; },
-  async run(code, pre, ms = 30000) {
-    const first = !this.w; await this.start();
+  kill(msg) { if (this.w) this.w.terminate(); this.w = null; if (this._no) this._no(new Error(msg)); Object.values(this.wait).forEach(cb => cb({ err: msg, fail: msg })); this.wait = {}; this.ready = null; updPyStatus(); },
+  async send(msg, ms) {
+    const first = !this.w; this.start();
     const id = ++this.seq;
     return new Promise(res => {
-      const t = setTimeout(() => { this.kill("계산이 너무 오래 걸려 멈췄습니다. 범위나 반복 횟수를 줄여 보세요."); }, first ? ms * 3 : ms);
+      const t = setTimeout(() => { this.kill("계산이 너무 오래 걸려 멈췄습니다. 범위나 반복 횟수를 줄여 보세요."); }, first ? ms * 4 : ms);
       this.wait[id] = m => { clearTimeout(t); res(m); };
-      this.w.postMessage({ id, code, pre: pre || [] });
+      this.w.postMessage({ id, ...msg });
     });
-  }
+  },
+  run(code, pre, ms = 30000) { return this.send({ code, pre: pre || [] }, ms); },
+  gen(fn, text) { return this.send({ gen: { fn, text } }, 20000); }
 };
+function updPyStatus() { const s = $("#setPy"); if (s) s.textContent = PY.ver ? `파이썬 준비됨 · SymPy ${PY.ver}` : PY.w ? "파이썬을 불러오는 중…" : ""; }
 function prepFor(code, cellId) {
   if (cellId) { const c = CELL[cellId]; const same = CELLS.filter(x => x.topic === c.topic && x.id !== cellId && cmpId(x.id, cellId) < 0 && !/plt\.|plot|Animation|show\(/.test(x.code)); return same.map(x => x.code); }
-  const p = ["from sympy import *\nx, y, z, t, a, b, k, n, r = symbols('x y z t a b k n r')\nA = Matrix([[1, 2], [3, 4]])\nf_x = Eq(3**(2*x) - 6*3**x - 27, 0)"];
-  if (/np\.|xs\b|simpson|quad|minimize_scalar|hilbert|lambdify/.test(code)) p.push("import numpy as np\nxs = np.linspace(0, np.pi, 5)\nf_np = lambdify(x, x**3 - 3*x, 'numpy')");
+  const p = ["from sympy import *\nx, y, z, t, a, b, k, n, r, c, h = symbols('x y z t a b k n r c h')\nA = Matrix([[1, 2], [3, 4]])\nf_x = Eq(3**(2*x) - 6*3**x - 27, 0)"];
+  if (/np\.|xs\b|simpson|quad|minimize_scalar|hilbert|lambdify/.test(code)) p.push("import numpy as np\nxs = np.linspace(0, np.pi, 5)\nAn = np.array([[1, 2], [3, 4]])\nf_np = lambdify(x, x**3 - 3*x, 'numpy')");
   if (/simpson|quad/.test(code)) p.push("from scipy.integrate import simpson, quad");
   if (/minimize_scalar/.test(code)) p.push("from scipy.optimize import minimize_scalar");
   if (/plt\./.test(code)) p.push("import matplotlib.pyplot as plt");
   return p;
 }
 function cmpId(a, b) { const s = v => v.split("-").map(z => parseInt(z, 10) || 0); const [x1, y1] = s(a), [x2, y2] = s(b); return x1 - x2 || y1 - y2; }
+function liveHTML(m) {
+  const imgs = (m.imgs || []).map(b => `<img src="data:image/png;base64,${b}" alt="실행 결과 그래프">`).join("");
+  return `<pre class="out${m.err ? " err" : ""}">${esc((m.out || "") + (m.err ? (m.out ? "\n" : "") + m.err : "") || "(출력 없음)")}</pre>${imgs ? `<div class="figs">${imgs}</div>` : ""}`;
+}
+async function runInto(box, code, cellId) {
+  let out = $(".live", box); if (!out) { out = document.createElement("div"); out.className = "live"; box.append(out); }
+  out.innerHTML = `<pre class="out">${PY.ver ? "실행 중…" : "파이썬을 불러오는 중… (처음 한 번만 10~30초)"}</pre>`;
+  const onProg = ev => { const p = $("pre", out); if (p) p.textContent = ev.detail; }; document.addEventListener("py-progress", onProg);
+  const m = await PY.run(code, prepFor(code, cellId));
+  document.removeEventListener("py-progress", onProg);
+  out.innerHTML = liveHTML(m);
+  return m;
+}
 document.addEventListener("click", async e => {
   const ed = e.target.closest("[data-edit]");
   if (ed) { const box = ed.closest(".codebox"); const pre = $("pre.code", box); if (!pre) return;
     const ta = document.createElement("textarea"); ta.className = "edit"; ta.spellcheck = false; ta.value = COPY[ed.dataset.edit] || ""; ta.rows = Math.min(14, ta.value.split("\n").length + 1); ta.setAttribute("aria-label", "코드 고치기");
-    pre.replaceWith(ta); ed.textContent = "실행 ▶"; ed.dataset.run = ed.dataset.edit; delete ed.dataset.edit; ed.classList.add("go"); ta.focus(); return; }
+    pre.replaceWith(ta); $$("pre.out, .figs", box).forEach(x => { if (!x.closest(".live")) x.remove(); });
+    ed.textContent = "실행 ▶"; ed.dataset.run = ed.dataset.edit; delete ed.dataset.edit; ed.classList.add("go"); ta.focus(); return; }
   const rn = e.target.closest("[data-run]");
   if (rn) { const box = rn.closest(".codebox"), ta = $("textarea.edit", box); if (!ta) return;
-    let out = $(".live", box); if (!out) { out = document.createElement("div"); out.className = "live"; box.append(out); }
-    rn.disabled = true; out.innerHTML = `<pre class="out">${PY.w ? "실행 중…" : "파이썬을 처음 불러오는 중… (처음 한 번만 10~30초)"}</pre>`;
-    const onProg = ev => { const p = $("pre", out); if (p) p.textContent = ev.detail; }; document.addEventListener("py-progress", onProg);
-    const m = await PY.run(ta.value, prepFor(ta.value, rn.dataset.cell));
-    document.removeEventListener("py-progress", onProg); rn.disabled = false;
-    const imgs = (m.imgs || []).map(b => `<img src="data:image/png;base64,${b}" alt="실행 결과 그래프">`).join("");
-    out.innerHTML = `<pre class="out${m.err ? " err" : ""}">${esc((m.out || "") + (m.err ? (m.out ? "\n" : "") + m.err : "") || "(출력 없음)")}</pre>${imgs ? `<div class="figs">${imgs}</div>` : ""}<div class="bar"><span class="lbl ok">브라우저에서 실제로 실행한 결과${m.ver ? " · SymPy " + esc(m.ver) : ""}</span></div>`;
-  }
+    rn.disabled = true; await runInto(box, ta.value, rn.dataset.cell); rn.disabled = false; }
+  const cp = e.target.closest("[data-copy]");
+  if (cp) { const code = COPY[cp.dataset.copy]; if (code == null) return;
+    const ok = () => { cp.textContent = "복사됨"; setTimeout(() => cp.textContent = "복사", 1200); };
+    try { navigator.clipboard.writeText(code).then(ok, () => { cp.textContent = "복사 안 됨"; }); } catch (err) { cp.textContent = "복사 안 됨"; } }
 });
 
-/* ---------- 사진에서 글자 읽기 (Tesseract.js, 브라우저 안에서) ---------- */
+/* ---------- 사진 ---------- */
 let OCR = null;
 function loadOCR() {
   if (OCR) return OCR;
   OCR = new Promise((ok, no) => { const s = document.createElement("script"); s.src = "https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js"; s.onload = () => ok(window.Tesseract); s.onerror = () => { OCR = null; no(new Error("load")); }; document.head.append(s); });
   return OCR;
 }
+async function ocrText(file, onProg) { const T = await loadOCR(); const r = await T.recognize(file, "kor+eng", { logger: m => { if (m.status && onProg) onProg((m.status === "recognizing text" ? "글자를 읽는 중 " : "준비 중 ") + Math.round((m.progress || 0) * 100) + "%"); } }); return (r.data && r.data.text || "").trim(); }
+function shrink(file, max = 1280) {
+  return new Promise((ok, no) => { const img = new Image(); img.onload = () => { const s = Math.min(1, max / Math.max(img.width, img.height)); const c = document.createElement("canvas"); c.width = Math.round(img.width * s); c.height = Math.round(img.height * s); c.getContext("2d").drawImage(img, 0, 0, c.width, c.height); ok(c.toDataURL("image/jpeg", 0.85)); }; img.onerror = no; img.src = URL.createObjectURL(file); });
+}
+async function askAI(payload) {
+  const r = await fetch(AI_URL, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(payload) });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok || j.error) throw new Error(j.error || "AI 응답 오류 " + r.status);
+  return j;
+}
 
 /* ---------- 홈: 문제 찾기 ---------- */
 const HASH = ["복소수 인수분해", "점화식 일반항", "지수방정식", "해가 무수히", "넓이 근삿값", "좌극한", "최솟값", "삼각함수 합성"];
+const PICK = (() => { const a = SHOW.map((_, i) => i); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a.slice(0, 2).map(i => SHOW[i]); })();
 let showOpen = null;
+const texOf = s => TEX[s.id] || esc(s.tex);
 function home() {
   const course = store.get("pm-course", "공통수학1"), lib = store.get("pm-lib", "all");
   return `<section class="hero"><div class="in">
     <span class="eyebrow">PYTHON MATH GUIDE</span>
     <h1>어떤 수학 문제를 풀고 있나요?</h1>
     <p class="lead">문제 상황을 입력하거나 사진을 찍으면, 알맞은 파이썬 도구를 찾아 드립니다.</p>
-    <div class="searchbar"><input id="q" type="search" placeholder="예: 복소수 인수분해, 점화식 일반항, 넓이 근삿값" aria-label="문제 상황 검색" autocomplete="off"><span class="ico" aria-hidden="true">⌕</span>
-      <button class="cam" id="camBtn" type="button">📷 <span>사진으로 찾기</span></button><input id="camIn" type="file" accept="image/*" hidden></div>
+    <div class="sugwrap"><div class="searchbar"><input id="q" type="search" placeholder="예: 복소수 인수분해, 점화식 일반항, 넓이 근삿값" aria-label="문제 상황 검색" autocomplete="off"><span class="ico" aria-hidden="true">⌕</span>
+      <button class="cam" id="camBtn" type="button">📷 <span>사진으로 찾기</span></button><input id="camIn" type="file" accept="image/*" hidden></div></div>
     <div class="hashtags" id="hash">${HASH.map(h => `<button type="button">#${h}</button>`).join("")}</div>
     <div id="photo" style="display:contents"></div>
     <div id="res" style="display:grid;gap:10px;width:min(760px,100%)"></div>
   </div></section>
 
   <section class="in sec">
-    <div class="sec-h"><h2>같은 문제, 여러 방법</h2><span class="muted">하나의 문제를 파이썬으로 어떻게 풀 수 있을까요?</span></div>
-    <div class="show">${SHOW.map(s => `<div class="prob"><div class="tags"><span class="tag">${esc(s.course)}</span></div>
-      <div class="f">${s.prob} <span>${esc(s.plain)}</span></div>
+    <div class="sec-h"><h2>같은 문제, 여러 방법</h2></div>
+    <div class="show">${PICK.map(s => `<div class="prob"><div class="tags"><span class="tag">${esc(s.course)}</span></div>
+      <div class="f">${texOf(s)}</div><p class="ask">${esc(s.plain)}</p>
       <button class="go" type="button" data-show="${s.id}" aria-expanded="${showOpen === s.id}">어떤 방식으로 계산에 활용할 수 있을까? →</button></div>`).join("")}</div>
     <div id="showPanel"></div>
   </section>
@@ -1041,11 +1279,6 @@ function home() {
       </aside>
       <div id="browse" style="min-width:0"></div>
     </div>
-  </section>
-
-  <section class="in sec" style="padding-top:0">
-    <div class="sec-h"><h2>이런 답은 의심하세요</h2><span class="muted">오류 없이 나오지만 그대로 믿으면 틀리는 경우</span></div>
-    <div class="pits">${PITFALL_TOP.slice(0, 8).map(([t, n]) => `<a href="#${TOPICS[n - 1].slug}">${esc(t)}</a>`).join("")}</div>
   </section>${foot()}`;
 }
 function browseHTML() {
@@ -1053,30 +1286,30 @@ function browseHTML() {
   const ts = TOPICS.filter(t => t.courses.includes(course));
   const inC = f => f.cells.filter(id => TOPICS[CELL[id].topic - 1].courses.includes(course)).length;
   const fs = FUNCS.filter(f => f.courses.includes(course) && (lib === "all" ? !["for", "sum", "float", "symbols"].includes(f.k) : f.lib === lib)).sort((a, b) => inC(b) - inC(a));
-  return `<div class="sec-h"><h2>${course}</h2><span class="muted">주제 ${ts.length}개 · 함수 ${fs.length}개</span></div>
-    <p class="subh">이 단원의 문제 상황</p>
+  return `<div class="sec-h"><h2>${course}</h2></div>
+    <p class="subh">주제</p>
     <div class="tcards">${ts.map(t => `<a class="tcard" href="#${t.slug}"><b>${esc(t.title)}</b><span>${esc(t.ask)}</span></a>`).join("")}</div>
-    <p class="subh">이 단원에서 쓰는 함수${lib === "all" ? "" : " · " + LIBS[lib]}</p>
-    ${fs.length ? `<div class="cards">${fs.slice(0, 8).map(fcard).join("")}</div>${fs.length > 8 ? `<details class="more"><summary class="btn ghost" style="display:inline-block;margin-top:14px">함수 ${fs.length - 8}개 더 보기</summary><div class="cards" style="margin-top:14px">${fs.slice(8).map(fcard).join("")}</div></details>` : ""}` : `<p class="muted">이 단원에는 ${LIBS[lib] || ""} 예제가 없습니다.</p>`}`;
+    <p class="subh">함수${lib === "all" ? "" : " · " + LIBS[lib]}</p>
+    ${fs.length ? `<div class="cards">${fs.slice(0, 8).map(fcard).join("")}</div>${fs.length > 8 ? `<details class="more"><summary class="btn ghost" style="display:inline-block;margin-top:14px">${fs.length - 8}개 더 보기</summary><div class="cards" style="margin-top:14px">${fs.slice(8).map(fcard).join("")}</div></details>` : ""}` : `<p class="muted">이 단원에는 ${LIBS[lib] || ""} 예제가 없습니다.</p>`}`;
 }
 function fcard(f) {
-  const g = f.guides[0] != null ? GUIDE[f.guides[0]].s : (f.topics[0] ? TOPICS[f.topics[0] - 1].ask : "");
   return `<a class="card" href="${fhref(f.k)}"><div class="tags">${f.courses.slice(0, 2).map(c => `<span class="tag">${c}</span>`).join("")}${libTag(f)}</div>
-    <h3>${esc(f.n)}</h3><span class="sub">${esc(f.sub)}</span>${g ? `<span class="use">${esc(g)}</span>` : ""}</a>`;
+    <h3>${esc(f.n)}</h3><span class="sub">${esc(f.sub)}</span></a>`;
 }
 function showPanelHTML(id) {
   const s = SHOW.find(x => x.id === id); if (!s) return "";
   return `<div class="panel" id="panel-${s.id}">
-    <h3 style="margin:0">${s.prob} ${esc(s.plain)} 를 푸는 ${s.methods.length}가지 방법</h3>
-    <div class="mgrid">${s.methods.map(m => { COPY["m" + s.id + m.name] = m.code; return `<div class="mcard"><h3>${esc(m.name)}</h3><p>${esc(m.say)}</p>
-      ${codeBox({ code: m.code, out: m.out, label: "실행 확인됨", cls: "ok" })}
-      <div class="tags">${m.f.map(k => fchip(k, FN[k].n + " 설명")).join("")}</div></div>`; }).join("")}</div>
-    <h3 style="margin:6px 0 0">직접 해 보기</h3><div id="lab"></div></div>`;
+    <div class="ptitle">${(TEX[s.id + "_i"] || esc(s.tex))}<span>${s.methods.length}가지 방법</span></div>
+    <div class="mgrid">${s.methods.map(m => `<div class="mcard"><h3>${esc(m.name)}</h3><p>${esc(m.say)}</p>
+      ${codeBox({ code: m.code, out: m.out, err: /Error/.test(m.out) })}
+      <div class="tags">${m.f.map(k => fchip(k)).join("")}</div></div>`).join("")}</div>
+    ${s.lab ? `<h3 style="margin:6px 0 0">직접 해 보기</h3><div id="lab"></div>` : ""}</div>`;
 }
+function openLab(s) { if (!s.lab) { resizeFn = null; return; } LABS[s.lab]($("#lab")); if (s.labSet) Object.entries(s.labSet).forEach(([sel, v]) => { const el = $(sel, $("#lab")); if (el) { el.value = v; el.dispatchEvent(new Event("change")); } }); }
 function bindHome() {
   const q = $("#q"), res = $("#res");
   const run = () => { res.innerHTML = resultsHTML(searchAll(q.value)); };
-  q.addEventListener("input", run);
+  q.addEventListener("input", run); attachSuggest(q, run);
   $("#hash").addEventListener("click", e => { const b = e.target.closest("button"); if (b) { q.value = b.textContent.slice(1); run(); } });
   $("#courseList").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; store.set("pm-course", b.dataset.course); $$("#courseList button").forEach(x => x.setAttribute("aria-pressed", x === b)); $("#browse").innerHTML = browseHTML(); });
   $("#libList").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; store.set("pm-lib", b.dataset.lib); $$("#libList button").forEach(x => x.setAttribute("aria-pressed", x === b)); $("#browse").innerHTML = browseHTML(); });
@@ -1085,33 +1318,30 @@ function bindHome() {
     const id = b.dataset.show; showOpen = showOpen === id ? null : id;
     $$("[data-show]").forEach(x => x.setAttribute("aria-expanded", x.dataset.show === showOpen));
     $("#showPanel").innerHTML = showOpen ? showPanelHTML(showOpen) : "";
-    if (showOpen) { LABS[SHOW.find(x => x.id === showOpen).lab]($("#lab")); $("#showPanel").scrollIntoView({ behavior: "smooth", block: "start" }); } else resizeFn = null;
+    if (showOpen) { openLab(SHOW.find(x => x.id === showOpen)); $("#showPanel").scrollIntoView({ behavior: "smooth", block: "start" }); } else resizeFn = null;
   }));
-  if (showOpen) { $("#showPanel").innerHTML = showPanelHTML(showOpen); LABS[SHOW.find(x => x.id === showOpen).lab]($("#lab")); }
+  if (showOpen) { $("#showPanel").innerHTML = showPanelHTML(showOpen); openLab(SHOW.find(x => x.id === showOpen)); }
   const cam = $("#camBtn"), camIn = $("#camIn");
   cam.addEventListener("click", () => camIn.click());
   camIn.addEventListener("change", () => { const file = camIn.files && camIn.files[0]; camIn.value = ""; if (file) analyzePhoto(file); });
 }
-/* 사진 속 문장에서 분야를 알려 주는 낱말 */
 const CUE = [["인수분해", "인수분해"], ["복소수", "복소수 인수분해"], ["허수", "복소수 인수분해"], ["점화식", "점화식"], ["일반항", "일반항"], ["귀납적", "점화식"], ["급수", "급수"], ["수렴", "수렴"], ["시그마", "시그마"], ["Σ", "시그마"], ["∑", "시그마"], ["수열의 합", "수열의 합"], ["극한", "극한"], ["lim", "극한"], ["좌극한", "좌극한"], ["미분가능", "미분 가능"], ["미분 가능", "미분 가능"], ["도함수", "도함수"], ["미분계수", "미분계수"], ["접선", "접선"], ["덧셈정리", "덧셈정리"], ["합성", "합성"], ["sin", "삼각함수"], ["cos", "삼각함수"], ["tan", "삼각함수"], ["삼각함수", "삼각함수"], ["항등식", "항등식"], ["지수방정식", "지수방정식"], ["로그방정식", "로그방정식"], ["log", "로그"], ["부등식", "부등식"], ["연립", "연립방정식"], ["방정식", "방정식"], ["실근", "실수 해"], ["근의 개수", "실수 해"], ["사잇값", "사잇값"], ["연속", "연속"], ["넓이", "넓이"], ["정적분", "정적분"], ["적분", "적분"], ["∫", "적분"], ["극대", "극대"], ["극소", "극소"], ["극값", "극값"], ["최댓값", "최댓값"], ["최솟값", "최솟값"], ["증가", "증가"], ["감소", "감소"], ["행렬", "행렬"], ["역행렬", "역행렬"], ["원의 방정식", "원"], ["매개변수", "매개변수"], ["그래프", "그래프"]];
 function cuesFrom(text) { const t = text.replace(/\s+/g, " "); const tn = t.replace(/\s/g, ""); return [...new Set(CUE.filter(([k]) => t.includes(k) || tn.includes(k.replace(/\s/g, ""))).map(c => c[1]))]; }
 async function analyzePhoto(file) {
   const box = $("#photo"); if (!box) return;
   const url = URL.createObjectURL(file);
   const shell = inner => `<div class="photo"><img src="${url}" alt="고른 사진"><div style="display:grid;gap:8px;min-width:0">${inner}</div></div>`;
-  box.innerHTML = shell(`<b>사진 속 글자를 읽고 있어요…</b><span class="status" id="ocrSt">글자 인식 도구를 불러오는 중 (처음 한 번만 조금 걸립니다)</span>`);
-  let T; try { T = await loadOCR(); } catch (e) { box.innerHTML = shell(`<b>글자 인식 도구를 불러오지 못했어요.</b><span class="status">인터넷 연결을 확인하거나, 위 칸에 낱말로 검색해 주세요.</span>`); return; }
-  try {
-    const r = await T.recognize(file, "kor+eng", { logger: m => { const s = $("#ocrSt"); if (s && m.status) s.textContent = (m.status === "recognizing text" ? "글자를 읽는 중 " : "준비 중 ") + Math.round((m.progress || 0) * 100) + "%"; } });
-    const text = (r.data && r.data.text || "").trim();
-    box.innerHTML = shell(`<span class="muted" style="font-size:13px">사진에서 읽은 글자 (틀린 곳은 고쳐 주세요)</span>
-      <textarea id="ocrT" rows="3" style="font:inherit;font-size:14.5px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);width:100%">${esc(text)}</textarea>
-      <div id="ocrCue"></div>`);
-    const upd = () => { const v = $("#ocrT").value, cues = cuesFrom(v);
-      $("#ocrCue").innerHTML = cues.length ? `<span class="muted" style="font-size:13px">찾은 낱말:</span> <span class="tags" style="display:inline-flex">${cues.map(c => `<span class="tag">${esc(c)}</span>`).join("")}</span>` : `<span class="status">분야를 알려 주는 낱말을 찾지 못했어요. 문제의 문장(예: "인수분해하시오")이 보이게 다시 찍거나 직접 적어 주세요.</span>`;
-      $("#res").innerHTML = cues.length ? resultsHTML(searchAll(cues.join(" "))) : ""; };
-    $("#ocrT").addEventListener("input", upd); upd();
-  } catch (e) { box.innerHTML = shell(`<b>사진을 읽지 못했어요.</b><span class="status">다른 사진을 고르거나, 위 칸에 낱말로 검색해 주세요.</span>`); }
+  box.innerHTML = shell(`<b>사진 속 글자를 읽고 있어요…</b><span class="status" id="ocrSt">글자 인식 도구를 불러오는 중</span>`);
+  let text = "";
+  try { text = await ocrText(file, s => { const el = $("#ocrSt"); if (el) el.textContent = s; }); }
+  catch (e) { box.innerHTML = shell(`<b>사진을 읽지 못했어요.</b><span class="status">위 칸에 낱말로 검색해 주세요.</span>`); return; }
+  box.innerHTML = shell(`<span class="muted" style="font-size:13px">사진에서 읽은 글자 (틀린 곳은 고쳐 주세요)</span>
+    <textarea id="ocrT" rows="3" style="font:inherit;font-size:14.5px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);width:100%">${esc(text)}</textarea>
+    <div id="ocrCue"></div>`);
+  const upd = () => { const v = $("#ocrT").value, cues = cuesFrom(v);
+    $("#ocrCue").innerHTML = cues.length ? `<span class="tags" style="display:inline-flex">${cues.map(c => `<span class="tag">${esc(c)}</span>`).join("")}</span>` : `<span class="status">분야를 알려 주는 낱말을 찾지 못했어요. 문제 문장이 보이게 다시 찍거나 직접 적어 주세요.</span>`;
+    $("#res").innerHTML = cues.length ? resultsHTML(searchAll(cues.join(" "))) : ""; };
+  $("#ocrT").addEventListener("input", upd); upd();
 }
 
 /* ---------- 도구 찾기 ---------- */
@@ -1119,8 +1349,7 @@ function guide() {
   const kws = ["인수분해", "점화식", "급수", "극한", "미분", "접선", "삼각함수", "방정식", "부등식", "연립방정식", "그래프", "넓이", "연속", "최솟값", "행렬"];
   return `<div class="in page one"><div>
     <span class="eyebrow">TOOL FINDER</span><h1 style="margin-top:8px">도구 찾기</h1>
-    <p class="muted">하고 싶은 것을 낱말로 적으면, 그 상황에서 쓸 도구를 알려 줍니다. 도구를 누르면 함수 설명으로 갑니다.</p>
-    <div class="searchbar" style="margin:16px 0 10px"><input id="gq" type="search" placeholder="예: 실수 해만, 넓이 근삿값, 연속인지" aria-label="상황 검색" autocomplete="off"><span class="ico" aria-hidden="true">⌕</span></div>
+    <div class="sugwrap" style="margin:16px 0 10px"><div class="searchbar"><input id="gq" type="search" placeholder="하고 싶은 것 (예: 실수 해만, 넓이 근삿값, 연속인지)" aria-label="상황 검색" autocomplete="off"><span class="ico" aria-hidden="true">⌕</span></div></div>
     <div class="presets" id="gk">${kws.map(k => `<button type="button">${k}</button>`).join("")}</div>
     <div class="results" id="gres" style="margin-top:18px;width:100%"></div>
   </div></div>${foot()}`;
@@ -1128,12 +1357,13 @@ function guide() {
 function bindGuide() {
   const q = $("#gq"), out = $("#gres");
   const run = () => {
-    const v = q.value.trim();
-    if (!v) { out.innerHTML = `<p class="muted">낱말을 입력하거나 위의 버튼을 눌러 보세요.</p>`; return; }
+    const v0 = q.value.trim();
+    if (!v0) { out.innerHTML = ""; return; }
+    const { q: v, changed } = fixQuery(v0);
     const hits = GUIDE.map((r, i) => [scoreText(v, r.s + " " + r.tools.join(" "), r.kw), i]).filter(x => x[0] > 0).sort((a, b) => b[0] - a[0]).map(x => x[1]);
-    out.innerHTML = hits.length ? hits.map(guideCard).join("") : `<p class="muted">맞는 상황이 없습니다. 다른 낱말로 찾아 보세요.</p>`;
+    out.innerHTML = (changed ? fixHTML({ fixed: v }) : "") + (hits.length ? hits.map(guideCard).join("") : `<p class="muted">맞는 상황이 없습니다. 다른 낱말로 찾아 보세요.</p>`);
   };
-  q.addEventListener("input", run);
+  q.addEventListener("input", run); attachSuggest(q, run);
   $("#gk").addEventListener("click", e => { const b = e.target.closest("button"); if (b) { q.value = b.textContent; run(); } });
   run();
 }
@@ -1159,70 +1389,98 @@ function tree() {
   const R = treeData(), names = { sympy: "sympy", numpy: "numpy", scipy: "scipy", matplotlib: "matplotlib", python: "파이썬 내장" };
   return `<div class="in page one"><div>
     <span class="eyebrow">FUNCTION MAP</span><h1 style="margin-top:8px">함수 사전</h1>
-    <p class="muted">SymPy 전체 구조 중 이 안내서의 예제에 쓰인 부분만 보여 줍니다. 함수를 누르면 설명과 예시가 나옵니다.</p>
-    <div class="searchbar" style="margin:16px 0 22px;max-width:520px"><input id="tq" type="search" placeholder="함수 이름 (예: solveset)" aria-label="함수 이름 검색" autocomplete="off"><span class="ico" aria-hidden="true">⌕</span></div>
+    <div class="sugwrap" style="margin:16px 0 22px;max-width:520px"><div class="searchbar"><input id="tq" type="search" placeholder="함수 이름이나 하는 일 (예: solveset, 극한)" aria-label="함수 검색" autocomplete="off"><span class="ico" aria-hidden="true">⌕</span></div></div>
     <div id="tqres" class="tags" style="margin-bottom:18px"></div>
     <div class="treegrid">
       <ul class="tree"><li class="root">${nodeHTML("sympy", R.sympy, true).slice(4, -5)}</li></ul>
       <ul class="tree">${["numpy", "scipy", "matplotlib", "python"].map(k => `<li class="root">${nodeHTML(names[k], R[k], true).slice(4, -5)}</li>`).join("")}</ul>
     </div></div></div>${foot()}`;
 }
+function findFuncs(v0) {
+  const v = v0.trim().toLowerCase(); if (!v) return [];
+  const hit = f => (f.k + " " + f.n + " " + f.sub).toLowerCase().includes(v);
+  let r = FUNCS.filter(hit);
+  if (!r.length) { const fv = fixWord(v0.trim()).toLowerCase(); r = FUNCS.filter(f => (f.k + " " + f.n + " " + f.sub).toLowerCase().includes(fv)); }
+  if (!r.length) r = FUNCS.filter(f => lev(f.k.toLowerCase(), v) <= Math.max(1, Math.floor(v.length / 4)));
+  return r;
+}
 function bindTree() {
-  $("#tq").addEventListener("input", e => { const v = e.target.value.trim().toLowerCase(); $("#tqres").innerHTML = v ? FUNCS.filter(f => (f.k + " " + f.n + " " + f.sub).toLowerCase().includes(v)).map(f => fchip(f.k)).join("") || `<span class="muted">없는 함수입니다.</span>` : ""; });
+  const q = $("#tq");
+  const run = () => { const v = q.value.trim(); const r = findFuncs(v); $("#tqres").innerHTML = v ? r.map(f => fchip(f.k)).join("") || `<span class="muted">없는 함수입니다.</span>` : ""; };
+  q.addEventListener("input", run); attachSuggest(q, run);
 }
 
 /* ---------- 함수 설명 ---------- */
 function fnPage(f) {
   const rel = [...new Set(f.guides.flatMap(i => GUIDE[i].tools))].filter(k => k !== f.k).slice(0, 5);
   const presets = f.cells.slice(0, 8);
+  let n = 0; const S = t => `<div class="s-h"><b>§${++n}</b><h2>${t}</h2></div>`;
   return `<div class="in page"><div style="min-width:0">
     <div class="crumb"><a href="#tree">함수 사전</a> › ${esc(where(f))}</div>
     <div class="dh"><div class="tags" style="margin-bottom:10px">${f.courses.map(c => `<span class="tag">${c}</span>`).join("")}${libTag(f)}</div>
       <h1>${esc(f.n)}</h1><div class="sub">${esc(f.sub)}</div></div>
 
-    <div class="s-h"><b>§1</b><h2>기본 사용법</h2></div>
-    ${f.use ? codeBox({ code: f.use, out: f.out, label: f.out ? "python · 실행 확인됨 (SymPy 1.14)" : "python", cls: f.out ? "ok" : "", copyId: "u" + f.k, run: true }) : ""}
-    <p class="muted" style="font-size:13.5px;margin-top:8px">'고쳐서 실행'을 누르면 식을 바꿔 브라우저에서 바로 실행해 볼 수 있습니다.</p>
+    ${S("기본 사용법")}
+    ${f.use ? codeBox({ code: f.use, out: f.out, copyId: "u" + f.k }) : ""}
+    <p class="desc">${esc(f.d)}</p>
+    ${f.opts ? `<div class="tbl optt"><table><thead><tr><th>옵션</th><th>뜻</th></tr></thead><tbody>${f.opts.map(([o, d]) => `<tr><td><code>${esc(o)}</code></td><td>${esc(d)}</td></tr>`).join("")}</tbody></table></div>` : ""}
 
-    <div class="s-h"><b>§2</b><h2>함수 및 라이브러리 정보</h2></div>
-    <dl class="info"><dt>소속 라이브러리</dt><dd>${LIBS[f.lib]}</dd><dt>위치</dt><dd><code>${esc(where(f))}</code></dd>
-      ${f.opts ? `<dt>자주 쓰는 옵션</dt><dd><div class="opts">${f.opts.map(([o, d]) => `<div><code>${esc(o)}</code><span>${esc(d)}</span></div>`).join("")}</div></dd>` : ""}</dl>
-    <p style="margin-top:14px">${esc(f.d)}</p>
+    ${f.guides.length || f.topics.length ? S("이럴 때 쓴다") + `<ul class="guide">${f.guides.length ? f.guides.map(i => `<li>${esc(GUIDE[i].s)}</li>`).join("") : f.topics.map(n => `<li>${esc(TOPICS[n - 1].ask)}</li>`).join("")}</ul>` : ""}
 
-    <div class="s-h"><b>§3</b><h2>사용 상황 가이드</h2></div>
-    ${f.guides.length ? `<ul class="guide">${f.guides.map(i => `<li>${esc(GUIDE[i].s)} <a href="#${TOPICS[GUIDE[i].t - 1].slug}" style="font-size:13px">주제 ${pad2(GUIDE[i].t)}</a></li>`).join("")}</ul>` : f.topics.length ? `<ul class="guide">${f.topics.map(n => `<li>${esc(TOPICS[n - 1].ask)}</li>`).join("")}</ul>` : `<p class="muted">-</p>`}
+    ${f.know.length ? S("알고 가야 할 점") + `<ul class="know">${f.know.map(k => `<li>${k.t ? `<b>${esc(k.t)}</b>` : ""}<p>${esc(k.d)}</p>${k.cell && CELL[k.cell] ? `<details><summary>코드와 결과</summary>${cellBox(k.cell, f.k, false)}</details>` : ""}</li>`).join("")}</ul>` : ""}
 
-    <div class="s-h"><b>§4</b><h2>타 라이브러리/함수 비교 노트</h2></div>
+    ${S("다른 방법과 비교")}
     <div class="note">${esc(f.cmp)}</div>
-    ${f.warn ? `<div class="note warn" style="margin-top:10px"><b>주의</b>${esc(f.warn)}</div>` : ""}
 
-    <div class="s-h"><b>§5</b><h2>예시 보기</h2></div>
+    ${S("예시 만들기")}
     <div class="ask">
-      <p class="muted" style="margin:0">보고 싶은 예시를 적거나 아래에서 고르세요. 실행해서 확인한 예제를 보여 주고, 코드를 고쳐 바로 실행해 볼 수 있습니다.</p>
-      <div class="askrow"><input id="aq" type="text" placeholder="${esc(askPH(f))}" aria-label="원하는 예시"><button class="btn" id="aBtn" type="button">예시 찾기</button></div>
-      ${presets.length ? `<div class="presets" id="apre">${presets.map(id => `<button type="button" data-cell="${id}">${esc(CELL[id].title.replace(/^[^:]*:\s*/, "").slice(0, 28))}</button>`).join("")}</div>` : ""}
+      <div class="mkrow"><input id="aq" type="text" placeholder="${esc(askPH(f))}" aria-label="보고 싶은 예시"><button class="btn ghost" id="aCam" type="button" title="문제 사진으로 만들기">📷 사진</button><input id="aCamIn" type="file" accept="image/*" hidden><button class="btn" id="aBtn" type="button">만들기</button></div>
+      ${presets.length ? `<div class="presets" id="apre">${presets.map(id => `<button type="button" data-cell="${id}">${esc(ctitle(CELL[id]).slice(0, 30))}</button>`).join("")}</div>` : ""}
       <div id="aout" style="display:grid;gap:10px"></div>
     </div>
   </div>
   <aside class="rail">
-    ${rel.length ? `<div><p class="lbl">관련 항목</p>${rel.map(k => `<a class="rel" href="${fhref(k)}"><b>${esc(FN[k].n)}</b><span>${esc(FN[k].sub)}</span></a>`).join("")}</div>` : ""}
+    ${rel.length ? `<div><p class="lbl">관련 함수</p>${rel.map(k => `<a class="rel" href="${fhref(k)}"><b>${esc(FN[k].n)}</b><span>${esc(FN[k].sub)}</span></a>`).join("")}</div>` : ""}
     ${f.topics.length ? `<div><p class="lbl">이 함수가 나오는 주제</p>${f.topics.map(n => `<a class="rel" href="#${TOPICS[n - 1].slug}"><b>${esc(TOPICS[n - 1].title)}</b><span>${esc(TOPICS[n - 1].courses.join(" · "))}</span></a>`).join("")}</div>` : ""}
   </aside></div>${foot()}`;
 }
-function askPH(f) { const ex = { factor: "예: x⁴ − 4를 복소수 범위까지 인수분해해 줘", solve: "예: 이차방정식의 해를 구해 줘", limit: "예: 좌극한과 우극한을 따로 구해 줘", integrate: "예: 넓이를 구해 줘", Sum: "예: 시그마를 수식으로 보여 줘" }; return ex[f.k] || "예: 이 함수를 수식으로 보여 주는 예"; }
+const PH = { limit: "예: 2x + 3의 x=1에서의 극한", Limit: "예: (x^2-1)/(x-1)의 x=1 극한", diff: "예: x^3 - 3x를 미분하고 x=2에서 값", Derivative: "예: sin(2x)의 이계도함수", integrate: "예: x^2를 0부터 1까지 적분", Integral: "예: e^(-x^2)를 0부터 1까지", factor: "예: x⁴ − 4를 복소수 범위에서", solve: "예: x^2 - 5x + 6 = 0", solveset: "예: x^2 - 4 > 0", nsolve: "예: sin x = x - π/2, x=2 근처", Sum: "예: k^2를 k=1부터 n까지", rsolve: "예: a(n+1) = 2a(n) + 3, a(0) = 1", Matrix: "예: [[1, 2], [3, 4]]", linsolve: "예: x + y = 3, x - y = 1", minimum: "예: x^3 - 3x의 [-3, 3] 최솟값", plot: "예: x^3 - 3x 그래프 [-3, 3]" };
+function askPH(f) { return PH[f.k] || (f.lib === "numpy" && /linalg|array/.test(f.k) ? "예: [[1, 2], [3, 4]]" : "예: 이 함수에 넣을 식 (x^2 - 4, sin(x)/x …)"); }
 function bindFn(f) {
-  COPY["u" + f.k] = f.use;
   const q = $("#aq"), out = $("#aout"), btn = $("#aBtn");
   const pre = $("#apre"); if (pre) pre.addEventListener("click", e => { const b = e.target.closest("button[data-cell]"); if (b) out.innerHTML = cellBox(b.dataset.cell, f.k); });
-  const go = () => {
+  const show = async (code, label, note) => {
+    out.innerHTML = (note ? `<p class="ainote">${esc(note)}</p>` : "") + codeBox({ code, label, copyId: "g" + f.k });
+    const box = $(".codebox", out); await runInto(box, code);
+  };
+  const viaAI = async (text, image) => {
+    out.innerHTML = `<p class="status">AI가 코드를 만드는 중…</p>`;
+    try { const r = await askAI({ fn: f.k, name: f.n, text, image }); if (!r.code) throw new Error(r.note || "코드를 만들지 못했어요"); await show(r.code, "AI가 만든 코드 · 결과는 직접 확인하세요", r.note); }
+    catch (e) { out.innerHTML = `<p class="status">AI가 답하지 못했어요 (${esc(e.message)}). 식을 x^2 - 4처럼 바꿔 다시 적어 보세요.</p>`; }
+  };
+  const go = async () => {
     const v = q.value.trim(); if (!v) { q.focus(); return; }
-    const scored = f.cells.map(id => { const c = CELL[id]; let s = scoreText(v, c.title + " " + c.code); const bg = new Set(); const vv = v.replace(/\s/g, ""); for (let i = 0; i < vv.length - 1; i++) bg.add(vv.slice(i, i + 2)); bg.forEach(b => { if (c.title.includes(b)) s += 1; }); return [s, id]; }).filter(x => x[0] >= 3).sort((a, b) => b[0] - a[0]);
-    const local = scored.slice(0, 2).map(x => cellBox(x[1], f.k)).join("");
-    out.innerHTML = local ? `<p class="status" style="margin:0">가까운 예제:</p>${local}` :
-      `<p class="status" style="margin:0">이 요청과 맞는 예제가 없습니다. 아래 기본 코드를 고쳐서 직접 실행해 보세요.</p>${f.use ? codeBox({ code: f.use, label: "직접 고쳐 보기", copyId: "u" + f.k, run: true }) : ""}`;
+    btn.disabled = true;
+    out.innerHTML = `<p class="status">${PY.ver ? "코드를 만드는 중…" : "파이썬을 불러오는 중… (처음 한 번만 10~30초)"}</p>`;
+    const r = await PY.gen(f.k, v);
+    if (r.code) await show(r.code, "만든 코드");
+    else if (AI_URL) await viaAI(v);
+    else out.innerHTML = `<p class="status">${esc(r.fail || r.err || "예시를 만들지 못했어요.")}</p>${f.use ? codeBox({ code: f.use, label: "기본 코드를 고쳐 보기", copyId: "u2" + f.k }) : ""}`;
+    btn.disabled = false;
   };
   btn.addEventListener("click", go); q.addEventListener("keydown", e => { if (e.key === "Enter") go(); });
+  const cam = $("#aCam"), camIn = $("#aCamIn");
+  cam.addEventListener("click", () => camIn.click());
+  camIn.addEventListener("change", async () => {
+    const file = camIn.files && camIn.files[0]; camIn.value = ""; if (!file) return;
+    const url = URL.createObjectURL(file);
+    if (AI_URL) { const img = await shrink(file); out.innerHTML = ""; await viaAI(q.value.trim(), img); out.insertAdjacentHTML("afterbegin", `<div class="shot"><img src="${url}" alt="올린 사진"><span>올린 사진</span></div>`); return; }
+    out.innerHTML = `<div class="shot"><img src="${url}" alt="올린 사진"><span id="aSt">사진 속 글자를 읽는 중…</span></div>`;
+    try { const t = await ocrText(file, s => { const el = $("#aSt"); if (el) el.textContent = s; }); q.value = t.replace(/\s+/g, " ").slice(0, 200); out.innerHTML = `<div class="shot"><img src="${url}" alt="올린 사진"><span>읽은 글자를 위 칸에 넣었어요. 수식이 틀렸으면 고친 뒤 '만들기'를 누르세요.</span></div>`; q.focus(); }
+    catch (e) { out.innerHTML = `<p class="status">사진을 읽지 못했어요. 식을 직접 적어 주세요.</p>`; }
+  });
 }
+
 /* ---------- 주제 ---------- */
 function methodFns(row) { const txt = row[0] + " " + row[1]; return FUNCS.filter(f => f.re.test(row[1]) || txt.includes(f.k) && f.k.length > 2).map(f => f.k).filter((k, i, a) => a.indexOf(k) === i).slice(0, 4); }
 function topic(t) {
@@ -1236,17 +1494,13 @@ function topic(t) {
     <ul class="when">${t.when.map(w => `<li>${esc(w)}</li>`).join("")}</ul>
 
     <div class="s-h"><b>§2</b><h2>방법 비교</h2></div>
-    <p class="muted" style="margin-top:-6px">방법을 누르면 설명이 나옵니다.</p>
-    <div class="mbtns" id="mb">${t.compare.map((r, i) => `<button type="button" data-i="${i}" aria-pressed="false">${esc(r[0])}</button>`).join("")}</div>
+    <div class="mbtns" id="mb">${t.compare.map((r, i) => `<button type="button" data-i="${i}" aria-pressed="${i === 0}">${esc(r[0])}</button>`).join("")}</div>
     <div id="md"></div>
 
     <div class="s-h"><b>§3</b><h2>직접 해 보기</h2></div>
     <div id="lab"></div>
 
-    <div class="s-h"><b>§4</b><h2>주의: 이 답은 믿으면 안 됩니다</h2></div>
-    ${t.pitfalls.map(p => `<div class="pit"><h3>${esc(p.t)}</h3><p>${esc(p.d)}</p>${CELL[p.cell] ? `<details class="pcode"><summary>코드와 결과 보기</summary>${cellBox(p.cell)}</details>` : ""}</div>`).join("")}
-
-    <div class="s-h"><b>§5</b><h2>정리</h2></div>
+    <div class="s-h"><b>§4</b><h2>정리</h2></div>
     <div class="note">${esc(t.verdict)}</div>
 
     <div class="tags" style="justify-content:space-between;margin-top:36px">${prev ? `<a class="fchip" href="#${prev.slug}">← ${esc(prev.title)}</a>` : "<span></span>"}${next ? `<a class="fchip" href="#${next.slug}">${esc(next.title)} →</a>` : ""}</div>
@@ -1254,15 +1508,19 @@ function topic(t) {
   <aside class="rail"><div><p class="lbl">주제</p>${COURSES.map(c => { const ts = TOPICS.filter(x => x.courses[0] === c); return ts.length ? `<p class="lbl" style="margin:10px 0 6px;font-weight:700;color:var(--ink)">${c}</p>` + ts.map(x => `<a class="rel" href="#${x.slug}" ${x === t ? 'style="border-left-color:var(--brand)"' : ""}><b style="font-size:14.5px;${x === t ? "color:var(--brand)" : ""}">${esc(x.title)}</b></a>`).join("") : ""; }).join("")}</div></aside>
   </div>${foot()}`;
 }
+function methodHTML(t, i) {
+  const r = t.compare[i], fs = methodFns(r), id = (CMPX[t.n] || [])[i], c = CELL[id];
+  const box = c ? codeBox({ code: c.code, out: cellOut(c), err: !!c.error, figs: cellFigs(id), label: ctitle(c), copyId: "m" + t.n + "-" + i, cellId: id }) : codeBox({ code: r[1], run: false });
+  return `<div class="mdetail">${box}
+    <div class="say"><div><b>결과 모양</b>${esc(r[2])}</div><div><b>좋은 점</b>${esc(r[3])}</div><div><b>한계</b>${esc(r[4])}</div></div>
+    ${fs.length ? `<div class="tags">${fs.map(k => fchip(k, FN[k].n + " 설명 →")).join("")}</div>` : ""}</div>`;
+}
 function bindTopic(t) {
+  $("#md").innerHTML = methodHTML(t, 0);
   $("#mb").addEventListener("click", e => {
     const b = e.target.closest("button"); if (!b) return;
-    const on = b.getAttribute("aria-pressed") !== "true";
-    $$("#mb button").forEach(x => x.setAttribute("aria-pressed", "false"));
-    if (!on) { $("#md").innerHTML = ""; return; }
-    b.setAttribute("aria-pressed", "true");
-    const r = t.compare[+b.dataset.i], fs = methodFns(r);
-    $("#md").innerHTML = `<div class="mdetail"><dl><dt>결과 모양</dt><dd>${esc(r[2])}</dd><dt>좋은 점</dt><dd>${esc(r[3])}</dd><dt>한계</dt><dd>${esc(r[4])}</dd></dl>${fs.length ? `<div class="tags">${fs.map(k => fchip(k, FN[k].n + " 설명 →")).join("")}</div>` : ""}</div>`;
+    $$("#mb button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+    $("#md").innerHTML = methodHTML(t, +b.dataset.i);
   });
 }
 
@@ -1273,21 +1531,48 @@ function about() {
     <p style="font-size:17px">수학 문제를 풀다 막혔을 때, 파이썬으로 어떻게 계산하고 확인할 수 있는지 알려 주는 안내서입니다.</p>
     <div class="two" style="margin:22px 0">
       <div class="box"><h3>범위</h3><p>공통수학1 · 공통수학2 · 대수 · 미적분Ⅰ · 미적분Ⅱ</p></div>
-      <div class="box"><h3>도구</h3><p>SymPy(정확한 기호 계산)를 중심으로 NumPy · SciPy · Matplotlib과 파이썬 내장 기능을 함께 비교합니다.</p></div>
-      <div class="box"><h3>쓰는 법</h3><p>문제 상황을 검색하거나 사진을 찍고 → 방법을 비교하고 → 직접 조작해 보세요.</p></div>
+      <div class="box"><h3>도구</h3><p>SymPy(정확한 기호 계산), NumPy · SciPy(소수로 빠른 계산), Matplotlib(그래프), 파이썬 내장 기능</p></div>
+      <div class="box"><h3>쓰는 법</h3><p>문제를 검색하거나 사진을 찍고 → 방법을 비교하고 → 코드를 고쳐 직접 실행해 보세요.</p></div>
     </div>
-    <p class="muted" style="font-size:14px">모든 예제는 Python 3.13 · SymPy 1.14 · NumPy 2.5 · SciPy 1.18에서 실행해 확인했습니다. '심화' 표시는 교육과정 밖의 내용입니다. 기본 사용법은 오른쪽 위 <b>?</b> 버튼을 누르세요.</p>
-    <p class="muted" style="font-size:14px">참고: 김수환, 『심파이 수학』 · 『중급 미분적분학』, SymPy 1.14 Documentation.</p>
+    <h2 style="margin-top:28px">처음 쓴다면 이것만</h2>
+    <ol style="display:grid;gap:8px;padding-left:20px">
+      <li><code>from sympy import *</code> 를 맨 위에 쓴다.</li>
+      <li><code>x = symbols('x')</code> 로 문자를 먼저 만든다.</li>
+      <li>분수는 <code>Rational(1, 2)</code>. 그냥 <code>1/2</code>는 0.5(소수)가 된다.</li>
+      <li>대문자 <code>Sum · Limit · Integral</code>은 식을 적어 두고 <code>.doit()</code>으로 계산한다. 소문자는 바로 계산한다.</li>
+      <li>방정식은 <code>Eq(좌변, 우변)</code>. <code>=</code>는 쓸 수 없다.</li>
+    </ol>
+    <p class="muted" style="font-size:14px;margin-top:22px">이 사이트의 코드는 브라우저 안에서 SymPy 1.14로 실행됩니다. 구글 코랩에서도 그대로 쓸 수 있습니다.<br>참고: 김수환, 『심파이 수학』 · 『중급 미분적분학』, SymPy 1.14 Documentation.</p>
   </div></div>${foot()}`;
 }
-function foot() { return `<div class="foot"><div class="in">∑ PyMath · 2026 R&E 수학 C조 · 실행 환경 SymPy 1.14 (버전이 다르면 결과가 달라질 수 있습니다)</div></div>`; }
+function foot() { return `<div class="foot"><div class="in">∑ PyMath · 2026 R&E 수학 C조</div></div>`; }
+
+/* ---------- 설정 ---------- */
+const SET = { theme: "system", size: "1", ln: "1", pre: "0" };
+const getSet = k => store.get("pm-set-" + k, SET[k]);
+function applySettings() {
+  const th = getSet("theme"), root = document.documentElement;
+  if (th === "system") delete root.dataset.theme; else root.dataset.theme = th;
+  document.body.style.zoom = getSet("size") === "1" ? "" : getSet("size");
+  root.classList.toggle("noln", getSet("ln") !== "1");
+  $$(".seg[data-set]").forEach(g => $$("button", g).forEach(b => b.setAttribute("aria-pressed", String(b.dataset.val === getSet(g.dataset.set)))));
+  $("#setLn").checked = getSet("ln") === "1"; $("#setPre").checked = getSet("pre") === "1";
+  if (resizeFn) resizeFn();
+}
+$$(".seg[data-set]").forEach(g => g.addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; store.set("pm-set-" + g.dataset.set, b.dataset.val); applySettings(); }));
+$("#setLn").addEventListener("change", e => { store.set("pm-set-ln", e.target.checked ? "1" : "0"); applySettings(); });
+$("#setPre").addEventListener("change", e => { store.set("pm-set-pre", e.target.checked ? "1" : "0"); if (e.target.checked) PY.start(); applySettings(); });
+$("#setReset").addEventListener("click", () => { Object.keys(SET).forEach(k => store.del("pm-set-" + k)); applySettings(); });
+$("#gearBtn").addEventListener("click", () => { updPyStatus(); $("#settings").showModal(); });
+$("#setX").addEventListener("click", () => $("#settings").close());
+$("#settings").addEventListener("click", e => { if (e.target.id === "settings") $("#settings").close(); });
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { if (resizeFn) resizeFn(); });
 
 /* ---------- 라우터 ---------- */
 function render() {
   const h = decodeURIComponent((location.hash || "#home").slice(1));
   resizeFn = null;
-  if (h === "start") { location.replace("#home"); setTimeout(() => $("#help").showModal(), 50); return; }
-  if (h === "index") { location.replace("#tree"); return; }
+  if (h === "start" || h === "index") { location.replace(h === "start" ? "#about" : "#tree"); return; }
   const t = TOPICS.find(x => x.slug === h), f = h.startsWith("f/") ? FN[h.slice(2)] : null;
   const v = t ? "topic" : f ? "fn" : ["guide", "tree", "about"].includes(h) ? h : "home";
   $("#view").innerHTML = t ? topic(t) : f ? fnPage(f) : { home, guide, tree, about }[v]();
@@ -1300,14 +1585,6 @@ function render() {
   window.scrollTo(0, 0);
   document.title = (t ? t.title + " · " : f ? f.n + " · " : "") + "PyMath 문제풀이 안내서";
 }
-document.addEventListener("click", e => {
-  const b = e.target.closest("[data-copy]");
-  if (b) { const code = COPY[b.dataset.copy]; if (code == null) return;
-    const ok = () => { b.textContent = "복사됨"; setTimeout(() => b.textContent = "복사", 1200); };
-    try { navigator.clipboard.writeText(code).then(ok, () => { b.textContent = "복사 안 됨"; }); } catch (err) { b.textContent = "복사 안 됨"; } }
-});
-$("#helpBtn").addEventListener("click", () => $("#help").showModal());
-$("#helpX").addEventListener("click", () => $("#help").close());
 window.addEventListener("hashchange", render);
 let resizeFn = null;
 window.addEventListener("resize", () => { if (resizeFn) resizeFn(); });
@@ -1353,7 +1630,7 @@ const LABS = {
   factor(el) {
     const G = {"x**2 - 2|(옵션 없음)": "x**2 - 2", "x**2 - 2|extension=sqrt(2)": "(x - sqrt(2))*(x + sqrt(2))", "x**2 - 2|extension=sqrt(3)": "x**2 - 2", "x**2 - 2|extension=I": "x**2 - 2", "x**2 - 2|gaussian=True": "x**2 - 2", "x**2 - 2|modulus=2": "x**2", "x**2 - 2|modulus=5": "x**2 - 2", "x**2 - 2|domain='RR'": "2.0*(0.5*x**2 - 1.0)", "x**2 - 2|domain='CC'": "1.0*x**2 - 2.0", "x**2 + 1|(옵션 없음)": "x**2 + 1", "x**2 + 1|extension=sqrt(2)": "x**2 + 1", "x**2 + 1|extension=sqrt(3)": "x**2 + 1", "x**2 + 1|extension=I": "(x - I)*(x + I)", "x**2 + 1|gaussian=True": "(x - I)*(x + I)", "x**2 + 1|modulus=2": "(x + 1)**2", "x**2 + 1|modulus=5": "(x - 2)*(x + 2)", "x**2 + 1|domain='RR'": "1.0*(1.0*x**2 + 1.0)", "x**2 + 1|domain='CC'": "1.0*x**2 + 1.0", "x**4 - 1|(옵션 없음)": "(x - 1)*(x + 1)*(x**2 + 1)", "x**4 - 1|extension=sqrt(2)": "(x - 1)*(x + 1)*(x**2 + 1)", "x**4 - 1|extension=sqrt(3)": "(x - 1)*(x + 1)*(x**2 + 1)", "x**4 - 1|extension=I": "(x - 1)*(x + 1)*(x - I)*(x + I)", "x**4 - 1|gaussian=True": "(x - 1)*(x + 1)*(x - I)*(x + I)", "x**4 - 1|modulus=2": "(x + 1)**4", "x**4 - 1|modulus=5": "(x - 2)*(x - 1)*(x + 1)*(x + 2)", "x**4 - 1|domain='RR'": "1.0*(1.0*x - 1.0)*(1.0*x + 1.0)*(1.0*x**2 + 1.0)", "x**4 - 1|domain='CC'": "1.0*x**4 - 1.0", "x**4 + 4|(옵션 없음)": "(x**2 - 2*x + 2)*(x**2 + 2*x + 2)", "x**4 + 4|extension=sqrt(2)": "(x**2 - 2*x + 2)*(x**2 + 2*x + 2)", "x**4 + 4|extension=sqrt(3)": "(x**2 - 2*x + 2)*(x**2 + 2*x + 2)", "x**4 + 4|extension=I": "(x - 1 - I)*(x - 1 + I)*(x + 1 - I)*(x + 1 + I)", "x**4 + 4|gaussian=True": "(x - 1 - I)*(x - 1 + I)*(x + 1 - I)*(x + 1 + I)", "x**4 + 4|modulus=2": "x**4", "x**4 + 4|modulus=5": "(x - 2)*(x - 1)*(x + 1)*(x + 2)", "x**4 + 4|domain='RR'": "4.0*(0.5*x**2 - 1.0*x + 1.0)*(0.5*x**2 + 1.0*x + 1.0)", "x**4 + 4|domain='CC'": "1.0*x**4 + 4.0", "x**3 - 2|(옵션 없음)": "x**3 - 2", "x**3 - 2|extension=sqrt(2)": "x**3 - 2", "x**3 - 2|extension=sqrt(3)": "x**3 - 2", "x**3 - 2|extension=I": "x**3 - 2", "x**3 - 2|gaussian=True": "x**3 - 2", "x**3 - 2|modulus=2": "x**3", "x**3 - 2|modulus=5": "(x + 2)*(x**2 - 2*x - 1)", "x**3 - 2|domain='RR'": "2.0*(0.5*x**3 - 1.0)", "x**3 - 2|domain='CC'": "1.0*x**3 - 2.0", "x**4 - 5*x**2 + 6|(옵션 없음)": "(x**2 - 3)*(x**2 - 2)", "x**4 - 5*x**2 + 6|extension=sqrt(2)": "(x - sqrt(2))*(x + sqrt(2))*(x**2 - 3)", "x**4 - 5*x**2 + 6|extension=sqrt(3)": "(x - sqrt(3))*(x + sqrt(3))*(x**2 - 2)", "x**4 - 5*x**2 + 6|extension=I": "(x**2 - 3)*(x**2 - 2)", "x**4 - 5*x**2 + 6|gaussian=True": "(x**2 - 3)*(x**2 - 2)", "x**4 - 5*x**2 + 6|modulus=2": "x**2*(x + 1)**2", "x**4 - 5*x**2 + 6|modulus=5": "(x**2 - 2)*(x**2 + 2)", "x**4 - 5*x**2 + 6|domain='RR'": "6.0*(0.333333333333333*x**2 - 1.0)*(0.5*x**2 - 1.0)", "x**4 - 5*x**2 + 6|domain='CC'": "1.0*x**4 - 5.0*x**2 + 6.0"};
     const P = [...new Set(Object.keys(G).map(k => k.split("|")[0]))], O = [...new Set(Object.keys(G).map(k => k.split("|")[1]))];
-    el.innerHTML = `<div class="lab"><div class="lab-h"><h3>같은 식, 다른 옵션</h3><span class="muted" style="font-size:13px">SymPy 1.14 실행 결과 ${P.length * O.length}개</span></div>
+    el.innerHTML = `<div class="lab"><div class="lab-h"><h3>같은 식, 다른 옵션</h3><span class="muted" style="font-size:13px"></span></div>
       <div class="controls"><label for="fp">식 <select id="fp">${P.map(p => `<option>${p}</option>`).join("")}</select></label></div>
       <div class="tbl"><table style="min-width:520px"><thead><tr><th>옵션</th><th>factor 결과</th><th>한 줄 해석</th></tr></thead><tbody id="ftb2"></tbody></table></div></div>`;
     const draw = () => {
@@ -1369,7 +1646,7 @@ const LABS = {
     $("#fp", el).addEventListener("change", draw); resizeFn = null; draw();
   },
   geo(el) {
-    const L = labShell(el, "공비 r을 바꾸며 등비급수 보기", "1-17의 Piecewise 조건 |r| < 1을 눈으로 확인", `<label for="gr">공비 r <input id="gr" type="range" min="-1.3" max="1.3" step="0.05" value="0.5"></label><b id="grv"></b>`);
+    const L = labShell(el, "공비 r을 바꾸며 등비급수 보기", "|r| < 1일 때만 수렴", `<label for="gr">공비 r <input id="gr" type="range" min="-1.3" max="1.3" step="0.05" value="0.5"></label><b id="grv"></b>`);
     const draw = () => {
       const r = +L.q("#gr").value; L.q("#grv").textContent = "r = " + r.toFixed(2);
       const S = []; let s = 0; for (let k = 0; k <= 30; k++) { s += Math.pow(r, k); S.push(s); }
@@ -1385,7 +1662,7 @@ const LABS = {
   },
   dir(el) {
     const F = { "1/x": [x => 1 / x, "oo", "-oo", "zoo (실수 범위에서는 '존재하지 않음')"], "|x|/x": [x => Math.abs(x) / x, "1", "-1", "ValueError: 좌극한 -1, 우극한 1"], "sin(x)/x": [x => Math.sin(x) / x, "1", "1", "1"] };
-    const L = labShell(el, "x → 0으로 다가갈 때: 오른쪽, 왼쪽, 양쪽", "2-3, 2-7, 2-8과 같은 함수", `<label for="df">함수 <select id="df">${Object.keys(F).map(k => `<option>${k}</option>`).join("")}</select></label><label for="dk">x와 0의 거리 10^-k, k = <input id="dk" type="range" min="1" max="6" step="1" value="2"></label><b id="dkv"></b>`);
+    const L = labShell(el, "x → 0으로 다가갈 때: 오른쪽, 왼쪽, 양쪽", "", `<label for="df">함수 <select id="df">${Object.keys(F).map(k => `<option>${k}</option>`).join("")}</select></label><label for="dk">x와 0의 거리 10^-k, k = <input id="dk" type="range" min="1" max="6" step="1" value="2"></label><b id="dkv"></b>`);
     const draw = () => {
       const key = L.q("#df").value, k = +L.q("#dk").value, [f, rp, rm, both] = F[key], d = Math.pow(10, -k);
       L.q("#dkv").textContent = "k = " + k;
@@ -1394,12 +1671,12 @@ const LABS = {
       p.fn(x => x > 0 ? f(x) : NaN, css("--c1"), 2, [], 800).fn(x => x < 0 ? f(x) : NaN, css("--c3"), 2, [], 800);
       const yr = f(d), yl = f(-d), cl = v => Math.max(ylim[0], Math.min(ylim[1], v));
       p.dot(Math.min(d * 50, 0.95), cl(yr), css("--c1"), 5).dot(-Math.min(d * 50, 0.95), cl(yl), css("--c3"), 5).done();
-      L.ro.innerHTML = `f(+${d}) = ${(+yr.toPrecision(7))}     f(−${d}) = ${(+yl.toPrecision(7))}   (점의 위치는 보기 좋게 늘려 그림)\n\nlimit(${key}, x, 0)            → ${rp}   <span class="hl">← dir을 안 쓰면 '+'(우극한)</span>\nlimit(${key}, x, 0, dir='-')   → ${rm}\nlimit(${key}, x, 0, dir='+-')  → ${both}`;
+      L.ro.innerHTML = `f(+${d}) = ${(+yr.toPrecision(7))}     f(−${d}) = ${(+yl.toPrecision(7))}\n\nlimit(${key}, x, 0)            → ${rp}   <span class="hl">← dir을 안 쓰면 '+'(우극한)</span>\nlimit(${key}, x, 0, dir='-')   → ${rm}\nlimit(${key}, x, 0, dir='+-')  → ${both}`;
     };
     L.q("#df").addEventListener("change", draw); L.q("#dk").addEventListener("input", draw); resizeFn = draw; draw();
   },
   secant(el) {
-    const L = labShell(el, "할선이 접선이 되는 과정", "f(x) = x² − 3x + 1, a = 1 (3-1의 기본값)", `<label for="sh">h <input id="sh" type="range" min="-3" max="0" step="0.05" value="0"></label><b id="shv"></b><button type="button" id="ss">h의 부호 바꾸기 (현재: 오른쪽)</button>`);
+    const L = labShell(el, "할선이 접선이 되는 과정", "f(x) = x² − 3x + 1, a = 1", `<label for="sh">h <input id="sh" type="range" min="-3" max="0" step="0.05" value="0"></label><b id="shv"></b><button type="button" id="ss">h의 부호 바꾸기 (현재: 오른쪽)</button>`);
     let sign = 1;
     const f = x => x * x - 3 * x + 1, a = 1, fa = f(a);
     const draw = () => {
@@ -1423,7 +1700,7 @@ const LABS = {
       ["sin a + sin b = 2 sin((a+b)/2) cos((a−b)/2)", (a, b) => Math.sin(a) + Math.sin(b) - 2 * Math.sin((a + b) / 2) * Math.cos((a - b) / 2), true],
       ["cos(a+b) = cos a cos b + sin a sin b  (틀린 공식)", (a, b) => Math.cos(a + b) - (Math.cos(a) * Math.cos(b) + Math.sin(a) * Math.sin(b)), false]
     ];
-    const L = labShell(el, "공식을 숫자 1000개로 검증하기", "4-14와 같은 방법. 좌변 − 우변이 0인지 본다", `<label for="ii">공식 <select id="ii">${ID.map((d, i) => `<option value="${i}">${d[0]}</option>`).join("")}</select></label><button type="button" class="primary" id="ir">다시 뽑기</button>`);
+    const L = labShell(el, "공식을 숫자 1000개로 검증하기", "좌변 − 우변이 0인지 본다", `<label for="ii">공식 <select id="ii">${ID.map((d, i) => `<option value="${i}">${d[0]}</option>`).join("")}</select></label><button type="button" class="primary" id="ir">다시 뽑기</button>`);
     const draw = () => {
       const [name, g, ok] = ID[+L.q("#ii").value]; const pts = [];
       let mx = 0; for (let i = 0; i < 1000; i++) { const a = Math.random() * 20 - 10, b = Math.random() * 20 - 10, v = g(a, b); if (isFinite(v) && Math.abs(v) < 1e6) { pts.push([a, v]); mx = Math.max(mx, Math.abs(v)); } }
@@ -1437,7 +1714,7 @@ const LABS = {
   },
   newton(el) {
     const f = x => x ** 3 - 6 * x ** 2 + 11 * x - 6;
-    const L = labShell(el, "nsolve의 초기값을 바꿔 보기", "f(x) = x³ − 6x² + 11x − 6, 근 1, 2, 3 (5-12)", `<label for="nx">초기값 <input id="nx" type="range" min="0" max="4" step="0.05" value="1.6"></label><b id="nxv"></b>`);
+    const L = labShell(el, "nsolve의 초기값을 바꿔 보기", "f(x) = x³ − 6x² + 11x − 6, 근 1, 2, 3", `<label for="nx">초기값 <input id="nx" type="range" min="0" max="4" step="0.05" value="1.6"></label><b id="nxv"></b>`);
     const draw = () => {
       const x0 = +L.q("#nx").value; L.q("#nxv").textContent = "x₀ = " + x0.toFixed(2);
       let a = x0, b = x0 + 0.25; const path = [a, b];
@@ -1452,7 +1729,7 @@ const LABS = {
     L.q("#nx").addEventListener("input", draw); resizeFn = draw; draw();
   },
   points(el) {
-    const L = labShell(el, "점 개수에 따라 달라지는 그래프", "y = sin(1/x), 0.01 ≤ x ≤ 1 (6-17, 6-18)", `<label for="pn">linspace 점 개수 <input id="pn" type="range" min="1" max="3.7" step="0.05" value="1.48"></label><b id="pnv"></b>`);
+    const L = labShell(el, "점 개수에 따라 달라지는 그래프", "y = sin(1/x), 0.01 ≤ x ≤ 1", `<label for="pn">linspace 점 개수 <input id="pn" type="range" min="1" max="3.7" step="0.05" value="1.48"></label><b id="pnv"></b>`);
     const draw = () => {
       const n = Math.round(Math.pow(10, +L.q("#pn").value)); L.q("#pnv").textContent = n + "개";
       const pts = []; for (let i = 0; i < n; i++) { const x = 0.01 + (1 - 0.01) * i / (n - 1); pts.push([x, Math.sin(1 / x)]); }
@@ -1463,7 +1740,7 @@ const LABS = {
     L.q("#pn").addEventListener("input", draw); resizeFn = draw; draw();
   },
   simpson(el) {
-    const L = labShell(el, "사다리꼴과 심프슨, n을 늘리면", "∫₀^π sin x dx = 2 (7-11)", `<label for="sn">구간 개수 n <input id="sn" type="range" min="1" max="5" step="1" value="1"></label><b id="snv"></b><label for="sm">보기 <select id="sm"><option value="t">사다리꼴</option><option value="s">심프슨(포물선)</option></select></label>`);
+    const L = labShell(el, "사다리꼴과 심프슨, n을 늘리면", "∫₀^π sin x dx = 2", `<label for="sn">구간 개수 n <input id="sn" type="range" min="1" max="5" step="1" value="1"></label><b id="snv"></b><label for="sm">보기 <select id="sm"><option value="t">사다리꼴</option><option value="s">심프슨(포물선)</option></select></label>`);
     const trap = n => { const h = Math.PI / n; let s = (Math.sin(0) + Math.sin(Math.PI)) / 2; for (let i = 1; i < n; i++) s += Math.sin(i * h); return s * h; };
     const simp = n => { const h = Math.PI / n; let s = Math.sin(0) + Math.sin(Math.PI); for (let i = 1; i < n; i++) s += (i % 2 ? 4 : 2) * Math.sin(i * h); return s * h / 3; };
     const draw = () => {
@@ -1482,7 +1759,7 @@ const LABS = {
   },
   bisect(el) {
     const g = x => x ** 3 + x - 1;
-    const L = labShell(el, "사잇값 정리와 이분법, 한 단계씩", "x³ + x − 1 = 0, 구간 [0, 1] (8-13 ~ 8-15)", `<button type="button" class="primary" id="bs">한 단계 진행</button><button type="button" id="br">처음으로</button>`);
+    const L = labShell(el, "사잇값 정리와 이분법, 한 단계씩", "x³ + x − 1 = 0, 구간 [0, 1]", `<button type="button" class="primary" id="bs">한 단계 진행</button><button type="button" id="br">처음으로</button>`);
     let st;
     const reset = () => { st = { a: 0, b: 1, log: [] }; draw(); };
     const step = () => { const m = (st.a + st.b) / 2, s = g(st.a) * g(m) > 0; st.log.push([st.a, st.b, m, g(m)]); if (s) st.a = m; else st.b = m; draw(); };
@@ -1497,7 +1774,7 @@ const LABS = {
   },
   minimum(el) {
     const f = x => x ** 3 - 3 * x;
-    const L = labShell(el, "닫힌 구간의 최솟값: 극소와 끝점", "f(x) = x³ − 3x (9-9)", `<label for="ma">왼쪽 끝 a <input id="ma" type="range" min="-3" max="0.5" step="0.1" value="-3"></label><b id="mav"></b><label for="mb">오른쪽 끝 b <input id="mb" type="range" min="0.6" max="3" step="0.1" value="3"></label><b id="mbv"></b>`);
+    const L = labShell(el, "닫힌 구간의 최솟값: 극소와 끝점", "f(x) = x³ − 3x", `<label for="ma">왼쪽 끝 a <input id="ma" type="range" min="-3" max="0.5" step="0.1" value="-3"></label><b id="mav"></b><label for="mb">오른쪽 끝 b <input id="mb" type="range" min="0.6" max="3" step="0.1" value="3"></label><b id="mbv"></b>`);
     const draw = () => {
       const a = +L.q("#ma").value, b = +L.q("#mb").value; L.q("#mav").textContent = a.toFixed(1); L.q("#mbv").textContent = b.toFixed(1);
       const cand = [[a, "끝점"], [b, "끝점"], ...[-1, 1].filter(c => c > a && c < b).map(c => [c, c < 0 ? "극대" : "극소"])];
@@ -1516,7 +1793,7 @@ const LABS = {
     L.q("#ma").addEventListener("input", draw); L.q("#mb").addEventListener("input", draw); resizeFn = draw; draw();
   },
   hilbert(el) {
-    const L = labShell(el, "소수 계산 vs 분수 계산: 힐베르트 행렬", "Hᵢⱼ = 1/(i + j − 1), H × H⁻¹이 단위행렬인지 (10-13, 10-14)", `<label for="hn">크기 n <input id="hn" type="range" min="2" max="12" step="1" value="12"></label><b id="hnv"></b>`);
+    const L = labShell(el, "소수 계산 vs 분수 계산: 힐베르트 행렬", "Hᵢⱼ = 1/(i + j − 1), H × H⁻¹이 단위행렬인지", `<label for="hn">크기 n <input id="hn" type="range" min="2" max="12" step="1" value="12"></label><b id="hnv"></b>`);
     const floatErr = n => {
       const A = [...Array(n)].map((_, i) => [...Array(n)].map((_, j) => 1 / (i + j + 1))), M = A.map((r, i) => [...r, ...r.map((_, j) => +(i === j))]);
       for (let c = 0; c < n; c++) { let piv = c; for (let r = c + 1; r < n; r++) if (Math.abs(M[r][c]) > Math.abs(M[piv][c])) piv = r; [M[c], M[piv]] = [M[piv], M[c]]; const d = M[c][c]; for (let k = 0; k < 2 * n; k++) M[c][k] /= d; for (let r = 0; r < n; r++) if (r !== c) { const fct = M[r][c]; for (let k = 0; k < 2 * n; k++) M[r][k] -= fct * M[c][k]; } }
@@ -1539,7 +1816,7 @@ const LABS = {
       p.poly(errs.map(([k, e]) => [k, Math.log10(Math.max(e, 1e-17))]), css("--c1"), 2);
       errs.forEach(([k, e]) => p.dot(k, Math.log10(Math.max(e, 1e-17)), k === n ? css("--warn") : css("--c1"), k === n ? 6 : 3.5)); p.done();
       const ex = exactErr(n), fe = errs[n - 2][1];
-      L.ro.innerHTML = `세로축: log₁₀(단위행렬과의 최대 오차)\n소수(64비트 부동소수점, 가우스-조던 소거) : 최대 오차 <span class="hl">${fe.toExponential(2)}</span>\n  (NumPy는 계산 순서가 달라 12×12에서 0.089, 10-13 참고. 값은 달라도 n이 커질수록 오차가 급격히 커지는 것은 같다)\n분수(SymPy처럼 정확한 유리수)            : 틀린 성분 ${ex.bad}개 → H × H⁻¹ = 단위행렬 (오차 0)\nH⁻¹ 성분의 최대 크기 ≈ ${ex.big.toString().length > 12 ? (Number(ex.big)).toExponential(2) : ex.big.toString()}  ← 이렇게 큰 수끼리 빼면서 소수 오차가 커진다`;
+      L.ro.innerHTML = `세로축: log₁₀(단위행렬과의 최대 오차)\n소수(64비트 부동소수점, 가우스-조던 소거) : 최대 오차 <span class="hl">${fe.toExponential(2)}</span>\n  (NumPy는 계산 순서가 달라 12×12에서 0.089. 값은 달라도 n이 커질수록 오차가 급격히 커지는 것은 같다)\n분수(SymPy처럼 정확한 유리수)            : 틀린 성분 ${ex.bad}개 → H × H⁻¹ = 단위행렬 (오차 0)\nH⁻¹ 성분의 최대 크기 ≈ ${ex.big.toString().length > 12 ? (Number(ex.big)).toExponential(2) : ex.big.toString()}  ← 이렇게 큰 수끼리 빼면서 소수 오차가 커진다`;
     };
     L.q("#hn").addEventListener("input", draw); resizeFn = draw; draw();
   }
@@ -1558,16 +1835,18 @@ LABS.expeq = function (el) {
       p.fn(g, css("--ink"), 2);
       for (let i = 0; i + 1 < path.length && i < 8; i++) { const u = path[i], v = path[i + 1]; if (Math.abs(u) > 5 || Math.abs(v) > 5) break; p.poly([[u, Math.max(-40, Math.min(60, g(u)))], [v, 0]], css("--c2"), 1); }
       p.dot(x0, Math.max(-40, Math.min(60, g(x0))), css("--c2"), 5); const ok = isFinite(b) && Math.abs(b - 2) < 1e-6; if (isFinite(b) && Math.abs(b) < 5) p.dot(b, 0, css("--c1"), 6); p.done();
-      L.ro.innerHTML = `y = 3²ˣ − 6·3ˣ − 27 의 그래프와 x축이 만나는 점이 실수 해다.\nnsolve(…, x, ${x0.toFixed(2)})  →  ${isFinite(b) ? b.toFixed(12) : "수렴 실패"}   (주황 선: 반복 과정)\n` + (ok ? `nsimplify(…) → 2   실수 해는 x = 2 하나뿐이다.` : `<span class="hl">초기값이 너무 멀면 수렴하지 않을 수 있다. 그래프를 보고 근 가까이에서 시작한다.</span>`) + `\nsolve는 여기에 복소수 해 1 + iπ/log 3까지 더해서 준다.`;
+      L.ro.innerHTML = `nsolve(…, x, ${x0.toFixed(2)})  →  ${isFinite(b) ? b.toFixed(12) : "수렴 실패"}   (주황 선: 반복 과정)\n` + (ok ? `nsimplify(…) → 2` : `<span class="hl">초기값이 너무 멀면 수렴하지 않는다.</span>`);
     } else {
       const p = Plot(L.cv, [-6, 12], [-45, 40]).axes(ticks(-6, 12, 9), ticks(-40, 40, 4));
       const ctx = p.ctx; ctx.fillStyle = css("--warn-soft"); ctx.fillRect(p.X(-6), p.pad.t, p.X(0) - p.X(-6), p.H - p.pad.t - p.pad.b);
       p.fn(q, css("--ink"), 2).dot(9, 0, css("--c1"), 6).dot(-3, 0, css("--warn"), 6).done();
-      L.ro.innerHTML = `3ˣ = t 로 두면  t² − 6t − 27 = 0,  solve → [−3, 9]\n<span class="hl">t = 3ˣ > 0 이므로 t = −3은 버린다 (주황 영역).</span>\nt = 9 → 3ˣ = 9 → x = 2.  컴퓨터는 t > 0 조건을 모르므로 사람이 챙겨야 한다.`;
+      L.ro.innerHTML = `t² − 6t − 27 = 0  →  solve → [−3, 9]\n<span class="hl">t = 3ˣ > 0 이므로 t = −3은 버린다 (주황 영역).</span>\nt = 9 → x = 2`;
     }
   };
   L.q("#em").addEventListener("change", draw); L.q("#ex").addEventListener("input", draw); resizeFn = draw; draw();
 };
+applySettings();
+if (getSet("pre") === "1") PY.start();
 render();
 </script>
 

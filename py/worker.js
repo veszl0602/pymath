@@ -14,15 +14,22 @@ async function boot() {
   }
   const src = await (await fetch(BASE + "runner.py")).text();
   py.runPython(src);
+  py.FS.writeFile("/home/pyodide/gen.py", await (await fetch(BASE + "gen.py")).text());
+  py.runPython("import sys; sys.path.insert(0, '/home/pyodide'); import gen");
   const ver = py.runPython("import sympy; sympy.__version__");
   self.postMessage({ type: "ready", ver });
   return ver;
 }
 const booting = boot().catch(e => { self.postMessage({ type: "ready", error: String(e) }); throw e; });
 self.onmessage = async e => {
-  const { id, code, pre } = e.data;
+  const { id, code, pre, gen } = e.data;
   let ver;
   try { ver = await booting; } catch (err) { self.postMessage({ id, err: "파이썬을 불러오지 못했습니다. 인터넷 연결을 확인해 주세요." }); return; }
+  if (gen) {
+    try { const r = py.pyimport("gen").make(gen.fn, gen.text).toJs({ dict_converter: Object.fromEntries }); self.postMessage({ id, ...r, ver }); }
+    catch (err) { self.postMessage({ id, fail: "문장을 이해하지 못했어요.", ver }); }
+    return;
+  }
   const all = (pre || []).join("\n") + "\n" + code;
   const need = [];
   if (/numpy|np\./.test(all) || /scipy/.test(all) || /lambdify/.test(all)) need.push("numpy");

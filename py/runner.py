@@ -20,7 +20,7 @@ def _exec(src, g, echo):
     for node in tree.body:
         if echo and isinstance(node, ast.Expr) and not (isinstance(node.value, ast.Call) and getattr(node.value.func, "id", "") == "print"):
             v = eval(compile(ast.Expression(node.value), "<code>", "eval"), g)
-            if v is not None:
+            if v is not None and not type(v).__name__.endswith("Plot"):
                 print(repr(v) if isinstance(v, str) else v)
         else:
             exec(compile(ast.Module([node], []), "<code>", "exec"), g)
