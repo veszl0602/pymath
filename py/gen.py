@@ -23,8 +23,10 @@ _TR = standard_transformations + (implicit_multiplication_application, convert_x
 _NAMES = "x y z t k n a b c h r m"
 _LOC = {s: Symbol(s) for s in _NAMES.split()}
 _LOC.update({"e": E, "E": E, "pi": pi, "oo": oo, "I": I, "i": I})
-_SUP = str.maketrans("⁰¹²³⁴⁵⁶⁷⁸⁹⁻", "0123456789-")
-_SUB = str.maketrans("₀₁₂₃₄₅₆₇₈₉₊₋", "0123456789+-")
+_SUPC = "⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻⁼⁽⁾ᵃᵇᶜᵈᵉᶠᵍʰⁱʲᵏˡᵐⁿᵒᵖʳˢᵗᵘᵛʷˣʸᶻ"
+_SUBC = "₀₁₂₃₄₅₆₇₈₉₊₋₌₍₎ₐₑₕᵢⱼₖₗₘₙₒₚᵣₛₜᵤᵥₓ"
+_SUP = str.maketrans(_SUPC, "0123456789+-=()abcdefghijklmnoprstuvwxyz")
+_SUB = str.maketrans(_SUBC, "0123456789+-=()aehijklmnoprstuvx")
 FUNS = "sin cos tan cot sec csc asin acos atan exp log ln sqrt Abs floor".split()
 
 
@@ -32,7 +34,10 @@ def _norm(s):
     s = s.replace("−", "-").replace("–", "-").replace("×", "*").replace("÷", "/").replace("·", "*").replace("⋅", "*")
     s = s.replace("π", "pi").replace("∞", "oo").replace("무한대", "oo").replace("θ", "t").replace("√", "sqrt")
     s = s.replace("≤", "<=").replace("≥", ">=").replace("＝", "=").replace("→", "->").replace("，", ",")
-    s = re.sub(r"([⁰¹²³⁴⁵⁶⁷⁸⁹⁻]+)", lambda m: "^(" + m.group(1).translate(_SUP) + ")", s)
+    s = s.replace("≠", "!=")
+    s = re.sub("[" + _SUPC + "]+", lambda m: "^(" + m.group(0).translate(_SUP) + ")", s)
+    s = re.sub("([CP])([" + _SUBC + "]+)", lambda m: m.group(1) + m.group(2).translate(_SUB), s)  # ₙC₂, ₙP₂
+    s = re.sub("([A-Za-z])([" + _SUBC + "]+)", lambda m: m.group(1) + "(" + m.group(2).translate(_SUB) + ")", s)
     s = s.translate(_SUB)
     s = re.sub(r"\|([^|]+)\|", r"Abs(\1)", s)
     s = re.sub(r"\bln\b", "log", s)
@@ -280,7 +285,7 @@ def build(fn, text):
         return (f"I_ = Integral({pr(e)}, ({vv}, {pr(a)}, {pr(b)}))\nprint(I_.doit())   # 정확한 값\n"
                 f"for m_ in ['left', 'right', 'midpoint', 'trapezoid']:\n    print(m_, I_.as_sum({nn}, method=m_))")
     if fn in ("math.comb", "binomial", "expand_func", "factorial"):
-        mc = re.search(r"(\d+|[a-z])\s*C\s*(\d+|[a-z])", T)
+        mc = re.search(r"(\d+|[a-z])\s*C\s*(\d+|[a-z])", _norm(T))
         mf = re.search(r"(\d+|[a-z])\s*!", T)
         if fn == "factorial" or (fn == "math.comb" and mf and not mc):
             if not mf:
@@ -368,6 +373,7 @@ def build(fn, text):
     if fn == "rsolve":
         s = _norm(T)
         s = re.sub(r"a_?\{?\(?n\s*\+\s*1\)?\}?", "f(n+1)", s)
+        s = re.sub(r"a_?\{?\(n\)\}?", "f(n)", s)
         s = re.sub(r"a_?\{?\(?n\)?\}?(?![+\w(])", "f(n)", s)
         m0 = re.search(r"a_?\(?([0-9])\)?\s*=\s*(-?[0-9]+)", s)
         s2 = re.sub(r"a_?\(?([0-9])\)?\s*=\s*(-?[0-9]+)", " ", s)
