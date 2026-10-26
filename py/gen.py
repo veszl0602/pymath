@@ -328,6 +328,91 @@ def build(fn, text):
     if fn == "LUdecomposition":
         M = mat()
         return f"L, U, _ = Matrix({M}).LUdecomposition()\nprint(L)\nprint(U)\nprint(L * U == Matrix({M}))"
+    # ---- 경우의 수: 다 세기·큰 조합·약수 ----
+    if fn == "itertools":
+        mc = re.search(r"(\d+)\s*([CP])\s*(\d+)", tn)
+        if mc:
+            nq, kind, rq = int(mc.group(1)), mc.group(2), int(mc.group(3))
+            items = f"range(1, {nq + 1})"
+        else:
+            ml = re.search(r"((?:-?\w+\s*,\s*)+-?\w+)\s*(?:에서|중에서|중)", T)
+            mr = re.search(r"(\d+)\s*(?:개|명|장|자리)\s*(?:를|을)?\s*(?:뽑|골라|고르|택|나열|세우|만들)", T)
+            mn = re.search(r"(\d+)\s*(?:개|명|장)\s*(?:중|에서)", T)
+            if ml:
+                its = [w.strip() for w in ml.group(1).split(",")]
+                items = "[" + ", ".join(w if re.fullmatch(r"-?\d+", w) else repr(w) for w in its) + "]"
+                nq = len(its)
+            elif mn:
+                nq = int(mn.group(1)); items = f"range(1, {nq + 1})"
+            else:
+                _need("무엇에서 몇 개를 고르는지 적어 주세요. 예: 1, 2, 3, 4, 5에서 3개를 뽑아 나열")
+            if not mr:
+                _need("몇 개를 고르는지 적어 주세요. 예: 3개를 뽑아")
+            rq = int(mr.group(1))
+            kind = "C" if (re.search(r"조합|뽑기만|순서\s*없|고르는\s*방법", T) and not re.search(r"나열|세우|순서대로", T)) else "P"
+        if rq > nq:
+            _need("고르는 개수가 전체보다 많아요.")
+        f_, mf_ = ("combinations", "comb") if kind == "C" else ("permutations", "perm")
+        return (f"from itertools import {f_}\nimport math\nitems = {items}\n"
+                f"print(sum(1 for _ in {f_}(items, {rq})))   # 하나씩 다 세기\n"
+                f"print(math.{mf_}({nq}, {rq}))   # 공식 {nq}{kind}{rq}\n"
+                f"print(list({f_}(items, {rq}))[:5])   # 처음 5개")
+    if fn == "special.comb":
+        mc = re.search(r"(\d+)\s*C\s*(\d+)", tn)
+        if not mc:
+            _need("60C30처럼 수로 적어 주세요.")
+        nq, rq = mc.groups()
+        return (f"from scipy.special import comb\nimport math\nprint(comb({nq}, {rq}))   # 기본값: 소수\n"
+                f"print(comb({nq}, {rq}, exact=True))   # exact=True: 정수\nprint(math.comb({nq}, {rq}))")
+    if fn == "divisor_count":
+        mn = re.search(r"\d+", tn)
+        if not mn:
+            _need("수를 적어 주세요. 예: 360의 약수 개수")
+        N_ = int(mn.group(0))
+        if N_ < 1 or N_ > 10**12:
+            _need("1 이상 10¹² 이하의 자연수를 적어 주세요.")
+        tail = f"\nprint(sum(1 for d in range(1, {N_ + 1}) if {N_} % d == 0))   # 하나씩 나누어 세기" if N_ <= 10**6 else ""
+        return f"print(divisor_count({N_}))\nprint(factorint({N_}))   # 소인수분해\nprint(divisors({N_}))" + tail
+    # ---- 도형의 방정식 ----
+    if fn in ("Line", "Circle", "discriminant"):
+        PT = r"\(\s*(-?[\d./]+)\s*,\s*(-?[\d./]+)\s*\)"
+        pts = [f"Point({pr(_num(a_))}, {pr(_num(b_))})" for a_, b_ in re.findall(PT, T)]
+        g = slots(re.sub(PT, " ", T))
+        ge = [l - r for l, r in g["eqs"]] + [q for q in g["exprs"] if not q.is_number]
+        ge = [q for q in ge if q.free_symbols & {Symbol("x"), Symbol("y")}]
+        if fn == "discriminant":
+            q = ge[0] if ge else None
+            if q is None:
+                _need("식을 적어 주세요. 예: x^2 + kx + 1의 판별식")
+            ks = sorted(q.free_symbols - {Symbol("x")}, key=str)
+            out = f"D = discriminant({pr(q)}, x)\nprint(D)\nprint(factor(D))"
+            if ks:
+                out += f"\nprint(solve(D, {ks[0]}))   # D = 0 (중근, 접할 때)"
+            return out
+        if fn == "Line":
+            if len(pts) >= 2:
+                return (f"l = Line({pts[0]}, {pts[1]})\nprint(l.equation())   # = 0 꼴\nprint(l.slope)   # 기울기 (수직선이면 oo)")
+            if len(ge) >= 2:
+                return (f"l1, l2 = Line({pr(ge[0])}), Line({pr(ge[1])})\nprint(l1.is_perpendicular(l2), l1.is_parallel(l2))   # 수직? 평행?\n"
+                        f"print(l1.intersection(l2))   # 만나는 점")
+            if pts and ge:
+                return (f"l = Line({pr(ge[0])})\nprint(l.distance({pts[0]}))   # 점과 직선 사이의 거리\nprint(l.contains({pts[0]}))   # 점이 직선 위에 있나")
+            if ge:
+                return f"l = Line({pr(ge[0])})\nprint(l.slope)\nprint(l.equation())"
+            _need("두 점 (2, 1), (2, 5)나 직선의 방정식을 적어 주세요.")
+        if len(pts) >= 3:
+            return (f"c = Circle({pts[0]}, {pts[1]}, {pts[2]})\nprint(c)   # 일직선 위의 세 점이면 선분이 나온다\n"
+                    f"if isinstance(c, Circle):\n    print(c.equation())")
+        if not ge:
+            _need("원의 방정식을 적어 주세요. 예: x^2 + y^2 - 4x + 6y - 3 = 0")
+        out = f"c = Circle({pr(ge[0])})\nprint(c.center, c.radius)"
+        if pts and re.search(r"접선|접하는", T):
+            out += f"\nprint([l.equation() for l in c.tangent_lines({pts[0]})])   # 접선"
+        elif pts:
+            out += f"\nprint(c.center.distance({pts[0]}), c.encloses_point({pts[0]}))   # 중심까지 거리, 원 안에 있나"
+        elif len(ge) >= 2:
+            out += f"\nl = Line({pr(ge[1])})\nprint(c.intersection(l))   # 만나는 점 (없으면 [])\nprint(l.distance(c.center))   # 중심과 직선 사이 거리"
+        return out
     if fn in ("limit", "Limit"):
         need_e(); need_p("다가가는 값")
         if fn == "Limit":
