@@ -42,6 +42,8 @@ def _norm(s):
     s = re.sub(r"\|([^|]+)\|", r"Abs(\1)", s)
     s = re.sub(r"\bln\b", "log", s)
     s = re.sub(r"sqrt\s*(\d+|[a-z])", r"sqrt(\1)", s)
+    # sin a cos b → sin(a) cos(b): 괄호 없이 쓴 삼각함수·로그의 인수는 바로 뒤 한 덩어리(2x, a, x/2)까지
+    s = re.sub(r"\b(sin|cos|tan|cot|sec|csc|log|exp)\s+(\d*[a-z](?:/\d+)?)(?![\w(^])", r"\1(\2)", s)
     return s
 
 
@@ -284,6 +286,22 @@ def build(fn, text):
         vv = Symbol("x") if Symbol("x") in d["free"] else v
         return (f"I_ = Integral({pr(e)}, ({vv}, {pr(a)}, {pr(b)}))\nprint(I_.doit())   # 정확한 값\n"
                 f"for m_ in ['left', 'right', 'midpoint', 'trapezoid']:\n    print(m_, I_.as_sum({nn}, method=m_))")
+    if fn == "math.gcd":
+        nums = re.findall(r"-?\d+", T)
+        if len(nums) < 2:
+            _need("정수 두 개 이상을 적어 주세요. 예: 12와 18")
+        return f"import math\nprint(math.gcd({', '.join(nums[:4])}))\nprint(math.lcm({', '.join(nums[:4])}))   # 최소공배수"
+    if fn == "math.perm":
+        mp = re.search(r"(\d+)\s*P\s*(\d+)", _norm(T))
+        if not mp:
+            _need("5P3처럼 수로 적어 주세요.")
+        nq, rq = mp.groups()
+        return f"import math\nprint(math.perm({nq}, {rq}))\nprint(math.factorial({nq}) // math.factorial({nq} - {rq}))   # n!/(n − r)!"
+    if fn == "math.factorial":
+        mf = re.search(r"(\d+)\s*!", T) or re.search(r"(\d+)", T)
+        if not mf:
+            _need("5!처럼 수로 적어 주세요.")
+        return f"import math\nprint(math.factorial({mf.group(1)}))"
     if fn in ("math.comb", "binomial", "expand_func", "factorial"):
         mc = re.search(r"(\d+|[a-z])\s*C\s*(\d+|[a-z])", _norm(T))
         mf = re.search(r"(\d+|[a-z])\s*!", T)
@@ -302,6 +320,25 @@ def build(fn, text):
         if fn == "math.comb":
             _need("math.comb에는 수만 넣을 수 있어요. 예: 6C2 (문자는 binomial)")
         return f"c_ = binomial({nq}, {rq})\nprint(c_)\nprint(expand_func(c_))   # 식으로 펼치기"
+    if fn == "ask":
+        ma = re.search(r"([a-z])\s*(?:는|은|가|이)\s+(.*)$", T)
+        cond, prop = (ma.group(2), T[:ma.start()]) if ma else ("", T)
+        def qs(w, var):
+            out = []
+            if re.search(r"0이\s*아닌|0\s*아님", w): out.append(f"Q.nonzero({var})")
+            for kw, q in (("양수", "positive"), ("음수", "negative"), ("정수", "integer"), ("실수", "real"), ("짝수", "even"), ("홀수", "odd")):
+                if kw in w: out.append(f"Q.{q}({var})")
+            return out
+        e_ = slots(re.sub(r"(양수|음수|정수|실수|짝수|홀수)", " ", prop))
+        if not e_["exprs"]:
+            _need("식을 적어 주세요. 예: x^2이 양수인지 (x는 0이 아닌 실수)")
+        ex = pr(e_["exprs"][0]); pq = qs(prop, ex)
+        if not pq:
+            _need("물을 성질(양수, 정수 등)을 적어 주세요.")
+        var = ma.group(1) if ma else v
+        cq = qs(cond, var)
+        cs = " & ".join(cq) if cq else "True"
+        return f"print(ask({pq[0]}, {cs}))   # True / False / None(모름)"
     if fn == "refine":
         need_e()
         q = "Q.negative" if "음수" in T else "Q.positive"
@@ -329,7 +366,7 @@ def build(fn, text):
         M = mat()
         return f"L, U, _ = Matrix({M}).LUdecomposition()\nprint(L)\nprint(U)\nprint(L * U == Matrix({M}))"
     # ---- 경우의 수: 다 세기·큰 조합·약수 ----
-    if fn == "itertools":
+    if fn in ("permutations", "combinations"):
         mc = re.search(r"(\d+)\s*([CP])\s*(\d+)", tn)
         if mc:
             nq, kind, rq = int(mc.group(1)), mc.group(2), int(mc.group(3))
@@ -349,7 +386,7 @@ def build(fn, text):
             if not mr:
                 _need("몇 개를 고르는지 적어 주세요. 예: 3개를 뽑아")
             rq = int(mr.group(1))
-            kind = "C" if (re.search(r"조합|뽑기만|순서\s*없|고르는\s*방법", T) and not re.search(r"나열|세우|순서대로", T)) else "P"
+            kind = "C" if fn == "combinations" else "P"
         if rq > nq:
             _need("고르는 개수가 전체보다 많아요.")
         f_, mf_ = ("combinations", "comb") if kind == "C" else ("permutations", "perm")
@@ -364,7 +401,7 @@ def build(fn, text):
         nq, rq = mc.groups()
         return (f"from scipy.special import comb\nimport math\nprint(comb({nq}, {rq}))   # 기본값: 소수\n"
                 f"print(comb({nq}, {rq}, exact=True))   # exact=True: 정수\nprint(math.comb({nq}, {rq}))")
-    if fn == "divisor_count":
+    if fn in ("divisor_count", "factorint"):
         mn = re.search(r"\d+", tn)
         if not mn:
             _need("수를 적어 주세요. 예: 360의 약수 개수")
@@ -372,9 +409,11 @@ def build(fn, text):
         if N_ < 1 or N_ > 10**12:
             _need("1 이상 10¹² 이하의 자연수를 적어 주세요.")
         tail = f"\nprint(sum(1 for d in range(1, {N_ + 1}) if {N_} % d == 0))   # 하나씩 나누어 세기" if N_ <= 10**6 else ""
-        return f"print(divisor_count({N_}))\nprint(factorint({N_}))   # 소인수분해\nprint(divisors({N_}))" + tail
+        if fn == "factorint":
+            return f"f_ = factorint({N_})\nprint(f_)   # {{소수: 지수}}\nprint(prod(e_ + 1 for e_ in f_.values()))   # 약수의 개수 = (지수 + 1)의 곱"
+        return f"print(divisor_count({N_}))\nprint(divisors({N_}))" + tail
     # ---- 도형의 방정식 ----
-    if fn in ("Line", "Circle", "discriminant"):
+    if fn in ("Line", "Circle", "discriminant", "Point"):
         PT = r"\(\s*(-?[\d./]+)\s*,\s*(-?[\d./]+)\s*\)"
         pts = [f"Point({pr(_num(a_))}, {pr(_num(b_))})" for a_, b_ in re.findall(PT, T)]
         g = slots(re.sub(PT, " ", T))
@@ -389,6 +428,12 @@ def build(fn, text):
             if ks:
                 out += f"\nprint(solve(D, {ks[0]}))   # D = 0 (중근, 접할 때)"
             return out
+        if fn == "Point":
+            if len(pts) >= 2:
+                return f"p, q = {pts[0]}, {pts[1]}\nprint(p.distance(q))   # 두 점 사이의 거리\nprint(p.midpoint(q))   # 중점"
+            if pts and ge:
+                return f"print(Line({pr(ge[0])}).distance({pts[0]}))   # 점과 직선 사이의 거리"
+            _need("두 점을 (1, 2), (4, 6)처럼 적어 주세요.")
         if fn == "Line":
             if len(pts) >= 2:
                 return (f"l = Line({pts[0]}, {pts[1]})\nprint(l.equation())   # = 0 꼴\nprint(l.slope)   # 기울기 (수직선이면 oo)")
@@ -549,9 +594,9 @@ def build(fn, text):
         if fn == "Eq":
             return f"eq = Eq({pr(l)}, {pr(r)})\nprint(eq)\nprint(simplify(eq.lhs - eq.rhs) == 0)   # 맞는 식인지"
         return f"({pr(l)}).equals({pr(r)})"
-    if fn == "TR":
+    if fn in ("TR2", "TR7", "TR8", "TR9"):
         need_e()
-        return "from sympy.simplify.fu import TR2, TR8, TR9\n" + f"print(TR2({pr(e)}))   # tan → sin/cos\nprint(TR8({pr(e)}))   # 곱 → 합·차\nprint(TR9({pr(e)}))   # 합·차 → 곱"
+        return f"from sympy.simplify.fu import {fn}\nprint({fn}({pr(e)}))\nprint(simplify({pr(e)}))   # 비교: simplify"
     if fn in ("is_increasing",):
         need_e(); dom = f"Interval({pr(d['a'])}, {pr(d['b'])})" if "a" in d else "S.Reals"
         return f"print(is_increasing({pr(e)}, {dom}, {v}))\nprint(is_decreasing({pr(e)}, {dom}, {v}))"
@@ -595,7 +640,7 @@ def build(fn, text):
             e = d["eqs"][0][1]
         need_e()
         return f"th = np.linspace(0, 2*np.pi, 400)\nr_ = lambdify(t, {pr(e)}, 'numpy')(th)\nplt.subplot(projection='polar')\nplt.plot(th, r_ * np.ones_like(th)); plt.show()"
-    if fn in ("Matrix", "det", "inv", "eigenvals", "np.array", "np.linalg", "LUsolve"):
+    if fn in ("Matrix", "det", "inv", "eigenvals", "np.array", "np.linalg.det", "np.linalg.inv", "np.linalg.solve", "LUsolve"):
         M = mat()
         if fn == "Matrix":
             return f"A = Matrix({M})\nprint(A * A)\nprint(A.det())"
@@ -605,14 +650,20 @@ def build(fn, text):
             return f"Matrix({M}).inv()"
         if fn == "eigenvals":
             return f"Matrix({M}).eigenvals()"
-        if fn == "LUsolve":
+        if fn in ("LUsolve", "np.linalg.solve"):
             n = len(d["M"])
             mb = re.search(r"\]\s*\]\s*.*?\[\s*(-?[0-9.,/\s-]+)\]", text)
             bv = "[" + ", ".join(v.strip() for v in mb.group(1).split(",")) + "]" if mb else str([1] * n)
+            if fn == "np.linalg.solve":
+                return f"An = np.array({M}, dtype=float)\nprint(np.linalg.solve(An, {bv}))   # 소수\nprint(Matrix({M}).LUsolve(Matrix({bv})))   # 비교: SymPy 정확한 값"
             return f"A = Matrix({M})\nb_ = Matrix({bv})   # 오른쪽 값\nA.LUsolve(b_)"
+        if fn == "np.linalg.det":
+            return f"An = np.array({M}, dtype=float)\nprint(np.linalg.det(An))   # 소수\nprint(Matrix({M}).det())   # 비교: SymPy 정확한 값"
+        if fn == "np.linalg.inv":
+            return f"An = np.array({M}, dtype=float)\nprint(np.linalg.inv(An))   # 소수\nprint(Matrix({M}).inv())   # 비교: SymPy 정확한 값"
         if fn == "np.array":
             return f"An = np.array({M})\nprint(An @ An)   # 행렬곱\nprint(An * An)   # 성분끼리 곱"
-        return f"An = np.array({M}, dtype=float)\nprint(np.linalg.det(An))\nprint(np.linalg.inv(An))"
+        return f"An = np.array({M})\nprint(An @ An)   # 행렬곱\nprint(An * An)   # 성분끼리 곱"
     if fn == "hilbert":
         m = re.search(r"(\d+)", T)
         n = int(m.group(1)) if m else 3

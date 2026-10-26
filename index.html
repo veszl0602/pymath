@@ -202,6 +202,7 @@ details.prep summary,details.pcode summary{cursor:pointer;font-size:13.5px;color
 /* topic */
 .when{display:grid;gap:6px;margin:0;padding:0;list-style:none}
 .when li{border:1px solid var(--line);border-radius:10px;padding:9px 14px 9px 36px;position:relative}
+.when .wq{all:unset;display:block;cursor:pointer;width:100%}.when .wq b{display:block;font-size:16px}.when .wq span{display:block;color:var(--muted);margin-top:3px;line-height:1.55}.when .wq em{display:block;font-style:normal;font-size:13px;color:var(--brand);margin-top:5px}.when li:hover{border-color:var(--brand)}
 .when li::before{content:"?";position:absolute;left:14px;top:9px;font-family:var(--mono);font-weight:700;color:var(--brand)}
 .mbtns{display:flex;gap:10px;flex-wrap:wrap}
 .mbtns button{border:1.5px solid var(--line);background:var(--surface);border-radius:12px;padding:14px 20px;font-family:var(--mono);font-size:18px;font-weight:600;cursor:pointer;color:var(--ink)}
@@ -331,6 +332,10 @@ ul.know details .codebox{margin-top:8px}
 .ab-steps li::before{content:counter(st);display:block;font-family:var(--mono);font-size:13px;color:var(--brand);margin-bottom:4px}
 @media (max-width:620px){.ab-grid{grid-template-columns:minmax(0,1fr)}}
 @media (max-width:520px){.ab-facts{grid-template-columns:repeat(2,minmax(0,1fr))}.ab-h{font-size:22px}}
+
+.cmpf{display:grid;gap:10px}.cmpf .cr{border:1px solid var(--line);border-left:3px solid var(--brand);border-radius:10px;padding:10px 14px}.cmpf .cr b{display:block;font-size:15.5px}.cmpf .cr b span{color:var(--muted);font-weight:500;font-size:13px;margin:0 4px}.cmpf .cr p{margin:5px 0 0;line-height:1.65}
+.gall{margin-bottom:22px}.gall h3{font-size:17px;color:var(--ink);margin:0 0 10px}.gall .results{width:100%;grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
+.gall .rcard{align-content:start;grid-auto-rows:min-content}.gall .tags{align-items:flex-start;align-content:flex-start}.gall .rcard .t{display:none}.gall h3 a{color:inherit;text-decoration:none}.gall h3 a:hover{color:var(--brand)}
 </style>
 </head>
 <body>
@@ -367,12 +372,9 @@ const TOPICS = [
   ask: "정확한 값으로 계산하고, 식을 원하는 모양으로 바꾸고, 두 식이 같은지 확인하고 싶을 때",
   units: ["공통수학1: 다항식의 연산", "공통수학1: 나머지정리와 인수분해", "공통수학1: 복소수"],
   when: [
-    "0.1 + 0.2가 0.3이 아니라고 나온다",
-    "√(x²)가 x로 정리되지 않는다",
-    "식을 전개·인수분해·통분·부분분수 중 원하는 모양으로 바꾸고 싶다",
-    "다항식의 나머지나 최대공약수를 구하고 싶다",
-    "두 식이 같은 식인지 확인하고 싶다",
-    "x² − 5를 실수 범위에서 인수분해하고 싶다"
+    ["계산했더니 0.1 + 0.2가 0.30000000000000004로 나와요", "컴퓨터의 소수에는 아주 작은 오차가 있어요. 분수 그대로 계산하려면 Rational을 쓰세요.", 1],
+    ["식을 전개하거나 인수분해한 모양으로 바꾸고 싶어요", "원하는 모양마다 함수가 따로 있어요. 펼칠 때는 expand, 묶을 때는 factor, 분수식은 cancel이나 apart를 써요.", 3],
+    ["모양이 다른 두 식이 사실 같은 식인지 알고 싶어요", "==는 겉모양만 비교해요. equals를 쓰거나 simplify(A − B)가 0이 되는지 확인하세요.", 7]
   ],
   compare: [
     ["파이썬 소수", "0.1 + 0.2 == 0.3", "False, 0.30000000000000004", "설치 없이 바로 계산", "소수 오차가 생긴다. √2를 제곱해도 2가 아니다"],
@@ -393,11 +395,9 @@ const TOPICS = [
   ask: "방정식을 푸는데 solve, solveset, nsolve 중 무엇을 써야 할지 모를 때",
   units: ["공통수학1: 복소수와 이차방정식", "공통수학1: 여러 가지 방정식과 부등식", "대수: 지수함수와 로그함수"],
   when: [
-    "중근이 몇 개인지까지 알고 싶다",
-    "실수 해만 필요하다",
-    "sin x = 0처럼 해가 무수히 많다",
-    "sin x = x − π/2처럼 손으로 못 푸는 방정식이다",
-    "연립방정식의 해가 없거나 무수히 많을 수 있다"
+    ["이차방정식의 근을 구하고, 중근인지도 알고 싶어요", "solve는 근만 알려 주고, roots는 같은 근이 몇 번 겹치는지(중근)까지 알려 줘요.", 2],
+    ["sin x = 0처럼 해가 끝없이 많은 방정식을 풀고 싶어요", "solve는 해를 몇 개만 보여 줘요. solveset은 해 전체를 집합으로 알려 줘요.", 1],
+    ["손으로 풀 수 없는 방정식의 근을 소수로라도 알고 싶어요", "nsolve는 내가 정한 시작값 근처의 근을 소수로 찾아 줘요. 시작값을 바꾸면 다른 근이 나올 수 있어요.", 4]
   ],
   compare: [
     ["solve", "solve(x**2 - 5*x + 6, x)", "리스트 [2, 3]", "가장 많이 쓰고, 복소수 해까지 준다", "해가 무수히 많아도 몇 개만 준다"],
@@ -417,12 +417,9 @@ const TOPICS = [
   ask: "팩토리얼·조합 값을 구하거나, 조건이 있는 경우를 직접 세어 보거나, n이 문자인 식으로 정리하고 싶을 때",
   units: ["공통수학1: 경우의 수"],
   when: [
-    "5!, ₆C₂ 같은 값을 빨리 구하고 싶다",
-    "ₙC₂를 n에 대한 식으로 쓰고 싶다",
-    "n!/(n − 2)!을 간단히 하고 싶다",
-    "'이웃하지 않게' 같은 조건이 있는 경우를 직접 세어 공식과 맞춰 보고 싶다",
-    "ₙC₂ = 28을 만족하는 n을 구하고 싶다",
-    "약수의 개수를 구하고 싶다"
+    ["5!이나 ₆C₂ 같은 값을 빨리 계산하고 싶어요", "숫자만 들어 있으면 파이썬의 math.factorial, math.comb로 충분해요.", 0],
+    ["ₙC₂처럼 n이 들어간 식을 정리하거나, ₙC₂ = 28인 n을 구하고 싶어요", "SymPy의 binomial로 쓰고 expand_func로 펼쳐요. n을 구할 때는 n이 자연수라고 알려 줘야 음수 답이 빠져요.", 2],
+    ["공식으로 구한 경우의 수가 맞는지 직접 세어 확인하고 싶어요", "itertools로 모든 경우를 나열해 세어 보면 공식의 답과 비교할 수 있어요.", 4]
   ],
   compare: [
     ["math.factorial · math.comb", "math.factorial(5)", "정수 120", "설치 없이 바로 계산", "n이 문자이면 쓸 수 없다"],
@@ -442,10 +439,9 @@ const TOPICS = [
   ask: "행렬을 곱하고, 역행렬과 연립방정식을 정확하게 계산하고 싶을 때",
   units: ["공통수학1: 행렬"],
   when: [
-    "행렬 곱셈 결과가 교과서와 다르다",
-    "역행렬이 존재하는지 확인하고 싶다",
-    "문자가 들어간 행렬에서 역행렬이 없는 값을 찾고 싶다",
-    "행렬로 연립방정식을 풀고 싶다"
+    ["행렬 곱셈 결과가 교과서와 달라요", "NumPy에서 *는 같은 자리끼리 곱하는 기호예요. 행렬의 곱셈은 @를 써요.", 1],
+    ["역행렬을 구하거나, 역행렬이 있는지 알고 싶어요", "행렬식이 0이 아니면 역행렬이 있어요. SymPy는 역행렬을 분수 그대로 정확하게 구해 줘요.", 3],
+    ["행렬로 연립방정식을 풀고 싶어요", "SymPy는 정확한 분수로, NumPy는 소수로 답을 줘요.", 6]
   ],
   compare: [
     ["SymPy Matrix", "A * A", "Matrix([[7, 10], [15, 22]])", "*가 행렬곱, 분수·문자를 그대로 다룬다", "큰 행렬은 느리다"],
@@ -465,14 +461,9 @@ const TOPICS = [
   ask: "직선·원의 방정식을 구하거나, 함숫값을 계산하거나, 식으로 주어진 곡선을 그래프로 그리고 싶을 때",
   units: ["공통수학2: 도형의 방정식", "공통수학2: 함수와 그래프"],
   when: [
-    "식에 값을 넣어 정확한 함숫값과 소수 값을 구하고 싶다",
-    "여러 x값을 한꺼번에 넣고 싶다",
-    "x² + y² = 1처럼 y로 정리하기 어려운 식을 그리고 싶다",
-    "매개변수 식(x = cos t, y = sin t)을 그리고 싶다",
-    "그래프가 이상하게 꺾여 보인다",
-    "두 점을 지나는 직선, 세 점을 지나는 원의 방정식을 구하고 싶다",
-    "두 직선이 수직인지, 원과 직선이 만나는지 확인하고 싶다",
-    "원 밖의 점에서 그은 접선을 구하고 싶다"
+    ["함수에 x값을 넣어 함숫값을 구하고 싶어요", "값 하나를 넣을 때는 subs, 여러 값을 한꺼번에 넣을 때는 lambdify를 써요.", 0],
+    ["원 x² + y² = 1처럼 y = 꼴로 바꾸기 어려운 식의 그래프를 그리고 싶어요", "plot_implicit은 식을 바꾸지 않고 그대로 그려 줘요.", 4],
+    ["직선이나 원의 방정식, 접선을 구하고 싶어요", "Line, Circle에 점을 넣으면 방정식이 바로 나와요. 접선은 tangent_lines가 빠뜨리지 않고 찾아 줘요.", 8]
   ],
   compare: [
     ["subs", "f.subs(x, 2)", "sin(2)/2 + √2 (기호)", "정확한 값", "배열은 넣을 수 없다"],
@@ -498,10 +489,9 @@ const TOPICS = [
   ask: "삼각함수 공식을 펼치거나 모으고, 외운 공식이 맞는지 확인하고 싶을 때",
   units: ["대수: 삼각함수"],
   when: [
-    "sin(a + b), cos 2a를 펼친 식이 기억나지 않는다",
-    "√3 sin a + cos a를 한 개의 sin으로 합성하고 싶다",
-    "곱을 합·차로, 합·차를 곱으로 바꾸고 싶다",
-    "내가 외운 공식이 맞는지 검증하고 싶다"
+    ["sin(a + b), cos 2a를 펼친 공식이 기억나지 않아요", "expand_trig가 교과서와 같은 모양으로 펼쳐 줘요.", 0],
+    ["√3 sin a + cos a를 sin 하나로 합치고 싶어요", "simplify나 fu가 2 sin(a + π/6)처럼 합쳐 줘요.", 2],
+    ["내가 외운 삼각함수 공식이 맞는지 확인하고 싶어요", "숫자 몇 개만 넣어 보면 우연히 맞을 수 있어요. 기호 그대로 simplify(좌변 − 우변)이 0인지 보세요.", 6]
   ],
   compare: [
     ["expand_trig", "expand_trig(tan(a + b))", "교과서 모양의 덧셈정리", "교과서와 같은 모양", "펼치기만 한다"],
@@ -520,12 +510,9 @@ const TOPICS = [
   ask: "수열의 합을 공식으로 만들거나, 점화식의 일반항, 급수의 수렴을 알고 싶을 때",
   units: ["대수: 등차수열과 등비수열, 수열의 합, 수학적 귀납법", "미적분Ⅱ: 급수"],
   when: [
-    "등차·등비수열의 합을 공식 없이 확인하고 싶다",
-    "시그마 공식(∑k², ∑k³)이 맞는지 증명하고 싶다",
-    "점화식은 주어졌는데 일반항이 안 보인다",
-    "등비급수가 언제 수렴하는지 헷갈린다",
-    "1/k처럼 천천히 커지는 급수가 수렴하는지 모르겠다",
-    "Sₙ이 주어졌을 때 aₙ을 구하고 싶다"
+    ["시그마(∑) 합을 n에 대한 식으로 구하고 싶어요", "for 문은 n이 숫자일 때만 돼요. Sum(…).doit()은 n에 대한 식으로 알려 줘요.", 1],
+    ["점화식은 있는데 일반항을 모르겠어요", "rsolve가 일반항을 구해 줘요. for 문으로는 앞의 몇 항만 볼 수 있어요.", 4],
+    ["급수가 수렴하는지 헷갈려요", "부분합 몇 개만 보면 착각하기 쉬워요. is_convergent로 확인하세요.", 7]
   ],
   compare: [
     ["for 문 · sum", "sum(2 + 3*i for i in range(10))", "숫자 155", "가장 직관적, 설치 불필요", "항의 개수 n이 문자이면 못 한다"],
@@ -546,11 +533,9 @@ const TOPICS = [
   ask: "극한값을 구하고, 함수가 연속인지, 사잇값 정리로 근을 찾고 싶을 때",
   units: ["미적분Ⅰ: 함수의 극한", "미적분Ⅰ: 함수의 연속"],
   when: [
-    "좌극한과 우극한이 다를 것 같다",
-    "구간별로 정의된 함수가 경계점에서 연속인지 모르겠다",
-    "연속인 구간을 한 번에 알고 싶다",
-    "사잇값 정리로 근이 있다는 건 알겠는데 값을 구하고 싶다",
-    "닫힌 구간의 최댓값·최솟값을 구하고 싶다"
+    ["좌극한과 우극한이 다를 것 같아요", "limit에 dir='-'(왼쪽), dir='+'(오른쪽)을 넣어 따로 구해요. 쓰지 않으면 오른쪽만 봐요.", 1],
+    ["함수가 어떤 점에서 연속인지 알고 싶어요", "좌극한, 우극한, 함숫값 세 개를 구해 모두 같은지 비교해요.", 2],
+    ["닫힌 구간에서 최댓값·최솟값을 구하고 싶어요", "maximum, minimum에 함수와 구간을 넣으면 바로 구해요.", 7]
   ],
   compare: [
     ["Limit + doit", "Limit(sin(2*x)/(3*x), x, 0).doit()", "식을 보여 준 뒤 2/3", "풀이 과정을 정리하기 좋다", "출력에 dir='+'가 붙는다"],
@@ -570,12 +555,9 @@ const TOPICS = [
   ask: "도함수·접선을 구하고, 극값과 최댓값·최솟값을 찾고 싶을 때",
   units: ["미적분Ⅰ: 미분계수와 도함수", "미적분Ⅰ: 도함수의 활용", "미적분Ⅱ: 여러 가지 미분법"],
   when: [
-    "미분 불가능한 점에서 diff가 뭘 주는지 궁금하다",
-    "h → 0일 때 할선이 접선이 된다는 말이 와닿지 않는다",
-    "f′(x) = 0인 점을 찾았는데 극값인지 모르겠다",
-    "증가·감소 구간을 구하고 싶다",
-    "닫힌 구간에서 최솟값을 구하고 싶다",
-    "변곡점을 구하고 싶다"
+    ["도함수를 구하고 싶어요", "diff가 바로 구해 줘요. 다만 |x|처럼 뾰족한 점에서도 값을 내니 조심하세요.", 2],
+    ["f′(x) = 0인 점이 극대인지 극소인지 모르겠어요", "f″(x)의 부호로 판정해요. f″(x) = 0이면 이 방법으로는 알 수 없어요.", 6],
+    ["증가·감소 구간이나 최솟값을 구하고 싶어요", "solveset(f′ > 0)으로 증가 구간을, minimum으로 구간의 최솟값을 구해요.", 7]
   ],
   compare: [
     ["정의 (h → 0)", "limit((f.subs(x, x + h) - f)/h, h, 0, dir='+-')", "도함수 2x + 1", "미분 가능한지도 판단한다", "식이 길다"],
@@ -597,11 +579,9 @@ const TOPICS = [
   ask: "정적분과 넓이를 정확한 값이나 근삿값으로 구하고 싶을 때",
   units: ["미적분Ⅰ: 부정적분과 정적분", "미적분Ⅰ: 정적분의 활용", "미적분Ⅱ: 여러 가지 적분법"],
   when: [
-    "구분구적법이 정말 정적분 값이 되는지 보고 싶다",
-    "정적분 값과 넓이가 다르게 나온다",
-    "두 곡선 사이의 넓이를 구하고 싶다",
-    "적분 결과에 처음 보는 erf가 나왔다",
-    "상수함수를 사다리꼴 공식에 넣었더니 오류가 난다"
+    ["정적분 값을 정확하게 구하고 싶어요", "integrate는 분수·무리수 그대로 정확한 값을 줘요. 부정적분에는 +C를 붙여 주지 않아요.", 1],
+    ["정적분 값과 넓이가 다르게 나와요", "x축 아래 부분은 정적분에서 음수로 계산돼요. 넓이는 Abs를 씌워 구해요.", 7],
+    ["두 곡선 사이의 넓이를 구하고 싶어요", "(위 곡선 − 아래 곡선)을 적분해요. 어느 쪽이 위인지는 직접 정해야 해요.", 8]
   ],
   compare: [
     ["Integral + doit", "Integral(x**2, (x, 0, 1)).doit()", "식을 보여 준 뒤 1/3", "풀이 과정을 정리하기 좋다", "결과만 필요하면 길다"],
@@ -679,7 +659,10 @@ const FUNCS = [
 { k: "nsimplify", n: "nsimplify", lib: "sympy", path: ["simplify", "simplify"], d: "소수 근삿값을 가까운 정확한 수(분수, 제곱근 등)로 바꿔 본다.", use: "nsimplify(2.00000000000000)\nnsimplify(0.333333333333333)", out: "2\n1/3", warn: "추측일 뿐이다. 간단한 수가 아닌 근(2.30988…)을 넣으면 의미 없는 큰 분수가 나온다." },
 { k: "trigsimp", n: "trigsimp", lib: "sympy", path: ["simplify", "trigsimp"], d: "삼각함수 식을 공식으로 모아 간단히 한다(합성 포함).", use: "trigsimp(sqrt(3)*sin(a) + cos(a))", out: "2*sin(a + pi/6)", warn: "tan a + cot a처럼 줄이지 못하는 식이 있다. 그때는 TR2 → together → trigsimp 순서로 직접 지정한다." },
 { k: "fu", n: "fu", lib: "sympy", path: ["simplify", "fu"], d: "삼각함수 식을 여러 규칙으로 바꿔 보고 가장 짧은 모양을 고른다.", use: "fu(sqrt(3)*sin(a) + cos(a))", out: "2*sin(a + pi/6)", pat: "(?<![\\w.])fu\\(" },
-{ k: "TR", n: "TR2 · TR7 · TR8 · TR9", lib: "sympy", path: ["simplify", "fu"], d: "fu 안의 규칙 하나만 골라 적용한다. TR2는 tan·cot을 sin/cos로, TR7은 cos²의 차수를 낮추고, TR8은 곱을 합으로, TR9는 합을 곱으로 바꾼다.", use: "from sympy.simplify.fu import TR9\nTR9(sin(a) + sin(b))", out: "2*sin(a/2 + b/2)*cos(a/2 - b/2)", pat: "\\bTR\\d+\\(" },
+{ k: "TR2", n: "TR2", lib: "sympy", path: ["simplify", "fu"], d: "tan, cot을 sin과 cos로 바꾼다. tan a + cot a처럼 simplify가 줄이지 못하는 식을 먼저 sin·cos로 풀어 둘 때 쓴다.", use: "from sympy.simplify.fu import TR2\nTR2(tan(a) + 1/tan(a))", out: "sin(a)/cos(a) + cos(a)/sin(a)", pat: "\\bTR2\\(" },
+{ k: "TR7", n: "TR7", lib: "sympy", path: ["simplify", "fu"], d: "cos²x를 (1 + cos 2x)/2로 바꿔 차수를 낮춘다(반각 공식).", use: "from sympy.simplify.fu import TR7\nTR7(cos(x)**2)", out: "cos(2*x)/2 + 1/2", pat: "\\bTR7\\(" },
+{ k: "TR8", n: "TR8", lib: "sympy", path: ["simplify", "fu"], d: "삼각함수의 곱을 합·차로 바꾼다(곱 → 합 공식).", use: "from sympy.simplify.fu import TR8\nTR8(sin(a)*cos(b))", out: "sin(a - b)/2 + sin(a + b)/2", pat: "\\bTR8\\(" },
+{ k: "TR9", n: "TR9", lib: "sympy", path: ["simplify", "fu"], d: "삼각함수의 합·차를 곱으로 바꾼다(합 → 곱 공식).", use: "from sympy.simplify.fu import TR9\nTR9(sin(a) + sin(b))", out: "2*sin(a/2 + b/2)*cos(a/2 - b/2)", pat: "\\bTR9\\(" },
 // ---------- SymPy: solvers ----------
 { k: "solve", n: "solve", lib: "sympy", path: ["solvers", "solvers"], d: "방정식을 풀어 해를 리스트로 준다.", use: "solve(x**2 - 5*x + 6, x)", out: "[2, 3]", warn: "복소수 해까지 준다. sin x = 0처럼 해가 무수히 많아도 [0, pi]만 준다. 실수 해, 구간 안의 해는 solveset으로 구한다." },
 { k: "nsolve", n: "nsolve", lib: "sympy", path: ["solvers", "solvers"], d: "초기값에서 출발해 근의 근삿값을 찾는다. 손으로 풀 수 없는 방정식에 쓴다.", use: "nsolve(sin(x) - x + pi/2, x, 2)", out: "2.30988146001006", opts: [["세 번째 값", "초기값. 찾고 싶은 근 가까이 준다"]], warn: "초기값에 따라 다른 근이 나온다. 그래프로 근의 위치를 먼저 본다." },
@@ -706,7 +689,9 @@ const FUNCS = [
 { k: "np.linspace", n: "np.linspace", lib: "numpy", path: ["numpy"], d: "구간을 같은 간격으로 나눈 점들을 만든다. 넓이 근사, 그래프에 쓴다.", use: "np.linspace(0, np.pi, 5)   # 점 5개 = 구간 4개", out: "[0.     0.785  1.571  2.356  3.142]", warn: "점 개수는 구간 개수 + 1이다. 점이 너무 적으면 그래프 모양이 틀어진다.", pat: "linspace\\(" },
 { k: "np.trapezoid", n: "np.trapezoid", lib: "numpy", path: ["numpy"], d: "점들의 함숫값으로 사다리꼴 공식 넓이를 구한다.", use: "xs = np.linspace(0, np.pi, 5)\nnp.trapezoid(np.sin(xs), xs)", out: "1.8961188979370398", pat: "trapezoid\\(" },
 { k: "np.array", n: "np.array", lib: "numpy", path: ["numpy"], d: "NumPy 배열(행렬)을 만든다. 소수로 빠르게 계산한다.", use: "A = np.array([[1, 2], [3, 4]])\nA @ A   # 행렬곱", out: "[[ 7 10]\n [15 22]]", warn: "*는 같은 자리 성분끼리의 곱이다. 행렬곱은 @를 쓴다.", pat: "np\\.array\\(" },
-{ k: "np.linalg", n: "np.linalg (det · inv · solve)", lib: "numpy", path: ["numpy", "linalg"], d: "NumPy 행렬의 행렬식, 역행렬, 연립방정식 풀이.", use: "np.linalg.det(np.array([[1, 2], [3, 4]]))", out: "-2.0000000000000004", warn: "소수 오차가 섞인다. 힐베르트 행렬처럼 역행렬이 거의 없는 행렬에서는 크게 틀린다.", pat: "np\\.linalg\\." },
+{ k: "np.linalg.det", n: "np.linalg.det", lib: "numpy", path: ["numpy", "linalg"], d: "NumPy 배열의 행렬식을 소수로 구한다.", use: "np.linalg.det(np.array([[1, 2], [3, 4]]))", out: "-2.0000000000000004", warn: "정수 행렬이어도 소수 오차가 섞인다. 정확한 값은 SymPy의 .det().", pat: "np\\.linalg\\.det\\(" },
+{ k: "np.linalg.inv", n: "np.linalg.inv", lib: "numpy", path: ["numpy", "linalg"], d: "NumPy 배열의 역행렬을 소수로 구한다.", use: "np.linalg.inv(np.array([[2, 1], [1, 1]]))", out: "[[ 1. -1.]\n [-1.  2.]]", warn: "역행렬이 거의 없는 행렬(힐베르트 행렬 등)에서도 오류 없이 크게 틀린 값을 낸다. 역행렬이 아예 없으면 LinAlgError.", pat: "np\\.linalg\\.inv\\(" },
+{ k: "np.linalg.solve", n: "np.linalg.solve", lib: "numpy", path: ["numpy", "linalg"], d: "행렬로 쓴 연립일차방정식 AX = B를 풀어 해를 소수로 구한다.", use: "A = np.array([[1, 2], [3, 4]])\nnp.linalg.solve(A, [5, 6])", out: "[-4.   4.5]", warn: "해가 없거나 무수히 많으면(행렬식 0) LinAlgError가 난다. 그런 경우는 SymPy의 linsolve.", pat: "np\\.linalg\\.solve\\(" },
 { k: "np.roots", n: "np.roots", lib: "numpy", path: ["numpy"], d: "다항식의 계수를 넣으면 근을 소수로 구한다.", use: "np.roots([1, -5, 6])", out: "[3. 2.]", pat: "np\\.roots\\(" },
 // ---------- SciPy ----------
 { k: "simpson", n: "simpson", lib: "scipy", path: ["scipy", "integrate"], d: "점들의 함숫값으로 심프슨 공식 넓이를 구한다(심화). 같은 점 개수에서 사다리꼴보다 훨씬 정확하다.", use: "from scipy.integrate import simpson\nsimpson(np.sin(xs), x=xs)", out: "2.0045597549844207", warn: "구간 개수가 짝수일 때 교과서의 심프슨 공식과 같다." },
@@ -719,8 +704,12 @@ const FUNCS = [
 { k: "plt.fill_between", n: "plt.fill_between", lib: "matplotlib", path: ["pyplot"], d: "그래프와 x축 사이를 색칠해 넓이를 보여 준다.", use: "plt.fill_between(xs, np.sin(xs), alpha=0.3)", pat: "fill_between\\(" },
 // ---------- 새 분야(수와 식·경우의 수)에서 쓰는 함수 ----------
 { k: "math.sqrt", n: "math.sqrt", lib: "python", path: ["math"], d: "제곱근을 소수로 구한다.", use: "import math\nmath.sqrt(2)", out: "1.4142135623730951", warn: "음수를 넣으면 오류(math domain error)가 난다. SymPy의 sqrt(-1)은 I를 준다.", pat: "math\\.sqrt" },
-{ k: "math.comb", n: "math.comb · factorial · gcd", lib: "python", path: ["math"], d: "조합·팩토리얼·최대공약수를 정수로 구한다.", use: "import math\nmath.comb(6, 2), math.factorial(5), math.gcd(12, 18)", out: "(15, 120, 6)", warn: "정수만 받는다. n이 문자이면 SymPy의 binomial·factorial, 다항식의 최대공약수는 gcd.", pat: "math\\.(comb|factorial|gcd)" },
-{ k: "refine", n: "refine · ask", lib: "sympy", path: ["assumptions"], d: "가정을 나중에 붙여 식을 정리하거나(refine), 성질이 참인지 묻는다(ask).", use: "refine(sqrt(x**2), Q.positive(x))\nask(Q.positive(x**2), Q.real(x) & Q.nonzero(x))", out: "x\nTrue", warn: "ask는 판단할 수 없으면 None을 준다. 예: x가 실수라는 것만으로는 x² > 0을 말할 수 없다(x = 0).", pat: "\\b(refine|ask)\\(" },
+{ k: "math.comb", n: "math.comb", lib: "python", path: ["math"], d: "조합의 수 ₙCᵣ을 정수로 구한다.", use: "import math\nmath.comb(6, 2)", out: "15", warn: "수만 받는다. n이 문자이면 SymPy의 binomial을 쓴다.", pat: "math\\.comb\\(" },
+{ k: "math.perm", n: "math.perm", lib: "python", path: ["math"], d: "순열의 수 ₙPᵣ을 정수로 구한다.", use: "import math\nmath.perm(5, 3)", out: "60", warn: "수만 받는다. n이 문자이면 factorial(n)/factorial(n − r)로 쓴다.", pat: "math\\.perm\\(" },
+{ k: "math.factorial", n: "math.factorial", lib: "python", path: ["math"], d: "n!을 정수로 구한다.", use: "import math\nmath.factorial(5)", out: "120", warn: "수만 받는다. n!/(n − 2)!처럼 n이 문자이면 SymPy의 factorial.", pat: "math\\.factorial\\(" },
+{ k: "math.gcd", n: "math.gcd", lib: "python", path: ["math"], d: "정수의 최대공약수를 구한다.", use: "import math\nmath.gcd(12, 18)", out: "6", warn: "정수만 받는다. 다항식의 최대공약수는 SymPy의 gcd.", pat: "math\\.gcd\\(" },
+{ k: "refine", n: "refine", lib: "sympy", path: ["assumptions"], d: "이미 만든 식에 가정을 나중에 붙여 정리한다.", use: "refine(sqrt(x**2), Q.positive(x))", out: "x", pat: "\\brefine\\(" },
+{ k: "ask", n: "ask", lib: "sympy", path: ["assumptions"], d: "가정 아래에서 식이 어떤 성질(양수, 정수 등)을 갖는지 묻는다. True, False, 모르면 None을 준다.", use: "ask(Q.positive(x**2), Q.real(x) & Q.nonzero(x))", out: "True", warn: "판단할 수 없으면 None을 준다. 예: x가 실수라는 것만으로는 x² > 0을 말할 수 없다(x = 0).", pat: "(?<![\\w.])ask\\(" },
 { k: "expand_log", n: "expand_log", lib: "sympy", path: ["core", "function"], d: "로그 법칙으로 log(ab)를 log a + log b로 펼친다.", use: "a, b = symbols('a b', positive=True)\nexpand_log(log(a*b))", out: "log(a) + log(b)", warn: "문자가 양수라는 가정이 없으면 펼치지 않는다.", pat: "expand_log\\(" },
 { k: "cancel", n: "cancel", lib: "sympy", path: ["polys", "polytools"], d: "유리식의 분자·분모를 약분해 (다항식)/(다항식) 꼴로 만든다.", use: "cancel((x**2 - 1)/(x**2 + 2*x + 1))", out: "(x - 1)/(x + 1)", pat: "(?<![\\w.])cancel\\(" },
 { k: "collect", n: "collect", lib: "sympy", path: ["simplify", "radsimp"], d: "한 문자에 대해 같은 차수끼리 모아 정리한다.", use: "collect(x**2*y + x**2 + 2*x*y + x + y, x)", out: "x**2*(y + 1) + x*(2*y + 1) + y", pat: "(?<![\\w.])collect\\(" },
@@ -731,10 +720,13 @@ const FUNCS = [
 { k: "binomial", n: "binomial", lib: "sympy", path: ["functions", "combinatorial"], d: "조합 ₙCᵣ. n이 문자여도 된다.", use: "binomial(6, 2)", out: "15", pat: "binomial\\(" },
 { k: "expand_func", n: "expand_func", lib: "sympy", path: ["core", "function"], d: "binomial·factorial 같은 함수를 식으로 펼친다.", use: "n = symbols('n')\nexpand_func(binomial(n, 2))", out: "n*(n - 1)/2", pat: "expand_func\\(" },
 { k: "LUdecomposition", n: ".LUdecomposition()", lib: "sympy", path: ["matrices", "matrixbase"], d: "행렬을 아래삼각행렬 L과 위삼각행렬 U의 곱으로 나눈다 (심화).", use: "L, U, _ = Matrix([[1, 2], [3, 4]]).LUdecomposition()\nprint(L)\nprint(U)", out: "Matrix([[1, 0], [3, 1]])\nMatrix([[1, 2], [0, -2]])", pat: "LUdecomposition" },
-{ k: "itertools", n: "itertools.permutations · combinations", lib: "python", path: ["itertools"], d: "가능한 경우를 하나씩 만들어 낸다. 조건을 그대로 코드로 옮겨 세고, 공식과 맞춰 본다.", use: "from itertools import permutations\nsum(1 for p in permutations(range(5), 3))", out: "60", warn: "경우가 많으면 느리다. ₂₆C₁₃(약 1040만 가지)을 다 세는 데 약 0.7초가 걸렸다.", pat: "(permutations|combinations)\\(" },
+{ k: "permutations", n: "itertools.permutations", lib: "python", path: ["itertools"], d: "순서를 생각해 고르는 경우(순열)를 하나씩 만든다. 조건을 그대로 코드로 옮겨 세고 공식과 맞춰 본다.", use: "from itertools import permutations\nlen(list(permutations(range(5), 3)))", out: "60", warn: "경우가 많으면 느리다.", pat: "(?<![\\w.])permutations\\(" },
+{ k: "combinations", n: "itertools.combinations", lib: "python", path: ["itertools"], d: "순서 없이 고르는 경우(조합)를 하나씩 만든다.", use: "from itertools import combinations\nlen(list(combinations(range(5), 3)))", out: "10", warn: "경우가 많으면 느리다. ₂₆C₁₃(약 1040만 가지)을 다 세는 데 약 0.7초가 걸렸다.", pat: "(?<![\\w.])combinations\\(" },
 { k: "special.comb", n: "scipy.special.comb", lib: "scipy", path: ["scipy", "special"], d: "조합의 수. NumPy 배열을 넣어 여러 값을 한꺼번에 계산한다.", use: "from scipy.special import comb\ncomb(60, 30), comb(60, 30, exact=True)", out: "(1.182645815648614e+17, 118264581564861424)", warn: "기본값이 소수라 큰 수는 틀린다(실제보다 16 작음). exact=True를 넣거나 math.comb를 쓴다.", pat: "(?<![\\w.])comb\\(" },
-{ k: "divisor_count", n: "divisor_count · factorint", lib: "sympy", path: ["ntheory", "factor_"], d: "약수의 개수, 소인수분해, 약수 목록을 구한다.", use: "divisor_count(360), factorint(360)", out: "(24, {2: 3, 3: 2, 5: 1})", pat: "(divisor_count|factorint|divisors)\\(" },
-{ k: "Line", n: "Point · Line", lib: "sympy", path: ["geometry", "line"], d: "점과 직선. 두 점을 지나는 직선의 방정식, 기울기, 수직·평행, 점과 직선 사이의 거리를 구한다.", use: "Line(Point(2, 1), Point(2, 5)).equation()", out: "x - 2", warn: "기울기 공식은 x좌표가 같으면 0으로 나누기 오류지만, Line은 x = 2를 낸다.", pat: "(?<![\\w.])(Line|Point)\\(" },
+{ k: "divisor_count", n: "divisor_count", lib: "sympy", path: ["ntheory", "factor_"], d: "자연수의 약수의 개수를 구한다. 약수 목록은 divisors.", use: "divisor_count(360)", out: "24", pat: "(divisor_count|divisors)\\(" },
+{ k: "factorint", n: "factorint", lib: "sympy", path: ["ntheory", "factor_"], d: "자연수를 소인수분해해 {소수: 지수}로 준다.", use: "factorint(360)", out: "{2: 3, 3: 2, 5: 1}", pat: "(?<![\\w.])factorint\\(" },
+{ k: "Point", n: "Point", lib: "sympy", path: ["geometry", "point"], d: "좌표평면의 점을 만든다. 두 점 사이의 거리와 중점을 구하고, Line·Circle에 넣어 쓴다.", use: "p, q = Point(1, 2), Point(4, 6)\np.distance(q), p.midpoint(q)", out: "(5, Point2D(5/2, 4))", pat: "(?<![\\w.])Point\\(" },
+{ k: "Line", n: "Line", lib: "sympy", path: ["geometry", "line"], d: "두 점이나 방정식으로 직선을 만든다. 직선의 방정식, 기울기, 수직·평행, 점과 직선 사이의 거리를 구한다.", use: "Line(Point(2, 1), Point(2, 5)).equation()", out: "x - 2", warn: "기울기 공식은 x좌표가 같으면 0으로 나누기 오류지만, Line은 x = 2를 낸다.", pat: "(?<![\\w.])Line\\(" },
 { k: "Circle", n: "Circle", lib: "sympy", path: ["geometry", "ellipse"], d: "원. 방정식이나 세 점으로 만들고 중심·반지름, 직선과 만나는 점, 접선을 구한다.", use: "c = Circle(x**2 + y**2 - 4*x + 6*y - 3)\nc.center, c.radius", out: "(Point2D(2, -3), 4)", warn: "세 점이 일직선이면 오류 없이 원 대신 선분(Segment2D)이 나온다.", pat: "Circle\\(" },
 { k: "discriminant", n: "discriminant", lib: "sympy", path: ["polys", "polytools"], d: "이차방정식의 판별식 b² − 4ac를 구한다. 원과 직선의 위치 관계, 접할 조건에 쓴다.", use: "discriminant(x**2 + k*x + 1, x)", out: "k**2 - 4", pat: "discriminant\\(" }
 ];
@@ -753,7 +745,7 @@ const GUIDE = [
 { s: "부정적분·정적분 계산", kw: ["적분", "부정적분", "정적분", "적분상수", "원시함수"], tools: ["integrate", "Integral"], note: "적분상수는 생략된다. 조건이 있으면 + C를 직접 붙인다.", t: 10 },
 { s: "접선의 방정식", kw: ["접선", "접선의 방정식", "기울기", "할선", "미분계수"], tools: ["diff", "subs", "solve", "Eq"], note: "할선의 기울기가 접선으로 다가가는 그림과 함께 보면 이해가 쉽다.", t: 9 },
 { s: "삼각함수 식 펼치기 (덧셈정리)", kw: ["덧셈정리", "삼각함수 전개", "배각", "펼치기", "sin(a+b)"], tools: ["expand_trig", "expand"], note: "expand_trig가 교과서 모양에 가깝다.", t: 6 },
-{ s: "삼각함수 식 간단히 하기·합성", kw: ["삼각함수", "합성", "간단히", "삼각함수 정리", "모으기"], tools: ["trigsimp", "fu", "simplify", "TR"], note: "줄여지지 않으면 TR2 → together → trigsimp 순서로 직접 지정한다.", t: 6 },
+{ s: "삼각함수 식 간단히 하기·합성", kw: ["삼각함수", "합성", "간단히", "삼각함수 정리", "모으기"], tools: ["trigsimp", "fu", "simplify", "TR2", "TR8", "TR9"], note: "줄여지지 않으면 TR2 → together → trigsimp 순서로 직접 지정한다.", t: 6 },
 { s: "공식이 맞는지 검증", kw: ["공식 검증", "항등식", "증명", "맞는지", "참 거짓"], tools: ["simplify", "equals", "Eq"], note: "Eq는 적어 둘 뿐 검증하지 않는다. simplify(좌변 − 우변)이 0인지 본다.", t: 6 },
 { s: "다항방정식 풀기 (중근 포함)", kw: ["방정식", "이차방정식", "삼차방정식", "근", "중근", "해"], tools: ["solve", "roots", "solveset"], note: "중근이 몇 개인지는 roots가 알려 준다.", t: 2 },
 { s: "지수·로그방정식 풀기", kw: ["지수방정식", "로그방정식", "지수", "로그", "치환"], tools: ["solve", "solveset", "nsolve", "nsimplify"], note: "solve는 복소수 해까지 준다. 실수 해만 원하면 solveset(domain=S.Reals). 3^x = t 치환은 직접 하는 편이 안전하다.", t: 2 },
@@ -768,18 +760,18 @@ const GUIDE = [
 { s: "사잇값 정리로 근 찾기", kw: ["사잇값", "중간값", "이분법", "근의 존재"], tools: ["nsolve", "real_roots", "solveset"], note: "정확한 값은 real_roots, 근삿값은 nsolve.", t: 8 },
 { s: "극대·극소, 증가·감소", kw: ["극대", "극소", "극값", "증가", "감소", "임계점"], tools: ["stationary_points", "diff", "solveset", "is_increasing"], note: "이계도함수가 0이면 부호 변화를 본다.", t: 9 },
 { s: "닫힌 구간의 최댓값·최솟값", kw: ["최댓값", "최솟값", "최대", "최소", "최적화"], tools: ["minimum", "Interval", "minimize_scalar"], note: "수치 최적화는 끝점의 값과 꼭 비교한다.", t: 9 },
-{ s: "행렬 계산 (곱, 행렬식, 역행렬)", kw: ["행렬", "역행렬", "행렬식", "행렬곱", "matrix"], tools: ["Matrix", "det", "inv", "np.array", "np.linalg"], note: "NumPy의 *는 성분끼리의 곱이다. 행렬곱은 @.", t: 4 },
+{ s: "행렬 계산 (곱, 행렬식, 역행렬)", kw: ["행렬", "역행렬", "행렬식", "행렬곱", "matrix"], tools: ["Matrix", "det", "inv", "np.array", "np.linalg.det", "np.linalg.inv"], note: "NumPy의 *는 성분끼리의 곱이다. 행렬곱은 @.", t: 4 },
 { s: "정확한 값으로 계산 (분수·무리수)", kw: ["분수", "소수 오차", "정확한 값", "무리수", "근호", "루트", "0.1"], tools: ["Rational", "sqrt", "nsimplify", "N"], note: "1/3 대신 Rational(1, 3). 소수가 섞이면 답도 소수가 된다.", t: 1 },
-{ s: "√(x²)나 로그 법칙처럼 조건이 필요한 정리", kw: ["가정", "양수", "음수", "루트 제곱", "로그 법칙", "조건"], tools: ["symbols", "refine", "expand_log"], note: "symbols('x', positive=True)처럼 문자에 조건을 준다.", t: 1 },
+{ s: "√(x²)나 로그 법칙처럼 조건이 필요한 정리", kw: ["가정", "양수", "음수", "루트 제곱", "로그 법칙", "조건"], tools: ["symbols", "refine", "ask", "expand_log"], note: "symbols('x', positive=True)처럼 문자에 조건을 준다.", t: 1 },
 { s: "식을 원하는 모양으로 (전개·약분·통분·부분분수·정리)", kw: ["전개", "약분", "통분", "부분분수", "내림차순", "식 변형", "유리식", "정리"], tools: ["expand", "cancel", "together", "apart", "collect", "simplify"], note: "simplify는 모양을 고를 수 없다. 원하는 모양에 맞는 함수를 쓴다.", t: 1 },
 { s: "다항식의 나머지·최대공약수", kw: ["나머지정리", "나머지", "몫", "최대공약수", "다항식의 나눗셈"], tools: ["div", "gcd", "subs"], note: "div의 나머지와 대입값이 같으면 나머지정리가 확인된다.", t: 1 },
 { s: "두 식이 같은지 확인", kw: ["같은 식", "동치", "같은지", "항등식"], tools: ["equals", "simplify", "Eq", "srepr"], note: "==는 모양만 비교한다. equals나 simplify(A − B) == 0으로 본다.", t: 1 },
-{ s: "순열·조합의 값과 식", kw: ["경우의 수", "순열", "조합", "팩토리얼", "nCr", "nPr"], tools: ["math.comb", "binomial", "factorial", "expand_func", "itertools"], note: "n이 문자이면 binomial로 적고 expand_func로 펼친다. 조건이 있으면 itertools로 다 세어 확인한다.", t: 3 },
-{ s: "약수의 개수·소인수분해", kw: ["약수", "약수의 개수", "소인수분해", "소인수"], tools: ["divisor_count"], note: "factorint로 소인수분해한 지수에 1씩 더해 곱하면 약수의 개수다.", t: 3 },
-{ s: "직선의 방정식, 수직·평행, 점과 직선 사이의 거리", kw: ["직선의 방정식", "두 점을 지나는", "기울기", "수직", "평행", "점과 직선", "거리"], tools: ["Line"], note: "x좌표가 같은 두 점은 기울기 공식으로 안 된다. Line은 x = a를 낸다.", t: 5 },
+{ s: "순열·조합의 값과 식", kw: ["경우의 수", "순열", "조합", "팩토리얼", "nCr", "nPr"], tools: ["math.comb", "math.perm", "math.factorial", "binomial", "factorial", "expand_func", "permutations", "combinations"], note: "n이 문자이면 binomial로 적고 expand_func로 펼친다. 조건이 있으면 itertools로 다 세어 확인한다.", t: 3 },
+{ s: "약수의 개수·소인수분해", kw: ["약수", "약수의 개수", "소인수분해", "소인수"], tools: ["divisor_count", "factorint"], note: "factorint로 소인수분해한 지수에 1씩 더해 곱하면 약수의 개수다.", t: 3 },
+{ s: "직선의 방정식, 수직·평행, 점과 직선 사이의 거리", kw: ["직선의 방정식", "두 점을 지나는", "기울기", "수직", "평행", "점과 직선", "거리"], tools: ["Line", "Point"], note: "x좌표가 같은 두 점은 기울기 공식으로 안 된다. Line은 x = a를 낸다.", t: 5 },
 { s: "원의 방정식, 원과 직선, 접선", kw: ["원의 방정식", "중심", "반지름", "세 점을 지나는 원", "접선", "위치 관계", "판별식"], tools: ["Circle", "discriminant", "Line"], note: "접선을 y = m(x − a) + b로 놓으면 수직 접선을 놓친다. tangent_lines로 확인한다.", t: 5 },
 { s: "함숫값 구하기 (정확한 값·소수·여러 값)", kw: ["함숫값", "대입", "값 넣기", "소수로", "여러 값"], tools: ["subs", "N", "lambdify"], note: "여러 값을 한꺼번에 넣을 때는 lambdify.", t: 5 },
-{ s: "고윳값·LU 분해 (교육과정 밖)", kw: ["고윳값", "고유값", "고유벡터", "LU 분해", "LU분해", "삼각행렬", "eigen"], tools: ["eigenvals", "LUdecomposition", "np.linalg"], note: "심화 내용. SymPy는 정확한 값, NumPy는 소수.", t: 4 },
+{ s: "고윳값·LU 분해 (교육과정 밖)", kw: ["고윳값", "고유값", "고유벡터", "LU 분해", "LU분해", "삼각행렬", "eigen"], tools: ["eigenvals", "LUdecomposition"], note: "심화 내용. SymPy는 정확한 값, NumPy는 소수.", t: 4 },
 { s: "문자가 든 행렬, 역행렬이 없는 조건", kw: ["역행렬이 없는", "문자 행렬", "행렬식이 0", "특이행렬"], tools: ["Matrix", "det", "solve"], note: "행렬식 = 0을 solve로 푼다.", t: 4 }
 ];
 
@@ -833,7 +825,10 @@ const SHORT = {
 "nsimplify": ["소수 → 정확한 수 추측", "정확한 값이 필요하면 solve를 먼저 시도."],
 "trigsimp": ["삼각함수 모으기", "안 되면 fu나 TR 함수를 순서대로."],
 "fu": ["삼각함수 자동 정리", "단계를 정하려면 TR 함수."],
-"TR": ["삼각함수 규칙 하나씩", "자동으로는 fu, trigsimp."],
+"TR2": ["tan·cot을 sin·cos로", "자동으로 줄이려면 simplify·fu."],
+"TR7": ["cos²의 차수 낮추기", "자동으로는 fu."],
+"TR8": ["곱을 합·차로", "반대 방향은 TR9."],
+"TR9": ["합·차를 곱으로", "반대 방향은 TR8."],
 "solve": ["방정식 풀기 (리스트)", "실수 해·구간은 solveset, 근삿값은 nsolve."],
 "nsolve": ["근삿값 근 찾기", "정확한 근이 있으면 solve가 낫다."],
 "solveset": ["범위 정해 풀기 (집합)", "해가 무수히 많아도 모두 나타낸다."],
@@ -854,7 +849,9 @@ const SHORT = {
 "np.linspace": ["구간을 나눈 점들", "점 개수 = 구간 수 + 1."],
 "np.trapezoid": ["사다리꼴 넓이", "같은 점이면 simpson이 더 정확하다."],
 "np.array": ["NumPy 행렬", "정확한 값은 SymPy Matrix."],
-"np.linalg": ["NumPy 행렬 계산", "정확한 값은 SymPy Matrix."],
+"np.linalg.det": ["행렬식을 소수로", "정확한 값은 SymPy .det()."],
+"np.linalg.inv": ["역행렬을 소수로", "정확한 값은 SymPy .inv()."],
+"np.linalg.solve": ["연립방정식을 소수로", "정확한 분수 해는 LUsolve·linsolve."],
 "np.roots": ["계수로 근 구하기", "정확한 근은 solve."],
 "simpson": ["심프슨 넓이 (심화)", "정확한 값은 integrate."],
 "quad": ["정적분 근삿값", "정확한 값은 integrate."],
@@ -864,8 +861,12 @@ const SHORT = {
 "polar": ["극좌표 그래프 (심화)", "SymPy에는 극방정식 전용 함수가 없다."],
 "plt.fill_between": ["넓이 색칠", "값은 integrate로."],
 "math.sqrt": ["제곱근을 소수로", "정확한 값과 음수는 SymPy sqrt (sqrt(-1) = I)."],
-"math.comb": ["조합·팩토리얼을 정수로", "n이 문자이면 binomial·factorial."],
+"math.comb": ["조합의 수를 정수로", "n이 문자이면 binomial."],
+"math.perm": ["순열의 수를 정수로", "n이 문자이면 factorial로 나눈다."],
+"math.factorial": ["팩토리얼을 정수로", "n이 문자이면 SymPy factorial."],
+"math.gcd": ["정수의 최대공약수", "다항식은 SymPy gcd."],
 "refine": ["가정을 나중에 붙이기", "처음부터 symbols('x', positive=True)로 만들어도 된다."],
+"ask": ["가정 아래 성질 묻기", "모르면 None을 준다."],
 "expand_log": ["로그 법칙으로 펼치기", "모을 때는 logcombine. 둘 다 양수 가정이 필요하다."],
 "cancel": ["유리식 약분", "부분분수는 apart, 통분은 together."],
 "collect": ["한 문자에 대해 정리", "인수분해는 factor."],
@@ -876,12 +877,202 @@ const SHORT = {
 "binomial": ["조합 nCr (문자도 가능)", "식으로 펼치려면 expand_func."],
 "expand_func": ["binomial 등을 식으로 펼치기", "펼친 뒤 factor로 묶을 수 있다."],
 "LUdecomposition": ["LU 분해 (심화)", "연립방정식은 LUsolve가 바로 푼다."],
-"itertools": ["경우를 하나씩 다 세기", "경우가 많으면 공식(math.comb·math.perm)을 쓴다."],
+"permutations": ["순열을 하나씩 다 세기", "개수만 필요하면 math.perm."],
+"combinations": ["조합을 하나씩 다 세기", "개수만 필요하면 math.comb."],
 "special.comb": ["조합의 수 (배열 가능)", "기본값은 소수. 정확한 값은 exact=True."],
-"divisor_count": ["약수의 개수·소인수분해", "약수 목록은 divisors."],
+"divisor_count": ["약수의 개수", "약수 목록은 divisors."],
+"factorint": ["소인수분해", "약수의 개수만 필요하면 divisor_count."],
+"Point": ["점·거리·중점", "직선은 Line, 원은 Circle."],
 "Line": ["직선의 방정식·거리·수직", "기울기 공식이 안 되는 수직선도 다룬다."],
 "Circle": ["원의 중심·반지름·접선", "일직선 위의 세 점이면 선분이 나온다."],
 "discriminant": ["판별식 구하기", "원과 직선은 거리 공식과 함께 확인한다."]
+};
+
+// 함수 페이지 §4 '다른 방법과 비교': [다른 방법, 무엇이 다르고 언제 그쪽을 쓰나]
+const CMPF = {
+"for": [["Sum(…).doit()", "for 문은 n = 10처럼 항의 개수가 정해져야 계산할 수 있고, 답도 숫자 하나다. 'n까지의 합'처럼 n에 대한 식(공식)이 필요하면 Sum(…).doit()을 쓴다."],
+  ["rsolve", "점화식을 for 문으로 돌리면 앞의 몇 항은 바로 나오지만 일반항은 나오지 않는다. 일반항이 필요하면 rsolve."]],
+"sum": [["Sum(…).doit()", "sum은 숫자를 하나씩 더해 값 하나를 준다. 소수를 더하면 오차가 쌓이고(0.5를 51번 더한 등비급수 → 1.9999999999999991), 항의 개수가 문자이면 쓸 수 없다. Sum은 분수 그대로 정확하게, n에 대한 식으로도 더한다."],
+  ["for 문", "더하는 도중의 값(부분합)을 하나씩 보고 싶으면 for 문으로 풀어 쓴다."]],
+"float": [["Rational", "float는 약 16자리까지만 기억하는 소수라 1/3을 0.3333333333333333으로 잘라 둔다. 계산을 이어 가면 이 오차가 커질 수 있다. 끝까지 정확해야 하면 Rational로 분수 그대로 둔다."],
+  ["N(…, 자릿수)", "소수로 보고 싶지만 자릿수를 정하고 싶으면 N. N(pi, 30)은 30자리까지 정확하다."]],
+"math.log": [["SymPy log", "math.log(9, 3)은 2.0처럼 소수를 준다. SymPy의 log(9, 3)은 2를 정확하게 주고, log(2, 3)처럼 딱 떨어지지 않으면 log(2)/log(3)으로 남겨 둔다."]],
+"symbols": [["문자 없이 숫자만", "파이썬은 문자 x를 바로 쓸 수 없다. SymPy로 식을 다루려면 먼저 symbols로 문자를 만들어야 한다."],
+  ["refine", "symbols('x', positive=True)는 문자를 만들 때 조건을 붙인다. 이미 만든 식에 나중에 조건을 붙이고 싶으면 refine을 쓴다."]],
+"Rational": [["1/2 (파이썬 나눗셈)", "1/2는 0.5라는 소수가 된다. 1/3처럼 끝없는 소수는 잘려서 오차가 생긴다. Rational(1, 3)은 분수 1/3 그대로 계산한다."],
+  ["nsimplify", "이미 소수로 나온 답(0.3333…)을 분수로 되돌리고 싶으면 nsimplify. 다만 원래 값을 추측하는 것이라 틀릴 수 있다."]],
+"Eq": [["equals · simplify", "Eq는 등식을 '적어 두는' 것일 뿐, 맞는지 확인하지 않는다. 틀린 공식도 그대로 출력한다. 맞는지는 A.equals(B)나 simplify(A − B) == 0으로 확인한다."],
+  ["==", "==는 두 식의 겉모양이 같은지만 본다. (x + 1)²과 x² + 2x + 1은 값이 같아도 False다."]],
+"Function": [["rsolve", "Function은 이름만 있는 함수 f를 만든다. 점화식을 rsolve에 넣으려면 a(n)처럼 Function으로 만든 수열이 필요하다."],
+  ["lambda · def", "f(x) = x² + 1처럼 식이 정해진 함수라면 Function 대신 그 식을 바로 쓰면 된다."]],
+"diff": [["정의 (h → 0)", "diff는 도함수를 바로 준다. 정의 limit((f(x + h) − f(x))/h, h, 0)은 길지만, |x|처럼 뾰족한 점에서 좌·우 극한이 다른 것을 보여 줄 수 있다. diff는 이런 점에서도 값을 내 버린다."],
+  ["Derivative", "풀이 과정에서 '미분할 식'을 먼저 보여 주고 싶으면 Derivative로 적고 .doit()으로 계산한다. 결과만 필요하면 diff가 짧다."]],
+"Derivative": [["diff", "Derivative는 미분 기호가 붙은 식을 먼저 보여 주고 .doit()으로 계산한다. 결과만 필요하면 diff 한 번으로 끝난다."]],
+"expand": [["expand_trig", "expand(trig=True)도 삼각함수를 펼치지만 tan(a + b)를 분수 두 개로 나눈 모양으로 준다. 교과서 덧셈정리 모양이 필요하면 expand_trig."],
+  ["factor", "expand는 곱을 풀어 늘어놓고, factor는 반대로 곱의 꼴로 묶는다."]],
+"expand_trig": [["expand(trig=True)", "둘 다 덧셈정리로 펼친다. expand_trig는 tan(a + b)를 교과서와 같은 하나의 분수로 주고, expand(trig=True)는 분수 두 개로 나눈다."],
+  ["trigsimp · fu", "expand_trig는 펼치기만 한다. 반대로 모으거나 합성(√3 sin a + cos a → 2 sin(a + π/6))하려면 trigsimp나 fu."]],
+"subs": [["lambdify", "subs는 값 하나를 넣어 정확한 값(√2 그대로)을 준다. x값 수백 개를 한꺼번에 넣어야 하면(그래프·표) lambdify로 바꾼 함수가 훨씬 빠르다. 대신 소수로 계산한다."],
+  ["evalf · N", "subs로 넣은 결과가 sin(2)/2 + √2처럼 기호로 남으면, 소수 값은 N이나 .evalf()로 따로 구한다."]],
+"doit": [["바로 계산하는 함수", "Sum·Limit·Integral·Derivative는 식을 적어 두기만 하고, .doit()을 붙여야 계산한다. 과정이 필요 없으면 summation·limit·integrate·diff를 쓰면 doit 없이 바로 답이 나온다."]],
+"rewrite": [["simplify", "simplify는 어떤 모양으로 줄일지 SymPy가 정한다. rewrite는 'sin으로', 'exp로'처럼 바꿀 모양을 내가 정한다. 원하는 모양이 분명하면 rewrite가 확실하다."]],
+"N": [["float", "float는 항상 약 16자리다. N(pi, 50)처럼 자릿수를 원하는 만큼 정할 수 있는 것이 N의 장점이다."],
+  ["정확한 값 그대로", "N은 근삿값으로 바꾸는 마지막 단계에만 쓴다. 중간에 바꾸면 그 뒤 계산은 모두 소수가 된다."]],
+"sympify": [["parse 없이 그대로", "input()으로 받은 'x**2 + 1'은 글자일 뿐이라 계산할 수 없다. sympify로 SymPy 식으로 바꿔야 미분·적분을 할 수 있다."]],
+"equals": [["==", "==는 겉모양이 같은지만 본다. (x + 1)²과 x² + 2x + 1은 False. equals는 값이 항상 같은지 보므로 True."],
+  ["simplify(A − B)", "같은 일을 simplify(A − B) == 0으로도 할 수 있다. 둘 다 √(x²)처럼 조건이 필요한 식은 가정(positive 등)을 주지 않으면 판정하지 못한다."],
+  ["Eq", "Eq는 등식을 적어 두기만 하고 참·거짓을 따지지 않는다."]],
+"sqrt": [["math.sqrt", "math.sqrt(8)은 2.8284271247461903처럼 소수를 준다. SymPy의 sqrt(8)은 2√2를 정확하게 주고, sqrt(-1)도 허수 I로 계산한다(math.sqrt는 오류)."]],
+"log": [["math.log", "math.log는 소수를 준다. SymPy log는 log(8, 2) = 3처럼 정확한 값을 주고, 문자도 넣을 수 있다."],
+  ["expand_log", "log(ab)를 log a + log b로 펼치려면 expand_log. a, b가 양수라는 가정이 있어야 펼친다."]],
+"Abs": [["넓이를 그냥 integrate", "integrate(sin x, (x, 0, 2π))는 위아래가 지워져 0이다. 넓이는 Abs를 씌워 integrate(Abs(sin x), …) = 4로 구한다."],
+  ["Piecewise로 나누기", "Abs 대신 x축 위·아래 구간을 나눠 각각 적분해 더해도 된다. 교과서 풀이와 같은 방식이다."]],
+"Piecewise": [["h 치환", "Piecewise의 경계점 극한은 SymPy 1.14에서 틀린 적이 있다(좌극한 1을 3으로). h를 양수로 두고 f(1 − h)의 h → 0 극한으로 다시 확인한다."],
+  ["if 문 (def)", "값 몇 개만 넣어 볼 거면 파이썬 if 문으로 만든 함수도 된다. 극한·적분까지 하려면 Piecewise여야 한다."]],
+"floor": [["continuous_domain", "floor가 든 식은 continuous_domain이 불연속점을 처리하지 못했다. 정수 지점에서 좌·우 극한을 직접 비교한다."],
+  ["math.floor", "숫자 하나의 가우스 값만 필요하면 math.floor도 된다. 식으로 다루려면 SymPy floor."]],
+"Sum": [["sum · for 문", "sum은 항의 개수가 숫자일 때만 되고 값 하나를 준다. Sum은 n을 문자로 두어 공식 n(n + 1)/2 같은 식을 만든다."],
+  ["summation", "summation은 Sum(…).doit()과 결과가 같다. 식을 먼저 보여 주고 싶으면 Sum, 바로 답만 필요하면 summation."]],
+"summation": [["Sum(…).doit()", "결과는 같다. Sum은 ∑ 기호가 붙은 식을 먼저 보여 줄 수 있어 풀이 과정을 보이기 좋다."]],
+"is_convergent": [["부분합 관찰", "부분합을 몇 개 계산해 보면 1/k의 합도 거의 멈춰 가는 것처럼 보인다. 실제로는 발산한다. 수렴 여부는 is_convergent로 확인한다."],
+  ["Sum(…).doit()", "is_convergent는 수렴하는지(True/False)만 알려 준다. 수렴하는 값까지 알고 싶으면 Sum(…, (k, 1, oo)).doit()."]],
+"Limit": [["limit", "Limit는 극한 기호가 붙은 식을 먼저 보여 주고 .doit()으로 계산한다. 결과만 필요하면 limit이 짧다. 출력에 dir='+'가 붙는 것은 방향을 안 써서 우극한으로 본다는 뜻이다."]],
+"limit": [["dir 옵션", "방향을 쓰지 않으면 우극한만 계산한다. limit(1/x, x, 0)은 oo를 주지만 좌극한은 −oo라 극한이 없다. 양쪽을 다 보려면 dir='+-'나 좌·우를 따로 구한다."],
+  ["값 대입", "x에 1에 가까운 수(0.999, 1.001)를 넣어 보는 방법은 극한을 짐작만 하게 해 준다. limit은 정확한 값을 준다."]],
+"SeqFormula": [["for 문 · 리스트", "앞의 몇 항만 보려면 for 문 리스트로도 충분하다. SeqFormula는 끝없는 수열을 하나의 대상으로 다룬다."],
+  ["Sum · rsolve", "SeqFormula에는 합이나 점화식 풀이 기능이 없다. 합은 Sum, 점화식은 rsolve."]],
+"Integral": [["integrate", "Integral은 적분 기호가 붙은 식을 먼저 보여 준다. .doit()은 정확한 값, .evalf()는 근삿값. 결과만 필요하면 integrate가 짧다."]],
+"integrate": [["quad · simpson", "integrate는 정확한 값(1/3, π)을 준다. e^(−x²)처럼 교과서 함수로 안 풀리면 erf 같은 낯선 함수가 나오는데, 이때 숫자 값만 필요하면 quad나 simpson으로 근삿값을 구한다."],
+  ["Integral", "풀이 과정을 보이려면 Integral로 식을 먼저 적는다."],
+  ["넓이", "integrate는 x축 아래를 음수로 계산한다. 넓이는 Abs를 씌운다."]],
+"as_sum": [["Sum + limit", "as_sum은 n = 4처럼 정해진 개수로 나눈 직사각형 넓이의 합을 준다. n을 문자로 두고 n → ∞ 극한까지 보여 주려면 Sum과 limit로 구분구적법 식을 직접 쓴다."],
+  ["np.trapezoid · simpson", "숫자 점으로 근삿값만 필요하면 NumPy·SciPy가 빠르다."]],
+"continuous_domain": [["좌·우 극한 비교", "continuous_domain은 연속인 구간을 한 번에 준다. 하지만 구간별 함수(Piecewise)나 floor는 제대로 처리하지 못했다. 그럴 때는 경계점에서 좌극한·우극한·함숫값을 직접 비교한다."],
+  ["singularities", "불연속점(정의되지 않는 점)만 필요하면 singularities."]],
+"singularities": [["continuous_domain", "singularities는 정의되지 않는 점만 준다. 연속인 구간 전체가 필요하면 continuous_domain."]],
+"is_increasing": [["solveset(f′ > 0)", "is_increasing은 '이 구간에서 증가하나?'에 True/False로만 답한다. 증가하는 구간 자체를 구하려면 f′(x) > 0을 solveset으로 푼다."]],
+"stationary_points": [["solve(diff(f), x)", "결과는 같다. stationary_points는 집합으로, solve는 리스트로 준다. 둘 다 극대인지 극소인지는 알려 주지 않으므로 f″의 부호나 증감표로 따로 판정한다."]],
+"minimum": [["minimize_scalar", "minimum은 정확한 값을 준다. minimize_scalar는 수치로 찾다가 끝점보다 큰 극소에 머물 수 있다([−3, 3]에서 x³ − 3x의 최솟값 −18 대신 −2)."],
+  ["미분해서 직접", "교과서 방식(f′ = 0인 점과 끝점의 값 비교)으로 확인할 수도 있다. 열린 구간에서는 minimum이 최솟값이 없어도 하한을 주니 조심한다."]],
+"factor": [["solve", "근만 필요하면 solve가 짧다. factor는 식을 곱의 꼴로 보여 준다."],
+  ["factor 옵션", "기본값은 유리수 범위라 x² − 5를 그대로 둔다. extension=[sqrt(5)]를 주면 (x − √5)(x + √5)로 쪼갠다."],
+  ["expand", "factor의 반대 방향이 expand다."]],
+"Poly": [["그냥 식", "Poly로 만들면 차수(degree)·계수(all_coeffs)를 바로 꺼낼 수 있다. 계산만 할 거면 그냥 식으로도 된다."],
+  ["nroots", "다항식의 근삿값 근은 nroots."]],
+"nroots": [["real_roots", "nroots는 복소수 근까지 모든 근을 소수로 준다. 실근만 정확한 값으로 필요하면 real_roots."],
+  ["solve", "solve는 정확한 근을 주지만 3차 이상에서는 아주 긴 식이 나올 수 있다."]],
+"real_roots": [["nroots", "real_roots는 실근만 정확하게 준다. 허근까지 모든 근의 근삿값이 필요하면 nroots."],
+  ["solveset(…, S.Reals)", "실수 해를 집합으로 받고 싶으면 solveset을 실수 범위로 쓴다."]],
+"roots": [["solve", "solve는 근만 [2, 3]처럼 준다. roots는 {근: 몇 번 겹치는지}를 주므로 중근인지 알 수 있다. 다항식에만 쓸 수 있다."]],
+"together": [["apart", "together는 분수식을 통분해 하나로 모으고, apart는 반대로 부분분수로 쪼갠다."],
+  ["cancel", "통분한 뒤 약분까지 하려면 cancel."]],
+"apart": [["together", "apart는 부분분수로 쪼개고, together는 반대로 통분한다."],
+  ["simplify", "simplify는 어떤 모양을 줄지 정할 수 없다. 부분분수 꼴이 필요하면 apart를 직접 쓴다."]],
+"simplify": [["모양별 함수", "simplify는 '가장 간단해 보이는' 모양을 SymPy가 고른다. 원하는 모양이 있으면 전개는 expand, 인수분해는 factor, 약분은 cancel, 삼각함수는 trigsimp처럼 직접 고르는 편이 확실하다."],
+  ["equals", "두 식이 같은지 볼 때 simplify(A − B) == 0과 A.equals(B)는 같은 일을 한다."]],
+"nsimplify": [["solve로 정확하게", "nsimplify는 0.3333…을 보고 1/3이라고 '추측'한다. 소수 자릿수가 부족하면 틀린 분수를 줄 수 있으니, 처음부터 solve 같은 정확한 방법으로 구할 수 있으면 그쪽이 낫다."]],
+"trigsimp": [["simplify · fu", "셋 다 삼각함수 식을 줄인다. 결과가 다를 때가 있으니 하나가 안 되면 다른 것을 써 본다. tan a + cot a는 셋 다 못 줄였다."],
+  ["TR 함수", "자동으로 안 될 때는 TR2(tan → sin/cos) → together → trigsimp처럼 단계를 직접 고른다."]],
+"fu": [["TR 함수", "fu는 TR 규칙들을 자동으로 골라 적용한다. 어느 공식을 쓸지 내가 정하려면 TR2·TR7·TR8·TR9를 하나씩 쓴다."],
+  ["trigsimp", "trigsimp와 결과가 다를 수 있으니 둘 다 써 보고 원하는 모양을 고른다."]],
+"TR2": [["simplify · fu", "simplify·fu는 알아서 줄이지만 tan a + cot a처럼 못 줄이는 식이 있다. TR2로 먼저 sin·cos로 바꾸고 together → trigsimp를 하면 2/sin 2a가 나온다."],
+  ["rewrite(sin)", "tan(x).rewrite(sin)도 sin으로 바꾸지만 2sin²x/sin 2x처럼 낯선 모양이 된다. sin/cos 꼴이 필요하면 TR2."]],
+"TR7": [["fu · trigsimp", "TR7은 cos²x → (1 + cos 2x)/2 한 가지만 한다. 어떤 공식을 쓸지 모르겠으면 fu가 알아서 고른다."]],
+"TR8": [["TR9", "TR8은 곱 → 합·차, TR9는 합·차 → 곱으로 서로 반대다."],
+  ["simplify", "simplify는 sin a cos b를 그대로 둔다. 곱을 합으로 바꾸려면 TR8을 직접 써야 한다."]],
+"TR9": [["TR8", "TR9는 합·차 → 곱, TR8은 곱 → 합·차로 서로 반대다."],
+  ["simplify · trigsimp", "sin a + sin b를 simplify에 넣어도 곱으로 바뀌지 않는다. 합 → 곱 공식이 필요하면 TR9."]],
+"solve": [["solveset", "solve는 해를 리스트로 몇 개만 준다. sin x = 0처럼 해가 무수히 많으면 [0, π]만 준다. solveset은 해 전체를 집합(2nπ ∪ 2nπ + π)으로 주고, 실수 범위·구간도 정할 수 있다."],
+  ["nsolve", "sin x = x − π/2처럼 정확히 못 푸는 방정식은 solve가 오류를 낸다. 근삿값은 nsolve."],
+  ["roots", "중근인지까지 알려면 roots."]],
+"nsolve": [["solve", "정확한 근이 있으면 solve가 낫다. nsolve는 시작값 근처의 근 하나를 소수로 찾고, 시작값을 바꾸면 다른 근이 나올 수 있다."],
+  ["np.linspace로 그래프 보기", "근이 어디쯤인지 모르면 먼저 그래프나 값 표로 위치를 보고 시작값을 정한다."]],
+"solveset": [["solve", "solveset은 해 전체를 집합으로 주고 domain=S.Reals로 실수 해만, Interval로 구간 안의 해만 고를 수 있다. 결과가 집합이라 값 하나를 꺼내 쓰기는 solve의 리스트가 더 편하다."],
+  ["부등식", "부등식(x² < 4)도 solveset으로 풀면 구간으로 답이 나온다."]],
+"linsolve": [["nonlinsolve", "linsolve는 일차 연립방정식만 푼다. x² + y² = 5처럼 이차식이 섞이면 nonlinsolve."],
+  ["LUsolve · np.linalg.solve", "행렬로 쓴 연립방정식은 LUsolve(정확)나 np.linalg.solve(소수)로도 푼다. 해가 무수히 많으면 linsolve만 {(1 − y, y)}처럼 답을 준다."]],
+"nonlinsolve": [["linsolve", "일차식뿐이면 linsolve가 빠르다."],
+  ["solve", "solve도 연립방정식을 풀지만 결과를 딕셔너리·리스트로 준다. 식이 복잡하면 nonlinsolve가 오래 걸릴 수 있다."]],
+"rsolve": [["for 문", "for 문으로 점화식을 돌리면 앞의 몇 항(1, 5, 13, …)만 나온다. rsolve는 일반항 4·2ⁿ − 3을 식으로 준다."],
+  ["안 될 때", "aₙ₊₁ = aₙ²처럼 선형이 아닌 점화식은 rsolve가 오류를 낸다. 이때는 for 문으로 항을 보며 규칙을 찾는다."]],
+"decompogen": [["직접 치환", "decompogen은 sin(x² + 1)을 [sin(x), x² + 1]처럼 바깥·안쪽 함수로 나눠 보여 준다. 실제 치환은 손으로 하는 편이 안전하다. compogen은 반대로 다시 합성한다."]],
+"Interval": [["부등식으로 쓰기", "Interval(0, 1)은 닫힌 구간 [0, 1]이다. 열린 구간은 Interval.open(0, 1). 0 ≤ x ≤ 1을 부등식으로 쓰는 것보다 solveset·minimum에 바로 넣기 좋다."]],
+"Matrix": [["np.array", "Matrix는 분수·무리수·문자를 정확하게 다룬다. np.array는 빠르지만 소수 오차가 있고 문자를 못 넣는다. 곱셈도 Matrix는 *가 행렬곱이지만 np.array는 *가 성분끼리 곱이라 @를 써야 한다."]],
+"det": [["np.linalg.det", "SymPy .det()는 −2처럼 정확하다. NumPy는 −2.0000000000000004처럼 오차가 섞인다. 문자가 든 행렬도 SymPy만 (a − 1)(a + 1)처럼 식으로 준다."]],
+"inv": [["np.linalg.inv", "SymPy .inv()는 분수 그대로 정확하다. NumPy는 소수이고, 역행렬이 거의 없는 행렬에서는 오류 없이 크게 틀린 값을 낸다."],
+  ["역행렬이 없을 때", "역행렬이 없으면 SymPy는 NonInvertibleMatrixError, NumPy는 LinAlgError를 낸다. 먼저 .det()가 0인지 본다."]],
+"eigenvals": [["np.linalg.eigvals", "SymPy는 고윳값을 무리수와 중복도까지 정확하게 준다. NumPy np.linalg.eigvals는 소수로 빠르게 준다. 교육과정 밖 내용이다."]],
+"LUsolve": [["linsolve", "LUsolve는 행렬 A와 오른쪽 값 b로 푼다. 방정식 모양 그대로 풀고 싶거나 해가 무수히 많을 수 있으면 linsolve."],
+  ["np.linalg.solve", "NumPy는 같은 답을 소수로 준다(9/2 → 4.5)."]],
+"plot": [["plot_implicit", "plot은 y = f(x) 꼴만 그린다. x² + y² = 1처럼 y로 정리하기 어려운 식은 plot_implicit이 식 그대로 그린다."],
+  ["plt.plot", "matplotlib의 plt.plot은 점을 직접 만들어 이어 그린다. 점이 적으면 모양이 틀린다. 식만 있으면 SymPy plot이 짧다."]],
+"plot_implicit": [["plot 두 번", "원을 plot으로 그리려면 y = ±√(1 − x²) 두 개로 나눠 그려야 한다. plot_implicit은 식 그대로 한 번에 그린다."],
+  ["plot_parametric", "x = cos t, y = sin t처럼 매개변수 식을 알면 plot_parametric이 더 매끄럽다."]],
+"plot_parametric": [["plot · plot_implicit", "y = f(x) 꼴이면 plot, x와 y가 섞인 식이면 plot_implicit. 매개변수 t로 x, y가 주어졌을 때만 plot_parametric을 쓴다."]],
+"lambdify": [["subs", "subs는 값 하나를 넣어 √2 같은 정확한 값을 준다. lambdify는 SymPy 식을 숫자 계산용 함수로 바꿔 x값 여러 개를 한꺼번에 빠르게 넣는다. 대신 결과가 소수다."],
+  ["상수함수 주의", "f(x) = 3처럼 x가 없는 식은 lambdify가 배열이 아닌 수 3 하나만 돌려줘서 배열 계산에서 오류가 난다."]],
+"np.linspace": [["np.arange", "np.linspace(0, 1, 5)는 끝점을 포함해 점 5개를 고르게 만든다. np.arange는 간격을 정하지만 끝점을 빼서 헷갈리기 쉽다."],
+  ["점 개수", "점이 적으면 그래프가 꺾여 보이고 넓이 근삿값도 틀린다."]],
+"np.trapezoid": [["simpson", "같은 점을 써도 simpson이 곡선을 포물선으로 이어 더 정확하다. 사다리꼴은 원리가 간단해 오차를 이해하기 좋다."],
+  ["integrate", "정확한 값은 integrate."]],
+"np.array": [["Matrix", "np.array는 빠르지만 소수로 계산하고 문자를 못 넣는다. 정확한 분수·문자 행렬은 SymPy Matrix."],
+  ["* 와 @", "np.array에서 *는 같은 자리끼리 곱한다. 행렬의 곱셈은 @."]],
+"np.linalg.det": [["SymPy .det()", "NumPy는 −2.0000000000000004처럼 소수 오차가 섞인다. SymPy .det()는 −2를 정확하게 주고 문자가 든 행렬도 계산한다."]],
+"np.linalg.inv": [["SymPy .inv()", "NumPy는 소수로 빠르게 준다. 역행렬이 거의 없는 행렬(12×12 힐베르트 행렬)에서는 H × H⁻¹이 단위행렬과 0.089만큼 달랐다. SymPy는 분수로 정확하다."]],
+"np.linalg.solve": [["LUsolve · linsolve", "NumPy는 해를 [−4., 4.5]처럼 소수로 준다. SymPy LUsolve는 [−4, 9/2]로 정확하다. 해가 무수히 많으면 NumPy는 오류를 내고 linsolve는 해 전체를 식으로 준다."]],
+"np.roots": [["solve · roots", "np.roots는 계수 리스트만 넣으면 근을 소수로 준다. 정확한 근은 solve, 중근까지는 roots."]],
+"simpson": [["np.trapezoid", "같은 점이면 사다리꼴보다 정확하다. 구간 개수가 짝수여야 교과서 심프슨 공식과 같은 값이 나온다."],
+  ["integrate · quad", "정확한 값은 integrate, 점 없이 함수로 근삿값을 구하려면 quad."]],
+"quad": [["integrate", "integrate는 정확한 값을 주고, quad는 (값, 오차 추정)을 소수로 준다. integrate가 erf처럼 낯선 답을 내거나 못 풀 때 quad로 숫자를 확인한다."],
+  ["simpson · trapezoid", "quad는 함수를 받아 알아서 잘게 나눈다. 점(데이터)만 있으면 simpson이나 trapezoid."]],
+"minimize_scalar": [["minimum", "minimize_scalar는 수치로 내려가다가 가까운 극소에 머물 수 있다. 닫힌 구간의 최솟값은 SymPy minimum이 정확하다. 수치 답은 끝점의 값과 꼭 비교한다."]],
+"hilbert": [["SymPy Matrix", "hilbert는 소수 오차 실험용이다. 같은 행렬을 SymPy Matrix로 만들면 역행렬을 오차 없이 구한다."]],
+"plt.plot": [["SymPy plot", "plt.plot은 점을 직접 만들어 잇기 때문에 그래프 모양을 자세히 꾸밀 수 있다. 식만 있으면 SymPy plot이 짧다."],
+  ["점 개수", "np.linspace의 점이 적으면 곡선이 꺾인 선으로 보인다."]],
+"polar": [["SymPy", "SymPy에는 극방정식 r = f(θ) 전용 그래프 함수가 없다. matplotlib의 극좌표 축을 쓰거나 x = r cos θ, y = r sin θ로 바꿔 plot_parametric으로 그린다."]],
+"plt.fill_between": [["integrate", "fill_between은 넓이를 색칠해 보여 줄 뿐 값을 계산하지 않는다. 값은 integrate로 구한다."]],
+"math.sqrt": [["SymPy sqrt", "math.sqrt(2)는 1.4142135623730951처럼 소수다. 제곱하면 2.0000000000000004가 된다. SymPy sqrt(2)는 √2 그대로라 제곱하면 정확히 2이고, 음수도 허수로 계산한다."]],
+"math.comb": [["binomial", "math.comb는 6C2 = 15처럼 수만 받는다. nC2를 n에 대한 식으로 쓰거나 nC2 = 28을 풀려면 SymPy binomial."],
+  ["scipy.special.comb", "SciPy comb는 기본값이 소수라 큰 수에서 틀린다(60C30이 16 작게 나옴). 정수가 필요하면 math.comb."],
+  ["combinations로 다 세기", "공식이 맞는지 직접 세어 확인하고 싶으면 itertools.combinations."]],
+"math.perm": [["factorial로 나누기", "math.perm(5, 3) = 60은 5!/(5 − 3)!과 같다. n이 문자이면 SymPy factorial(n)/factorial(n − 2)로 쓰고 simplify한다."],
+  ["permutations로 다 세기", "공식이 맞는지 하나씩 세어 보려면 itertools.permutations."]],
+"math.factorial": [["SymPy factorial", "math.factorial은 수만 받는다. n!/(n − 2)!처럼 n이 문자인 식은 SymPy factorial로 쓰고 simplify하면 n(n − 1)이 된다."]],
+"math.gcd": [["SymPy gcd", "math.gcd는 정수만 받는다. x² − 1과 x² + 2x + 1처럼 다항식의 최대공약수는 SymPy gcd."]],
+"refine": [["symbols(…, positive=True)", "refine은 이미 만든 식에 조건을 나중에 붙인다. 처음부터 조건이 정해져 있으면 문자를 만들 때 positive=True를 주는 편이 간단하다."],
+  ["ask", "식을 정리하는 대신 '이 식이 양수인가?'처럼 묻기만 하려면 ask."]],
+"ask": [["refine", "ask는 성질이 참인지 묻기만 하고 식은 바꾸지 않는다. 그 가정으로 식을 정리하려면 refine."],
+  ["is_positive", "x = symbols('x', positive=True)로 만든 문자는 (x**2).is_positive처럼 바로 물어도 된다. 판단할 수 없으면 둘 다 None을 준다."]],
+"expand_log": [["logcombine", "expand_log는 log(ab)를 log a + log b로 펼치고, logcombine은 반대로 모은다. 둘 다 a, b가 양수라는 가정이 있어야 바꾼다."]],
+"cancel": [["simplify", "cancel은 분자·분모를 약분한 하나의 분수로 정리한다. simplify는 어떤 모양을 줄지 정할 수 없다."],
+  ["apart · together", "부분분수로 쪼개려면 apart, 통분만 하려면 together."]],
+"collect": [["factor", "collect는 x에 대해 내림차순으로 같은 차수끼리 모은다(x²(y + 1) + xy). 공통인수로 묶는 인수분해는 factor."]],
+"gcd": [["math.gcd", "math.gcd는 정수만 받는다. SymPy gcd는 다항식의 최대공약수도 구한다."],
+  ["factor", "두 식을 factor로 인수분해해 공통인수를 눈으로 찾는 방법도 같다."]],
+"div": [["나머지정리 (subs)", "div는 몫과 나머지를 모두 준다. x − 2로 나눈 나머지만 필요하면 f(2)를 subs로 구해도 된다(나머지정리)."]],
+"srepr": [["print", "print는 사람이 읽기 좋은 모양만 보여 준다. srepr은 SymPy가 식을 어떻게 저장했는지 보여 줘서, 보기엔 같은데 ==가 False인 이유를 찾을 때 쓴다."]],
+"factorial": [["math.factorial", "숫자만이면 math.factorial도 된다. SymPy factorial은 n!/(n − 2)!처럼 n이 문자인 식을 정리할 수 있다."]],
+"binomial": [["math.comb", "숫자만이면 math.comb가 빠르다. binomial은 n을 문자로 둘 수 있어 nC2 = 28 같은 방정식을 풀 수 있다."],
+  ["expand_func", "binomial(n, 2)는 그대로 남는다. n(n − 1)/2로 펼치려면 expand_func."]],
+"expand_func": [["simplify", "binomial(n, 2)는 simplify로도 펼쳐지지 않을 때가 있다. expand_func를 직접 불러야 n(n − 1)/2가 된다."]],
+"LUdecomposition": [["LUsolve", "LUdecomposition은 행렬을 L·U 두 개로 나눠 보여 준다. 연립방정식의 해만 필요하면 LUsolve가 바로 푼다."]],
+"permutations": [["math.perm", "permutations는 경우를 하나씩 만들어 세므로 '이웃하지 않게' 같은 조건을 그대로 코드로 옮길 수 있다. 개수만 필요하고 조건이 없으면 math.perm이 훨씬 빠르다."],
+  ["combinations", "순서를 생각하지 않으면(뽑기만) combinations."]],
+"combinations": [["math.comb", "combinations는 경우를 하나씩 만들어 센다. 개수만 필요하면 math.comb가 빠르다. ₂₆C₁₃을 다 세는 데 약 0.7초가 걸렸다."],
+  ["permutations", "순서를 생각하면(나열·세우기) permutations."]],
+"special.comb": [["math.comb", "SciPy comb는 기본값이 소수라 큰 수가 틀린다(60C30이 실제보다 16 작음). exact=True를 넣거나 math.comb를 쓴다. 대신 SciPy comb는 배열을 넣어 여러 값을 한꺼번에 계산한다."]],
+"divisor_count": [["하나씩 나누어 세기", "1부터 n까지 나눠 보며 세는 for 문도 같은 답이지만 수가 크면 느리다. divisor_count는 바로 준다."],
+  ["factorint", "약수의 개수가 왜 그렇게 되는지는 factorint로 소인수분해해 (지수 + 1)을 곱해 보면 알 수 있다."]],
+"factorint": [["divisor_count", "약수의 개수만 필요하면 divisor_count. factorint는 360 = 2³·3²·5처럼 이유를 보여 준다."],
+  ["factor", "factor는 다항식을 인수분해한다. 정수의 소인수분해는 factorint."]],
+"Point": [["좌표 공식", "두 점 사이 거리 √((x₂ − x₁)² + (y₂ − y₁)²)를 직접 계산해도 된다. Point.distance는 같은 값을 √ 그대로 정확하게 준다."],
+  ["Line · Circle", "점을 만든 뒤 Line, Circle에 넣어 직선·원을 만든다."]],
+"Line": [["기울기 공식", "(y₂ − y₁)/(x₂ − x₁)는 두 점의 x좌표가 같으면 0으로 나누기 오류가 난다. Line은 x = 2 같은 수직선도 방정식으로 준다."],
+  ["기울기 곱 == −1", "소수 기울기를 곱해 수직을 확인하면 −0.9999999999999999가 되어 False가 나온다. is_perpendicular는 정확하게 판정한다."]],
+"Circle": [["판별식", "원과 직선의 위치 관계는 판별식으로도 구한다. 원의 접선을 y = m(x − 5) + 3으로 놓고 판별식을 풀면 x = 5 같은 수직 접선을 놓친다. tangent_lines는 둘 다 준다."],
+  ["세 점", "세 점을 지나는 원은 연립방정식을 세워도 되지만 Circle에 세 점을 넣으면 바로 나온다. 세 점이 일직선이면 원 대신 선분이 나온다."]],
+"discriminant": [["거리 공식", "원과 직선은 판별식 대신 '중심과 직선 사이 거리 vs 반지름'으로도 위치 관계를 판정한다. 두 방법의 답이 같은지 확인하면 좋다."],
+  ["solve", "D = 0을 solve로 풀면 접할 때의 k값이 나온다."]]
 };
 
 /* ---------- 같은 문제, 여러 방법 (새로고침마다 두 개를 고른다) ---------- */
@@ -951,16 +1142,16 @@ const ONE = {
 "minimum": "구간에서 최솟값·최댓값 구하기", "factor": "인수분해 (실수·복소수 범위 포함)", "Poly": "다항식의 차수·계수 다루기", "nroots": "다항방정식의 모든 근을 소수로",
 "real_roots": "다항방정식의 실근만 구하기", "roots": "근과 중근의 개수 구하기", "together": "분수식 통분하기", "apart": "부분분수로 나누기",
 "simplify": "식을 간단히 정리하기", "nsimplify": "소수 답을 분수·무리수로 되돌리기", "trigsimp": "삼각함수 식 간단히·합성하기", "fu": "삼각함수 식 자동 정리",
-"TR": "삼각함수 공식을 하나씩 적용하기", "solve": "방정식 풀기", "nsolve": "손으로 못 푸는 방정식의 근삿값", "solveset": "실수 해·구간 안의 해·부등식 풀기",
+"TR2": "tan·cot을 sin·cos로 바꾸기", "TR7": "cos²의 차수 낮추기", "TR8": "곱을 합·차로 바꾸기", "TR9": "합·차를 곱으로 바꾸기", "solve": "방정식 풀기", "nsolve": "손으로 못 푸는 방정식의 근삿값", "solveset": "실수 해·구간 안의 해·부등식 풀기",
 "linsolve": "연립일차방정식 풀기", "nonlinsolve": "일차가 아닌 연립방정식 풀기", "rsolve": "점화식에서 일반항 구하기", "decompogen": "합성함수를 바깥·안쪽으로 나누기",
 "Interval": "구간 [a, b] 만들기", "Matrix": "행렬을 정확하게 계산하기", "det": "행렬식 구하기", "inv": "역행렬 구하기", "eigenvals": "고윳값 구하기 (심화)",
 "LUsolve": "행렬로 연립방정식 풀기", "plot": "y = f(x) 그래프 그리기", "plot_implicit": "x² + y² = 1 같은 식 그대로 그리기", "plot_parametric": "매개변수 곡선 그리기",
 "lambdify": "SymPy 식을 숫자 계산용 함수로 바꾸기", "np.linspace": "구간을 같은 간격으로 나눈 점들", "np.trapezoid": "사다리꼴로 넓이 근삿값", "np.array": "NumPy로 행렬 만들기",
-"np.linalg": "행렬식·역행렬을 소수로 계산", "np.roots": "계수만으로 다항방정식의 근 구하기", "simpson": "심프슨 공식으로 넓이 근삿값 (심화)", "quad": "정적분 값을 소수로 구하기",
+"np.linalg.det": "행렬식을 소수로 계산", "np.linalg.inv": "역행렬을 소수로 계산", "np.linalg.solve": "연립방정식을 소수로 풀기", "np.roots": "계수만으로 다항방정식의 근 구하기", "simpson": "심프슨 공식으로 넓이 근삿값 (심화)", "quad": "정적분 값을 소수로 구하기",
 "minimize_scalar": "극소점을 수치로 찾기", "hilbert": "힐베르트 행렬 만들기 (오차 실험)", "plt.plot": "점을 이어 그래프 그리기", "polar": "극방정식 그래프 (심화)",
 "plt.fill_between": "넓이를 색칠해 보이기",
-"itertools": "조건이 있는 경우를 다 세기", "special.comb": "조합의 수를 배열로 계산하기", "divisor_count": "약수의 개수 구하기", "Line": "직선의 방정식 구하기", "Circle": "원의 중심·반지름·접선 구하기", "discriminant": "판별식 구하기",
-"math.sqrt": "제곱근을 소수로 구하기", "math.comb": "조합의 수를 정수로 구하기", "refine": "가정을 써서 식 정리하기", "expand_log": "로그를 합·차로 펼치기", "cancel": "분수식을 약분하기", "collect": "같은 문자끼리 묶기", "gcd": "다항식의 최대공약수 구하기", "div": "다항식 나눗셈의 몫과 나머지", "srepr": "식의 내부 구조 보기", "factorial": "n! 계산하기", "binomial": "조합 ₙCᵣ을 식으로 다루기", "expand_func": "함수를 식으로 풀어 쓰기", "LUdecomposition": "행렬을 두 삼각행렬로 나누기"
+"permutations": "순서 있게 고르는 경우를 다 세기", "combinations": "순서 없이 고르는 경우를 다 세기", "special.comb": "조합의 수를 배열로 계산하기", "divisor_count": "약수의 개수 구하기", "factorint": "소인수분해하기", "Point": "점, 두 점 사이 거리·중점", "Line": "직선의 방정식 구하기", "Circle": "원의 중심·반지름·접선 구하기", "discriminant": "판별식 구하기",
+"math.sqrt": "제곱근을 소수로 구하기", "math.comb": "조합의 수를 정수로 구하기", "math.perm": "순열의 수를 정수로 구하기", "math.factorial": "팩토리얼을 정수로 구하기", "math.gcd": "정수의 최대공약수 구하기", "refine": "가정을 써서 식 정리하기", "ask": "가정 아래 성질이 참인지 묻기", "expand_log": "로그를 합·차로 펼치기", "cancel": "분수식을 약분하기", "collect": "같은 문자끼리 묶기", "gcd": "다항식의 최대공약수 구하기", "div": "다항식 나눗셈의 몫과 나머지", "srepr": "식의 내부 구조 보기", "factorial": "n! 계산하기", "binomial": "조합 ₙCᵣ을 식으로 다루기", "expand_func": "함수를 식으로 풀어 쓰기", "LUdecomposition": "행렬을 두 삼각행렬로 나누기"
 };
 
 /* ---------- 함수마다 알고 가야 할 점 (없으면 FUNCS의 warn 한 줄을 쓴다) ---------- */
@@ -1026,13 +1217,13 @@ const P_ = {
 };
 const KNOW = {
   limit: ["lim_dir", "pw"], Limit: ["lim_dir"], Piecewise: ["pw", "cdom"], integrate: ["c", "area", "erf"], Integral: ["c", "erf"], diff: ["absd", "infl"], Abs: ["absd", "area"],
-  float: ["h", "third"], Rational: ["third", "half", "h"], sum: ["half"], Eq: ["eq"], equals: ["same", "eqas", "eq"], simplify: ["same", "tancot", "eq"], trigsimp: ["tancot", "tr9"], fu: ["tancot"], TR: ["tr9", "tancot"],
+  float: ["h", "third"], Rational: ["third", "half", "h"], sum: ["half"], Eq: ["eq"], equals: ["same", "eqas", "eq"], simplify: ["same", "tancot", "eq"], trigsimp: ["tancot", "tr9"], fu: ["tancot"], TR2: ["tancot"], TR9: ["tr9"],
   solve: ["trans", "inf", "cplx", "rsol", "nat"], solveset: ["cset", "inf"], symbols: ["assume", "real"], sqrt: ["assume", "msqrt"], "math.sqrt": ["msqrt"], refine: ["assume"], expand_log: ["elog"], srepr: ["same"],
   nsolve: ["x0"], nsimplify: ["guess"], decompogen: ["dec"], rsolve: ["rsol", "nonlin", "logrs"], nroots: ["cbrt"], lambdify: ["lamb", "subarr", "lconst"], subs: ["subarr", "lamb"],
   continuous_domain: ["cdom"], floor: ["cdom"], plot_implicit: ["adap"], "np.linspace": ["pts"], "plt.plot": ["pts"], simpson: ["simp3", "assum"], "np.trapezoid": ["simp3", "lconst"], as_sum: ["assum"],
   minimum: ["open", "trap"], stationary_points: ["stat", "infl"], minimize_scalar: ["trap"], "np.array": ["star"], Matrix: ["star", "singerr"], inv: ["singerr", "sing"], det: ["singerr"],
-  "np.linalg": ["sing", "hil", "singerr"], hilbert: ["hil"], factor: ["rr", "ext", "gens"], Sum: ["proof", "half", "snan"],
-  itertools: ["enum"], "math.comb": ["scomb"], "special.comb": ["scomb"], binomial: ["nat"], is_convergent: ["harm"], Line: ["fslope", "tan_vert"], Circle: ["collinear", "imag_r", "tan_vert"], discriminant: ["tan_vert"]
+  "np.linalg.inv": ["sing", "hil", "singerr"], "np.linalg.det": ["singerr"], hilbert: ["hil"], factor: ["rr", "ext", "gens"], Sum: ["proof", "half", "snan"],
+  combinations: ["enum"], permutations: ["enum"], "math.comb": ["scomb"], "special.comb": ["scomb"], binomial: ["nat"], is_convergent: ["harm"], Line: ["fslope", "tan_vert"], Circle: ["collinear", "imag_r", "tan_vert"], discriminant: ["tan_vert"]
 };
 
 /* ---------- 방법 비교: 방법마다 보여 줄 실행 예제 ---------- */
@@ -1184,7 +1375,7 @@ function searchAll(q0) {
   if (!q0.trim()) return null;
   const { q, changed } = fixQuery(q0);
   const g = GUIDE.map((r, i) => [scoreText(q, r.s + " " + r.tools.join(" ") + " " + r.note, r.kw), i]).filter(x => x[0] > 0).sort((a, b) => b[0] - a[0]).slice(0, 4).map(x => x[1]);
-  const t = TOPICS.map(t => [scoreText(q, [t.title, t.ask, ...t.when].join(" ")), t]).filter(x => x[0] > 1).sort((a, b) => b[0] - a[0]).slice(0, 3).map(x => x[1]);
+  const t = TOPICS.map(t => [scoreText(q, [t.title, t.ask, ...t.when.flat()].join(" ")), t]).filter(x => x[0] > 1).sort((a, b) => b[0] - a[0]).slice(0, 3).map(x => x[1]);
   const f = FUNCS.map(f => [scoreText(q, [f.k, f.n, f.sub].join(" ")) + (q.toLowerCase().includes(f.k.toLowerCase()) && f.k.length > 2 ? 4 : 0), f]).filter(x => x[0] > 1).sort((a, b) => b[0] - a[0]).slice(0, 6).map(x => x[1]);
   return { g, t, f, fixed: changed ? q : null };
 }
@@ -1391,7 +1582,7 @@ function openLab(s) { if (!s.lab) { resizeFn = null; return; } LABS[s.lab]($("#l
 function bindHome() {
   const q = $("#q"), res = $("#res");
   const run = () => { res.innerHTML = resultsHTML(searchAll(mathText(q.value))); };
-  q.addEventListener("input", run); attachSuggest(q, run); attachMath(q, q.closest(".sugwrap"));
+  q.addEventListener("input", run); attachSuggest(q, run);
   $("#hash").addEventListener("click", e => { const b = e.target.closest("button"); if (b) { q.value = b.textContent.slice(1); run(); } });
   $("#courseList").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; store.set("pm-course", b.dataset.course); $$("#courseList button").forEach(x => x.setAttribute("aria-pressed", x === b)); $("#browse").innerHTML = browseHTML(); });
   $("#libList").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; store.set("pm-lib", b.dataset.lib); $$("#libList button").forEach(x => x.setAttribute("aria-pressed", x === b)); $("#browse").innerHTML = browseHTML(); });
@@ -1420,7 +1611,7 @@ function bindGuide() {
   const q = $("#gq"), out = $("#gres");
   const run = () => {
     const v0 = q.value.trim();
-    if (!v0) { out.innerHTML = ""; return; }
+    if (!v0) { out.innerHTML = TOPICS.map(t => { const ids = GUIDE.map((r, i) => r.t === t.n ? i : -1).filter(i => i >= 0); return ids.length ? `<div class="rgroup gall"><h3><a href="#${t.slug}">${t.n}. ${esc(t.title)} →</a></h3><div class="results">${ids.map(guideCard).join("")}</div></div>` : ""; }).join(""); return; }
     const { q: v, changed } = fixQuery(v0);
     const hits = GUIDE.map((r, i) => [scoreText(v, r.s + " " + r.tools.join(" "), r.kw), i]).filter(x => x[0] > 0).sort((a, b) => b[0] - a[0]).map(x => x[1]);
     out.innerHTML = (changed ? fixHTML({ fixed: v }) : "") + (hits.length ? hits.map(guideCard).join("") : `<p class="muted">맞는 상황이 없습니다. 다른 낱말로 찾아 보세요.</p>`);
@@ -1492,7 +1683,7 @@ function fnPage(f) {
     ${f.know.length ? S("알고 가야 할 점") + `<ul class="know">${f.know.map(k => `<li>${k.t ? `<b>${esc(k.t)}</b>` : ""}<p>${esc(k.d)}</p>${k.cell && CELL[k.cell] ? `<details><summary>코드와 결과</summary>${cellBox(k.cell, f.k, false)}</details>` : ""}</li>`).join("")}</ul>` : ""}
 
     ${S("다른 방법과 비교")}
-    <div class="note">${esc(f.cmp)}</div>
+    ${CMPF[f.k] ? `<div class="cmpf">${CMPF[f.k].map(r => `<div class="cr"><b>${esc(f.n)} <span>vs</span> ${esc(r[0])}</b><p>${esc(r[1])}</p></div>`).join("")}</div>` : `<div class="note">${esc(f.cmp)}</div>`}
 
     ${S("예시 만들기")}
     <div class="ask">
@@ -1506,7 +1697,7 @@ function fnPage(f) {
     ${f.topics.length ? `<div><p class="lbl">이 함수가 나오는 주제</p>${f.topics.map(n => `<a class="rel" href="#${TOPICS[n - 1].slug}"><b>${esc(TOPICS[n - 1].title)}</b><span>${esc(TOPICS[n - 1].courses.join(" · "))}</span></a>`).join("")}</div>` : ""}
   </aside></div>${foot()}`;
 }
-const PH = {"for": "예: 2k + 1을 k=1부터 10까지 더하기", "sum": "예: k^2을 k=1부터 10까지 더하기", "float": "예: √2를 소수로", "math.log": "예: log 8 (밑 2)", "symbols": "예: √(x^2)을 x가 양수일 때", "Rational": "예: 1/3 + 1/6", "Eq": "예: (a+b)^2 = a^2 + 2ab + b^2 맞나", "Function": "예: a(n+1) = a(n) + 3, a(1) = 2", "diff": "예: x^3 - 3x를 미분하고 x=2에서 값", "Derivative": "예: sin(2x)의 이계도함수", "expand": "예: (x + 1)^3 전개", "expand_trig": "예: sin(a + b) 펼치기", "subs": "예: x^2 + 1에 x=3 대입", "doit": "예: k^2를 k=1부터 n까지", "rewrite": "예: tan x를 sin, cos로", "N": "예: pi를 30자리", "sympify": "예: x^2 - 2x + 1", "equals": "예: sin(2a) = 2 sin(a) cos(a) 맞는지", "sqrt": "예: √8 + √18", "log": "예: log 8을 밑 2로", "Abs": "예: |x - 1|을 0부터 2까지 적분", "Piecewise": "예: x<1이면 x^2, 아니면 x+2", "floor": "예: floor(x)의 x=1에서", "Sum": "예: k^2를 k=1부터 n까지", "summation": "예: k(k+1)을 k=1부터 n까지", "is_convergent": "예: (1/2)^k 급수", "Limit": "예: (x^2-1)/(x-1)의 x=1 극한", "limit": "예: 2x + 3의 x=1에서의 극한", "SeqFormula": "예: 3n + 1의 처음 5항", "Integral": "예: e^(-x^2)를 0부터 1까지", "integrate": "예: x^2를 0부터 1까지 적분", "as_sum": "예: x^2를 0부터 1까지, n=4", "continuous_domain": "예: 1/(x - 2)", "singularities": "예: 1/(x^2 - 1)", "is_increasing": "예: x^3을 [0, 2]에서 증가?", "stationary_points": "예: x^3 - 3x의 임계점", "minimum": "예: x^3 - 3x의 [-3, 3] 최솟값", "factor": "예: x⁴ − 4를 복소수 범위에서", "Poly": "예: x^3 - 2x + 1", "nroots": "예: x^3 + x - 1 = 0", "real_roots": "예: x^3 + x - 1 = 0", "roots": "예: (x - 1)^2 (x + 2)의 근", "together": "예: 1/x + 1/(x+1)", "apart": "예: 1/(x^2 - 1) 부분분수", "simplify": "예: (x^2 - 1)/(x - 1)", "nsimplify": "예: 0.3333333333", "trigsimp": "예: √3 sin x + cos x 합성", "fu": "예: cos(x)^4 - sin(x)^4", "TR": "예: sin a + sin b를 곱으로", "solve": "예: x^2 - 5x + 6 = 0", "nsolve": "예: sin x = x - π/2, x=2 근처", "solveset": "예: sin x = 0을 [0, 2π]에서", "linsolve": "예: x + y = 3, x - y = 1", "nonlinsolve": "예: x + y = 1, x^2 + y^2 = 5", "rsolve": "예: a(n+1) = 2a(n) + 3, a(0) = 1", "decompogen": "예: sin(x^2 + 1)", "Interval": "예: sin x = 0의 해를 [0, π] 안에서", "Matrix": "예: [[1, 2], [3, 4]]", "det": "예: [[1, 2], [3, 4]]의 행렬식", "inv": "예: [[2, 1], [1, 1]]의 역행렬", "eigenvals": "예: [[2, 1], [1, 2]]의 고윳값", "LUsolve": "예: [[1, 2], [3, 4]], 우변 [5, 6]", "plot": "예: x^3 - 3x 그래프 [-3, 3]", "plot_implicit": "예: x^2 + y^2 = 4", "plot_parametric": "예: x = cos t, y = sin t", "lambdify": "예: x^2 + 1을 x=2에서", "np.linspace": "예: sin x를 0부터 π까지 점 50개", "np.trapezoid": "예: sin x를 0부터 π까지", "np.array": "예: [[1, 2], [3, 4]]", "np.linalg": "예: [[1, 2], [3, 4]]의 행렬식", "np.roots": "예: x^2 - 3x + 2", "simpson": "예: x^3 - 2x + 1을 0부터 2까지", "quad": "예: sin x를 0부터 π까지", "minimize_scalar": "예: x^3 - 3x를 -3부터 3까지", "hilbert": "예: 4×4 힐베르트", "plt.plot": "예: x^2를 -2부터 2까지", "polar": "예: r = 1 + cos θ", "plt.fill_between": "예: x^2를 0부터 1까지 색칠", "math.sqrt": "예: √2를 소수로", "math.comb": "예: 6C2", "refine": "예: √(x^2)을 x가 양수일 때", "expand_log": "예: log(ab)를 a, b가 양수일 때", "cancel": "예: (x^2 - 1)/(x^2 + 2x + 1)", "collect": "예: x^2 y + x y + x^2를 x에 대해", "gcd": "예: x^2 - 1과 x^2 + 2x + 1", "div": "예: x^3 + 2x + 1을 x - 1로 나누기", "srepr": "예: (x + 1)^2", "factorial": "예: 5!", "binomial": "예: nC2", "expand_func": "예: nC2", "LUdecomposition": "예: [[1, 2], [3, 4]]", "itertools": "예: 1, 2, 3, 4, 5에서 3개를 뽑아 나열", "special.comb": "예: 60C30", "divisor_count": "예: 360의 약수 개수", "Line": "예: 두 점 (2, 1), (2, 5)를 지나는 직선", "Circle": "예: 원 x^2 + y^2 = 25와 점 (5, 3)에서 그은 접선", "discriminant": "예: x^2 + kx + 1의 판별식"};
+const PH = {"for": "예: 2k + 1을 k=1부터 10까지 더하기", "sum": "예: k^2을 k=1부터 10까지 더하기", "float": "예: √2를 소수로", "math.log": "예: log 8 (밑 2)", "symbols": "예: √(x^2)을 x가 양수일 때", "Rational": "예: 1/3 + 1/6", "Eq": "예: (a+b)^2 = a^2 + 2ab + b^2 맞나", "Function": "예: a(n+1) = a(n) + 3, a(1) = 2", "diff": "예: x^3 - 3x를 미분하고 x=2에서 값", "Derivative": "예: sin(2x)의 이계도함수", "expand": "예: (x + 1)^3 전개", "expand_trig": "예: sin(a + b) 펼치기", "subs": "예: x^2 + 1에 x=3 대입", "doit": "예: k^2를 k=1부터 n까지", "rewrite": "예: tan x를 sin, cos로", "N": "예: pi를 30자리", "sympify": "예: x^2 - 2x + 1", "equals": "예: sin(2a) = 2 sin(a) cos(a) 맞는지", "sqrt": "예: √8 + √18", "log": "예: log 8을 밑 2로", "Abs": "예: |x - 1|을 0부터 2까지 적분", "Piecewise": "예: x<1이면 x^2, 아니면 x+2", "floor": "예: floor(x)의 x=1에서", "Sum": "예: k^2를 k=1부터 n까지", "summation": "예: k(k+1)을 k=1부터 n까지", "is_convergent": "예: (1/2)^k 급수", "Limit": "예: (x^2-1)/(x-1)의 x=1 극한", "limit": "예: 2x + 3의 x=1에서의 극한", "SeqFormula": "예: 3n + 1의 처음 5항", "Integral": "예: e^(-x^2)를 0부터 1까지", "integrate": "예: x^2를 0부터 1까지 적분", "as_sum": "예: x^2를 0부터 1까지, n=4", "continuous_domain": "예: 1/(x - 2)", "singularities": "예: 1/(x^2 - 1)", "is_increasing": "예: x^3을 [0, 2]에서 증가?", "stationary_points": "예: x^3 - 3x의 임계점", "minimum": "예: x^3 - 3x의 [-3, 3] 최솟값", "factor": "예: x⁴ − 4를 복소수 범위에서", "Poly": "예: x^3 - 2x + 1", "nroots": "예: x^3 + x - 1 = 0", "real_roots": "예: x^3 + x - 1 = 0", "roots": "예: (x - 1)^2 (x + 2)의 근", "together": "예: 1/x + 1/(x+1)", "apart": "예: 1/(x^2 - 1) 부분분수", "simplify": "예: (x^2 - 1)/(x - 1)", "nsimplify": "예: 0.3333333333", "trigsimp": "예: √3 sin x + cos x 합성", "fu": "예: cos(x)^4 - sin(x)^4", "TR2": "예: tan a + 1/tan a", "TR7": "예: cos(x)^2", "TR8": "예: sin(a) cos(b)", "TR9": "예: sin a + sin b를 곱으로", "solve": "예: x^2 - 5x + 6 = 0", "nsolve": "예: sin x = x - π/2, x=2 근처", "solveset": "예: sin x = 0을 [0, 2π]에서", "linsolve": "예: x + y = 3, x - y = 1", "nonlinsolve": "예: x + y = 1, x^2 + y^2 = 5", "rsolve": "예: a(n+1) = 2a(n) + 3, a(0) = 1", "decompogen": "예: sin(x^2 + 1)", "Interval": "예: sin x = 0의 해를 [0, π] 안에서", "Matrix": "예: [[1, 2], [3, 4]]", "det": "예: [[1, 2], [3, 4]]의 행렬식", "inv": "예: [[2, 1], [1, 1]]의 역행렬", "eigenvals": "예: [[2, 1], [1, 2]]의 고윳값", "LUsolve": "예: [[1, 2], [3, 4]], 우변 [5, 6]", "plot": "예: x^3 - 3x 그래프 [-3, 3]", "plot_implicit": "예: x^2 + y^2 = 4", "plot_parametric": "예: x = cos t, y = sin t", "lambdify": "예: x^2 + 1을 x=2에서", "np.linspace": "예: sin x를 0부터 π까지 점 50개", "np.trapezoid": "예: sin x를 0부터 π까지", "np.array": "예: [[1, 2], [3, 4]]", "np.linalg.det": "예: [[1, 2], [3, 4]]의 행렬식", "np.linalg.inv": "예: [[2, 1], [1, 1]]의 역행렬", "np.linalg.solve": "예: [[1, 2], [3, 4]], 우변 [5, 6]", "np.roots": "예: x^2 - 3x + 2", "simpson": "예: x^3 - 2x + 1을 0부터 2까지", "quad": "예: sin x를 0부터 π까지", "minimize_scalar": "예: x^3 - 3x를 -3부터 3까지", "hilbert": "예: 4×4 힐베르트", "plt.plot": "예: x^2를 -2부터 2까지", "polar": "예: r = 1 + cos θ", "plt.fill_between": "예: x^2를 0부터 1까지 색칠", "math.sqrt": "예: √2를 소수로", "math.comb": "예: 6C2", "math.perm": "예: 5P3", "math.factorial": "예: 5!", "math.gcd": "예: 12와 18", "refine": "예: √(x^2)을 x가 양수일 때", "ask": "예: x^2이 양수인지 (x는 0이 아닌 실수)", "expand_log": "예: log(ab)를 a, b가 양수일 때", "cancel": "예: (x^2 - 1)/(x^2 + 2x + 1)", "collect": "예: x^2 y + x y + x^2를 x에 대해", "gcd": "예: x^2 - 1과 x^2 + 2x + 1", "div": "예: x^3 + 2x + 1을 x - 1로 나누기", "srepr": "예: (x + 1)^2", "factorial": "예: 5!", "binomial": "예: nC2", "expand_func": "예: nC2", "LUdecomposition": "예: [[1, 2], [3, 4]]", "permutations": "예: 1, 2, 3, 4, 5에서 3개를 뽑아 나열", "combinations": "예: 1, 2, 3, 4, 5에서 3개를 고르기", "special.comb": "예: 60C30", "divisor_count": "예: 360의 약수 개수", "factorint": "예: 360을 소인수분해", "Point": "예: 두 점 (1, 2), (4, 6) 사이의 거리", "Line": "예: 두 점 (2, 1), (2, 5)를 지나는 직선", "Circle": "예: 원 x^2 + y^2 = 25와 점 (5, 3)에서 그은 접선", "discriminant": "예: x^2 + kx + 1의 판별식"};
 function askPH(f) { return PH[f.k] || (f.lib === "numpy" && /linalg|array/.test(f.k) ? "예: [[1, 2], [3, 4]]" : "예: 이 함수에 넣을 식 (x^2 - 4, sin(x)/x …)"); }
 function bindFn(f) {
   const q = $("#aq"), out = $("#aout"), btn = $("#aBtn");
@@ -1538,7 +1729,7 @@ function topic(t) {
     <h1>${esc(t.title)}</h1><p class="muted" style="font-size:17px">${esc(t.ask)}</p>
 
     <div class="s-h"><b>§1</b><h2>이럴 때 보세요</h2></div>
-    <ul class="when">${t.when.map(w => `<li>${esc(w)}</li>`).join("")}</ul>
+    <ul class="when">${t.when.map(w => `<li><button type="button" class="wq" data-i="${w[2]}"><b>${esc(w[0])}</b><span>${esc(w[1])}</span><em>방법 비교에서 보기: ${esc(t.compare[w[2]][0])} ↓</em></button></li>`).join("")}</ul>
 
     <div class="s-h"><b>§2</b><h2>방법 비교</h2></div>
     <div class="mbtns" id="mb">${t.compare.map((r, i) => `<button type="button" data-i="${i}" aria-pressed="${i === 0}">${esc(r[0])}</button>`).join("")}</div>
@@ -1563,6 +1754,7 @@ function methodHTML(t, i) {
 }
 function bindTopic(t) {
   $("#md").innerHTML = methodHTML(t, 0);
+  $$(".when .wq").forEach(w => w.addEventListener("click", () => { const b = $(`#mb button[data-i="${w.dataset.i}"]`); b.click(); $("#mb").scrollIntoView({ behavior: "smooth", block: "start" }); }));
   $("#mb").addEventListener("click", e => {
     const b = e.target.closest("button"); if (!b) return;
     $$("#mb button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
@@ -1583,7 +1775,7 @@ function about() {
   return `<div class="in page one"><div class="about">
     <span class="eyebrow">ABOUT</span><h1 style="margin-top:8px">안내서 소개</h1>
     <p class="ab-lead">수학 문제를 풀다 막혔을 때, 파이썬으로 계산하고 확인하는 방법을 찾아 주는 안내서</p>
-    <div class="ab-facts"><div><b>10</b><span>교과 분야</span></div><div><b>97</b><span>함수</span></div><div><b>239</b><span>실행한 예제</span></div><div><b>58</b><span>주의 사례</span></div></div>
+    <div class="ab-facts"><div><b>10</b><span>교과 분야</span></div><div><b>109</b><span>함수</span></div><div><b>239</b><span>실행한 예제</span></div><div><b>58</b><span>주의 사례</span></div></div>
     <h2 class="ab-h">왜 써야 하나요</h2>
     <div class="ab-grid">${F.map(([t, d]) => `<div class="ab-card"><h3>${t}</h3><p>${d}</p></div>`).join("")}</div>
     <h2 class="ab-h">어떻게 쓰나요</h2>
