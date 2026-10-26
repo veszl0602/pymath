@@ -161,7 +161,7 @@ pre.out.err{color:#ffb4a0}
 pre.out::before{content:"출력";display:block;font-family:var(--sans);font-size:11px;color:var(--code-muted);margin-bottom:2px;letter-spacing:.08em}
 .codebox .figs{background:#fff;padding:10px;display:flex;gap:8px;flex-wrap:wrap;border-top:1px dashed var(--code-line)}
 .codebox .figs img{max-height:260px;max-width:100%;width:auto}
-.k{color:#c4a1ff}.s{color:#a5e8b8}.c{color:#64748b;font-style:italic}.nu{color:#ffc58a}.fn{color:#7dd3fc}
+pre .k{color:#c4a1ff}pre .s{color:#a5e8b8}pre .c{color:#64748b;font-style:italic}pre .nu{color:#ffc58a}pre .fn{color:#7dd3fc}
 .info{display:grid;grid-template-columns:140px minmax(0,1fr);gap:12px 20px;align-items:start}
 .info dt{color:var(--muted);font-size:14.5px;padding-top:3px}
 .info dd{margin:0;font-weight:500}
@@ -1099,7 +1099,7 @@ function words(q) { return q.toLowerCase().replace(/[?.!,]/g, " ").split(/\s+/).
 function scoreText(q, text, kws) {
   const t = text.toLowerCase(), ql = q.toLowerCase(); let s = 0;
   words(q).forEach(w => { if (w.length >= 2 || /[a-z]/.test(w)) { if (t.includes(w)) s += 2; else if (w.length >= 3 && t.includes(w.slice(0, -1))) s += 1; } });
-  (kws || []).forEach(k => { if (ql.includes(k.toLowerCase())) s += 3; });
+  (kws || []).forEach(k => { if (ql.includes(k.toLowerCase())) s += k.length < 2 ? 1 : 2 + Math.min(k.length, 6); });
   return s;
 }
 function searchAll(q0) {
