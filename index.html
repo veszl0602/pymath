@@ -377,15 +377,15 @@ const TOPICS = [
     ["모양이 다른 두 식이 사실 같은 식인지 알고 싶어요", "==는 겉모양만 비교해요. equals를 쓰거나 simplify(A − B)가 0이 되는지 확인하세요.", 7]
   ],
   compare: [
-    ["파이썬 소수", "0.1 + 0.2 == 0.3", "False, 0.30000000000000004", "설치 없이 바로 계산", "소수 오차가 생긴다. √2를 제곱해도 2가 아니다"],
+    ["소수 오차 비교", "0.1 + 0.2 == 0.3", "False, 0.30000000000000004", "설치 없이 바로 계산", "소수 오차가 생긴다. √2를 제곱해도 2가 아니다"],
     ["Rational · sqrt", "Rational(1, 10)*3 == Rational(3, 10)", "True, 정확한 분수·무리수", "오차 없이 계산한다", "1/3처럼 쓰면 소수 0.333…이 된다"],
-    ["가정 (positive)", "sqrt(p**2)  # p > 0", "p", "문자의 조건에 맞게 식이 정리된다", "가정을 주지 않으면 √(x²)를 그대로 둔다"],
+    ["가정 비교", "sqrt(p**2)  # p > 0", "p", "문자의 조건에 맞게 식이 정리된다", "가정을 주지 않으면 √(x²)를 그대로 둔다"],
     ["expand · factor", "factor(expand(f))", "전개식 ↔ 곱의 꼴", "서로 반대 방향으로 바꾼다", "factor 기본값은 유리수 범위"],
     ["simplify · cancel · apart", "apart(e)", "같은 식, 다른 모양", "원하는 모양을 골라 쓸 수 있다", "simplify가 어떤 모양을 줄지는 정할 수 없다"],
     ["collect", "collect(h, x)", "x에 대해 정리한 식", "한 문자에 대한 내림차순 정리", "인수분해는 하지 않는다"],
     ["gcd · div", "div(x**3 - 2*x + 5, x - 2, x)", "몫, 나머지", "다항식의 최대공약수와 나머지정리", "math.gcd는 정수만 받는다"],
     ["== · equals · simplify", "A.equals(B)", "True / False", "모양이 달라도 같은 식인지 판정한다", "==는 모양이 같은지만 본다. 가정이 없으면 equals도 판정을 못 한다"],
-    ["factor 옵션", "factor(x**2 - 5, extension=[sqrt(5)])", "실수·복소수 범위의 인수분해", "범위를 직접 정한다", "domain='RR'·'CC'는 쪼개 주지 않는다"]
+    ["인수분해 범위 비교", "factor(x**2 - 5, extension=[sqrt(5)])", "실수·복소수 범위의 인수분해", "범위를 직접 정한다", "domain='RR'·'CC'는 쪼개 주지 않는다"]
   ],
   verdict: "계산은 Rational·sqrt로 정확하게 하고, 문자에 조건이 있으면 가정(positive 등)을 붙인다. 식은 원하는 모양에 맞는 함수(expand·factor·cancel·apart·collect)로 바꾸고, 두 식이 같은지는 ==가 아니라 equals나 simplify(A − B)로 확인한다.",
   widget: "factor"
@@ -403,7 +403,7 @@ const TOPICS = [
     ["solve", "solve(x**2 - 5*x + 6, x)", "리스트 [2, 3]", "가장 많이 쓰고, 복소수 해까지 준다", "해가 무수히 많아도 몇 개만 준다"],
     ["solveset", "solveset(sin(x), x, Interval(-2*pi, 2*pi))", "집합 {…}", "실수 범위·구간·부등식을 정할 수 있다", "못 풀면 오류 대신 조건만 남긴 ConditionSet"],
     ["roots", "roots((x - 1)**2*(x + 2), x)", "{근: 중복도}", "중근이 몇 개인지 알려 준다", "다항식만 된다"],
-    ["부등식", "solveset(x**2 - x - 2 < 0, x, S.Reals)", "구간 (−1, 2)", "solve의 논리식보다 읽기 쉽다", "실수 범위를 꼭 정해야 한다"],
+    ["부등식 풀이 비교", "solveset(x**2 - x - 2 < 0, x, S.Reals)", "구간 (−1, 2)", "solve의 논리식보다 읽기 쉽다", "실수 범위를 꼭 정해야 한다"],
     ["nsolve", "nsolve(sin(x) - (x - pi/2), x, 2)", "근삿값 2.3098…", "손으로 못 푸는 방정식도 푼다", "초기값에 따라 다른 근이 나온다"],
     ["np.linspace", "k[np.argmin(np.abs(gk))]", "근삿값 2.31", "원리가 단순하다", "점 간격만큼만 정확하다"],
     ["linsolve", "linsolve(eqs, [x, y])", "집합 {(1 − y, y)}", "해가 없거나 무수히 많을 때도 분명하다", "일차 연립방정식만 된다"],
@@ -426,9 +426,9 @@ const TOPICS = [
     ["factorial · binomial", "binomial(6, 2)", "정수 15", "같은 값을 SymPy 식으로 다룬다", "그대로는 binomial(n, 2)로 남는다"],
     ["expand_func", "expand_func(binomial(n, 2))", "n(n − 1)/2", "n에 대한 식으로 펼친다", "직접 불러야 펼쳐진다"],
     ["simplify", "simplify(factorial(n)/factorial(n - 2))", "n(n − 1)", "순열 ₙPᵣ을 식으로 정리한다", "n이 정수라는 가정이 필요하다"],
-    ["itertools (다 세기)", "sum(1 for p in permutations(people) if apart(p))", "72 (공식 3!·₄P₂와 같다)", "조건을 그대로 코드로 옮겨 공식을 확인한다", "경우가 많으면 느리다 (₂₆C₁₃ 나열에 약 0.7초)"],
+    ["직접 세기 비교", "sum(1 for p in permutations(people) if apart(p))", "72 (공식 3!·₄P₂와 같다)", "조건을 그대로 코드로 옮겨 공식을 확인한다", "경우가 많으면 느리다 (₂₆C₁₃ 나열에 약 0.7초)"],
     ["scipy.special.comb", "comb(60, 30)", "1.18…e+17 (실제보다 16 작다)", "NumPy 배열을 한꺼번에 계산한다", "기본값이 소수라 큰 수가 틀린다, exact=True 필요"],
-    ["solve + 자연수 가정", "solve(expand_func(binomial(m, 2)) - 28, m)", "[−7, 8] → 가정하면 [8]", "ₘC₂ = 28 같은 방정식을 푼다", "가정이 없으면 음수 해도 나온다"],
+    ["자연수 가정 비교", "solve(expand_func(binomial(m, 2)) - 28, m)", "[−7, 8] → 가정하면 [8]", "ₘC₂ = 28 같은 방정식을 푼다", "가정이 없으면 음수 해도 나온다"],
     ["divisor_count · factorint", "divisor_count(360)", "24, {2: 3, 3: 2, 5: 1}", "약수 개수와 소인수분해를 바로 낸다", "다 나누어 세는 것보다 원리는 덜 보인다"]
   ],
   verdict: "숫자만 있으면 math.comb·math.factorial로 충분하다. 조건이 붙은 경우는 itertools로 다 세어 공식과 맞춰 볼 수 있지만 경우가 많아지면 공식을 써야 한다. n이 문자이면 binomial·factorial로 적은 뒤 expand_func나 simplify로 펼치고, 방정식을 풀 때는 자연수 가정을 준다. scipy의 comb는 exact=True 없이 쓰지 않는다.",
@@ -444,14 +444,14 @@ const TOPICS = [
     ["행렬로 연립방정식을 풀고 싶어요", "SymPy는 정확한 분수로, NumPy는 소수로 답을 줘요.", 6]
   ],
   compare: [
-    ["SymPy Matrix", "A * A", "Matrix([[7, 10], [15, 22]])", "*가 행렬곱, 분수·문자를 그대로 다룬다", "큰 행렬은 느리다"],
-    ["NumPy array", "An * An, An @ An", "성분곱 / 행렬곱", "빠르다", "*는 성분끼리의 곱이다. 행렬곱은 @"],
-    ["행렬식", "A.det(), np.linalg.det(An)", "−2 / −2.0000000000000004", "SymPy는 정확한 정수", "NumPy는 소수 오차"],
-    ["역행렬", "A.inv(), A**-1, Inverse(A).doit()", "정확한 분수 행렬", "표기가 달라도 결과가 같다", "역행렬이 없으면 오류"],
-    ["거의 특이한 행렬", "np.linalg.inv(…)", "4×10¹⁰ 근처의 소수", "NumPy는 오류 없이 답을 낸다", "그 답에 소수 오차가 섞여 있다"],
-    ["문자가 든 행렬", "Matrix([[a, 1], [1, a]]).det()", "(a − 1)(a + 1)", "역행렬이 없는 a를 solve로 찾는다", "NumPy는 문자를 못 다룬다"],
-    ["연립방정식", "A.LUsolve(b), np.linalg.solve(An, b)", "[−4, 9/2] / [−4., 4.5]", "여러 방법이 같은 답", "NumPy는 소수"],
-    ["고윳값 (심화)", "A.eigenvals(), np.linalg.eigvals(An)", "{근: 중복도} / 소수", "SymPy는 무리수와 중복도까지", "교육과정 밖 내용"]
+    ["Matrix", "A * A", "Matrix([[7, 10], [15, 22]])", "*가 행렬곱, 분수·문자를 그대로 다룬다", "큰 행렬은 느리다"],
+    ["np.array", "An * An, An @ An", "성분곱 / 행렬곱", "빠르다", "*는 성분끼리의 곱이다. 행렬곱은 @"],
+    ["행렬식 비교", "A.det(), np.linalg.det(An)", "−2 / −2.0000000000000004", "SymPy는 정확한 정수", "NumPy는 소수 오차"],
+    ["역행렬 비교", "A.inv(), A**-1, Inverse(A).doit()", "정확한 분수 행렬", "표기가 달라도 결과가 같다", "역행렬이 없으면 오류"],
+    ["거의 특이한 행렬 비교", "np.linalg.inv(…)", "4×10¹⁰ 근처의 소수", "NumPy는 오류 없이 답을 낸다", "그 답에 소수 오차가 섞여 있다"],
+    ["문자가 든 행렬 비교", "Matrix([[a, 1], [1, a]]).det()", "(a − 1)(a + 1)", "역행렬이 없는 a를 solve로 찾는다", "NumPy는 문자를 못 다룬다"],
+    ["연립방정식 비교", "A.LUsolve(b), np.linalg.solve(An, b)", "[−4, 9/2] / [−4., 4.5]", "여러 방법이 같은 답", "NumPy는 소수"],
+    ["고윳값 비교", "A.eigenvals(), np.linalg.eigvals(An)", "{근: 중복도} / 소수", "SymPy는 무리수와 중복도까지", "교육과정 밖 내용"]
   ],
   verdict: "고등학교 문제(작은 행렬, 정확한 답, 문자 포함)는 SymPy Matrix를 쓴다. NumPy를 쓸 때는 곱셈에 @를 쓰고, 결과의 소수 오차를 감안한다. 행렬식·역행렬·고윳값은 교육과정 밖(심화)이다.",
   widget: "hilbert"
@@ -469,16 +469,16 @@ const TOPICS = [
     ["subs", "f.subs(x, 2)", "sin(2)/2 + √2 (기호)", "정확한 값", "배열은 넣을 수 없다"],
     ["evalf · N", "f.subs(x, 2).evalf()", "1.8688…", "원하는 자릿수까지 소수로", "하나씩만 계산한다"],
     ["lambdify", "lambdify(x, f, 'numpy')(xs)", "소수 배열", "여러 값을 한꺼번에 빠르게", "정확한 값을 버린다 (√2² → 2.0000000000000004)"],
-    ["plot (함수)", "plot(sqrt(1 - x**2), -sqrt(1 - x**2), (x, -1, 1))", "y = f(x) 그래프", "가장 간단하다", "원은 위·아래 두 개로 나눠야 한다"],
-    ["plot_implicit (음함수)", "plot_implicit(Eq(x**2 + y**2, 1), …)", "식 그대로의 곡선", "y로 풀지 않아도 된다", "adaptive=False는 없는 곡선까지 그린다"],
-    ["plot_parametric (매개변수)", "plot_parametric(cos(t), sin(t), (t, 0, 2*pi))", "매개변수 곡선", "y = f(x)로 못 쓰는 곡선도 그린다", "매개변수 식을 알아야 한다"],
-    ["극방정식 (심화)", "plt.subplot(projection='polar')", "극좌표 곡선", "심장형 같은 곡선", "SymPy에 전용 함수가 없다"],
-    ["linspace 점 개수", "np.linspace(0.01, 1, 30)", "점을 이은 그래프", "matplotlib으로 자유롭게 그린다", "점이 적으면 모양이 틀린다"],
-    ["Line (두 점)", "Line(Point(2, 1), Point(2, 5)).equation()", "x − 2", "x = 2 같은 수직선도 나온다", "기울기 공식은 0으로 나누기 오류"],
+    ["plot", "plot(sqrt(1 - x**2), -sqrt(1 - x**2), (x, -1, 1))", "y = f(x) 그래프", "가장 간단하다", "원은 위·아래 두 개로 나눠야 한다"],
+    ["plot_implicit", "plot_implicit(Eq(x**2 + y**2, 1), …)", "식 그대로의 곡선", "y로 풀지 않아도 된다", "adaptive=False는 없는 곡선까지 그린다"],
+    ["plot_parametric", "plot_parametric(cos(t), sin(t), (t, 0, 2*pi))", "매개변수 곡선", "y = f(x)로 못 쓰는 곡선도 그린다", "매개변수 식을 알아야 한다"],
+    ["극방정식 비교", "plt.subplot(projection='polar')", "극좌표 곡선", "심장형 같은 곡선", "SymPy에 전용 함수가 없다"],
+    ["점 개수 비교", "np.linspace(0.01, 1, 30)", "점을 이은 그래프", "matplotlib으로 자유롭게 그린다", "점이 적으면 모양이 틀린다"],
+    ["Line", "Line(Point(2, 1), Point(2, 5)).equation()", "x − 2", "x = 2 같은 수직선도 나온다", "기울기 공식은 0으로 나누기 오류"],
     ["is_perpendicular", "l1.is_perpendicular(l2)", "True", "정확한 계산으로 수직을 판정한다", "실수 기울기 곱은 −0.9999…라 == −1이 False"],
-    ["Circle (방정식)", "Circle(x**2 + y**2 - 4*x + 6*y - 3)", "중심 (2, −3), 반지름 4", "중심·반지름을 바로 낸다", "원이 아닌 식은 오류로 알려 준다"],
-    ["Circle (세 점)", "Circle(Point(0, 0), Point(4, 0), Point(0, 2))", "중심 (2, 1), 반지름 √5", "solve·NumPy보다 짧다", "세 점이 일직선이면 원 대신 선분이 나온다"],
-    ["판별식 · 거리 · intersection", "discriminant(...), c.intersection(l)", "k = ±5에서 접한다", "세 방법이 서로를 확인한다", "판별식은 x에 대해 정리해야 한다"],
+    ["원의 방정식 비교", "Circle(x**2 + y**2 - 4*x + 6*y - 3)", "중심 (2, −3), 반지름 4", "중심·반지름을 바로 낸다", "원이 아닌 식은 오류로 알려 준다"],
+    ["세 점을 지나는 원 비교", "Circle(Point(0, 0), Point(4, 0), Point(0, 2))", "중심 (2, 1), 반지름 √5", "solve·NumPy보다 짧다", "세 점이 일직선이면 원 대신 선분이 나온다"],
+    ["위치 관계 비교", "discriminant(...), c.intersection(l)", "k = ±5에서 접한다", "세 방법이 서로를 확인한다", "판별식은 x에 대해 정리해야 한다"],
     ["tangent_lines", "Circle(Point(0, 0), 5).tangent_lines(Point(5, 3))", "x = 5, 8x + 15y = 85", "접선 두 개를 모두 낸다", "y = m(x − 5) + 3으로 놓은 판별식은 x = 5를 놓친다"]
   ],
   verdict: "직선·원의 방정식은 Line·Circle로 구하면 수직선이나 원이 아닌 식 같은 예외까지 알려 주고, 판별식·거리 공식과 함께 쓰면 서로를 확인할 수 있다. 접선은 기울기로 놓으면 수직 접선을 놓치므로 tangent_lines로 확인한다. 함숫값은 정확한 값이 필요하면 subs, 소수는 evalf, 여러 값을 한꺼번에 넣을 때는 lambdify를 쓴다. 곡선은 y = f(x)면 plot, 식 그대로는 plot_implicit(기본값), y로 못 푸는 곡선은 plot_parametric, 극방정식은 matplotlib으로 그린다. 그래프가 이상하면 점 개수부터 늘린다.",
@@ -495,12 +495,12 @@ const TOPICS = [
   ],
   compare: [
     ["expand_trig", "expand_trig(tan(a + b))", "교과서 모양의 덧셈정리", "교과서와 같은 모양", "펼치기만 한다"],
-    ["expand(trig=True)", "expand(tan(a + b), trig=True)", "분수 두 개로 나뉜 식", "다른 전개와 함께 쓸 수 있다", "tan은 교과서와 모양이 다르다"],
+    ["expand", "expand(tan(a + b), trig=True)", "분수 두 개로 나뉜 식", "다른 전개와 함께 쓸 수 있다", "tan은 교과서와 모양이 다르다"],
     ["trigsimp · simplify · fu", "trigsimp(sqrt(3)*sin(a) + cos(a))", "2 sin(a + π/6)", "교과서 수준 식은 셋 다 같은 답", "tan a + cot a는 셋 다 못 줄인다"],
     ["rewrite", "sin(a).rewrite(cos)", "cos(a − π/2)", "다른 함수로 바꿔 쓴다", "모양을 정리해 주지는 않는다"],
-    ["TR 함수", "TR8(sin(a)*cos(b)), TR9(sin(a) + sin(b))", "곱 ↔ 합·차", "공식 하나를 골라 적용한다", "어떤 TR을 쓸지 알아야 한다"],
-    ["Eq vs simplify · equals", "lhs.equals(rhs)", "True / False", "공식이 맞는지 판정한다", "Eq는 틀린 공식도 그대로 출력한다"],
-    ["숫자 대입 vs 기호 증명", "simplify(lhs - rhs)", "0", "기호 증명은 모든 각에서 성립을 보인다", "숫자 대입은 넣은 값만 확인한다"]
+    ["TR8 · TR9", "TR8(sin(a)*cos(b)), TR9(sin(a) + sin(b))", "곱 ↔ 합·차", "공식 하나를 골라 적용한다", "어떤 TR을 쓸지 알아야 한다"],
+    ["Eq · simplify · equals", "lhs.equals(rhs)", "True / False", "공식이 맞는지 판정한다", "Eq는 틀린 공식도 그대로 출력한다"],
+    ["증명 방법 비교", "simplify(lhs - rhs)", "0", "기호 증명은 모든 각에서 성립을 보인다", "숫자 대입은 넣은 값만 확인한다"]
   ],
   verdict: "펼칠 때는 expand_trig, 모을 때는 trigsimp부터 쓰고, 줄지 않으면 TR 함수로 단계를 지정한다. 공식이 맞는지는 Eq가 아니라 simplify나 equals로 확인한다.",
   widget: "identity"
@@ -515,15 +515,15 @@ const TOPICS = [
     ["급수가 수렴하는지 헷갈려요", "부분합 몇 개만 보면 착각하기 쉬워요. is_convergent로 확인하세요.", 7]
   ],
   compare: [
-    ["for 문 · sum", "sum(2 + 3*i for i in range(10))", "숫자 155", "가장 직관적, 설치 불필요", "항의 개수 n이 문자이면 못 한다"],
-    ["Sum().doit()", "Sum(2 + (k - 1)*3, (k, 1, n)).doit()", "식 n(3n + 1)/2", "n을 문자로 두고 합의 공식을 만든다", "식이 복잡하면 Sum 그대로 남는다"],
+    ["for · sum", "sum(2 + 3*i for i in range(10))", "숫자 155", "가장 직관적, 설치 불필요", "항의 개수 n이 문자이면 못 한다"],
+    ["Sum · doit", "Sum(2 + (k - 1)*3, (k, 1, n)).doit()", "식 n(3n + 1)/2", "n을 문자로 두고 합의 공식을 만든다", "식이 복잡하면 Sum 그대로 남는다"],
     ["SeqFormula", "SeqFormula(3*n + 1, (n, 1, oo))", "수열 [4, 7, 10, …]", "무한수열을 다루고 두 수열을 더할 수 있다", "합·점화식 풀이 기능은 없다"],
-    ["for 문 · 재귀", "v.append(2*v[-1] + 3)", "앞의 몇 항 [1, 5, 13, …]", "어떤 점화식이든 항을 구할 수 있다", "일반항(식)은 얻을 수 없다"],
+    ["점화식 반복 비교", "v.append(2*v[-1] + 3)", "앞의 몇 항 [1, 5, 13, …]", "어떤 점화식이든 항을 구할 수 있다", "일반항(식)은 얻을 수 없다", "for"],
     ["rsolve", "rsolve(f(n+1) - 2*f(n) - 3, f(n), {f(0): 1})", "일반항 4·2ⁿ − 3", "선형 점화식의 일반항을 바로 준다", "비선형(aₙ₊₁ = aₙ²)은 ValueError"],
-    ["부분합 + limit", "limit(Sum(…, (k, 0, n)).doit(), n, oo)", "2", "교과서 정의 그대로", "부분합이 식으로 나와야 한다"],
-    ["무한합 · is_convergent", "Sum(r**k, (k, 0, oo)).doit()", "1/(1 − r), |r| < 1 조건", "수렴 조건까지 알려 준다", "조건이 붙은 Piecewise를 읽어야 한다"],
-    ["부분합 관찰 vs is_convergent", "Sum(1/k, (k, 1, oo)).is_convergent()", "False (1/k²는 True)", "느리게 커지는 발산도 판정한다", "부분합만 보면 1/k도 멈춰 가는 것처럼 보인다"],
-    ["Sₙ − Sₙ₋₁", "expand(S - S.subs(n, n - 1))", "2n (실제 a₁ = 3)", "일반항을 식으로 바로 준다", "n = 1은 S₁으로 따로 확인해야 한다"]
+    ["Sum · limit", "limit(Sum(…, (k, 0, n)).doit(), n, oo)", "2", "교과서 정의 그대로", "부분합이 식으로 나와야 한다"],
+    ["무한등비급수 비교", "Sum(r**k, (k, 0, oo)).doit()", "1/(1 − r), |r| < 1 조건", "수렴 조건까지 알려 준다", "조건이 붙은 Piecewise를 읽어야 한다", "is_convergent"],
+    ["수렴 판정 비교", "Sum(1/k, (k, 1, oo)).is_convergent()", "False (1/k²는 True)", "느리게 커지는 발산도 판정한다", "부분합만 보면 1/k도 멈춰 가는 것처럼 보인다"],
+    ["일반항 비교", "expand(S - S.subs(n, n - 1))", "2n (실제 a₁ = 3)", "일반항을 식으로 바로 준다", "n = 1은 S₁으로 따로 확인해야 한다"]
   ],
   verdict: "값 하나만 필요하면 for 문이나 sum, n에 대한 공식은 Sum().doit(), 점화식의 일반항은 rsolve를 쓴다. rsolve가 실패하면 로그 변환을 해 보거나 for 문으로 앞의 항을 구한다. 급수는 부분합의 극한이나 Sum(…, oo)로 구하고 수렴 조건을 함께 읽는다.",
   widget: "geo"
@@ -538,13 +538,13 @@ const TOPICS = [
     ["닫힌 구간에서 최댓값·최솟값을 구하고 싶어요", "maximum, minimum에 함수와 구간을 넣으면 바로 구해요.", 7]
   ],
   compare: [
-    ["Limit + doit", "Limit(sin(2*x)/(3*x), x, 0).doit()", "식을 보여 준 뒤 2/3", "풀이 과정을 정리하기 좋다", "출력에 dir='+'가 붙는다"],
-    ["limit의 방향", "limit(1/x, x, 0), …, dir='+-'", "oo / −oo / zoo", "좌·우·양쪽을 고를 수 있다", "방향을 안 쓰면 우극한만 본다"],
-    ["좌극한 · 우극한 · 함숫값 비교", "limit(f, x, a, '-'), limit(f, x, a, '+'), f.subs(x, a)", "세 값과 True/False", "연속의 정의 그대로", "Piecewise에서는 좌극한이 틀린 적이 있다"],
+    ["Limit · doit", "Limit(sin(2*x)/(3*x), x, 0).doit()", "식을 보여 준 뒤 2/3", "풀이 과정을 정리하기 좋다", "출력에 dir='+'가 붙는다"],
+    ["극한 방향 비교", "limit(1/x, x, 0), …, dir='+-'", "oo / −oo / zoo", "좌·우·양쪽을 고를 수 있다", "방향을 안 쓰면 우극한만 본다"],
+    ["연속 판정 비교", "limit(f, x, a, '-'), limit(f, x, a, '+'), f.subs(x, a)", "세 값과 True/False", "연속의 정의 그대로", "Piecewise에서는 좌극한이 틀린 적이 있다"],
     ["continuous_domain · singularities", "continuous_domain(1/(x - 1), x, S.Reals)", "연속인 구간 / 불연속점", "한 번에 구간을 준다", "floor·Piecewise는 판단하지 못한다"],
-    ["h 치환", "limit(f.subs(x, 1 - h), h, 0)", "좌극한 1", "Piecewise의 틀린 좌극한을 바로잡는다", "직접 식을 바꿔야 한다"],
-    ["사잇값: nsolve · 이분법", "nsolve(g, x, 0.5)", "근삿값 0.6823…", "근이 있는 구간만 알면 된다", "근삿값"],
-    ["사잇값: solveset · real_roots", "real_roots(g)", "정확한 실근", "실근만 정확히", "식이 복잡하게 나온다"],
+    ["h 치환 비교", "limit(f.subs(x, 1 - h), h, 0)", "좌극한 1", "Piecewise의 틀린 좌극한을 바로잡는다", "직접 식을 바꿔야 한다"],
+    ["근삿값 구하기 비교", "nsolve(g, x, 0.5)", "근삿값 0.6823…", "근이 있는 구간만 알면 된다", "근삿값"],
+    ["solveset · real_roots", "real_roots(g)", "정확한 실근", "실근만 정확히", "식이 복잡하게 나온다"],
     ["maximum · minimum", "minimum(q, x, Interval(-2, 3))", "최솟값 −2", "닫힌 구간의 최댓값·최솟값", "열린 구간에서는 하한을 준다"]
   ],
   verdict: "극한은 방향을 꼭 정하고(양쪽은 dir='+-'), 연속 판정은 좌극한·우극한·함숫값 비교를 기본으로 하되 Piecewise는 h 치환으로 다시 확인한다. 사잇값 정리의 근은 부호를 확인한 뒤 nsolve, 정확한 값은 real_roots로 구한다.",
@@ -560,16 +560,16 @@ const TOPICS = [
     ["증가·감소 구간이나 최솟값을 구하고 싶어요", "solveset(f′ > 0)으로 증가 구간을, minimum으로 구간의 최솟값을 구해요.", 7]
   ],
   compare: [
-    ["정의 (h → 0)", "limit((f.subs(x, x + h) - f)/h, h, 0, dir='+-')", "도함수 2x + 1", "미분 가능한지도 판단한다", "식이 길다"],
-    ["Derivative + doit", "Derivative(f, x).doit()", "식을 보여 준 뒤 도함수", "풀이 과정을 정리하기 좋다", "결과만 필요하면 길다"],
+    ["도함수 정의 비교", "limit((f.subs(x, x + h) - f)/h, h, 0, dir='+-')", "도함수 2x + 1", "미분 가능한지도 판단한다", "식이 길다"],
+    ["Derivative · doit", "Derivative(f, x).doit()", "식을 보여 준 뒤 도함수", "풀이 과정을 정리하기 좋다", "결과만 필요하면 길다"],
     ["diff", "diff(f, x)", "도함수", "가장 짧다", "|x|처럼 미분 불가능한 점에서도 값을 낸다"],
-    ["할선 기울기 (Rational vs float)", "slope(Rational(1, 10**k))", "오차 표", "h → 0을 숫자로 본다", "소수(float)는 h가 너무 작으면 오히려 틀린다"],
-    ["solve(f′ = 0)", "solve(diff(f, x), x)", "리스트 [−1, 1]", "교과서 풀이 그대로", "극대·극소는 따로 판정"],
+    ["할선 기울기 비교", "slope(Rational(1, 10**k))", "오차 표", "h → 0을 숫자로 본다", "소수(float)는 h가 너무 작으면 오히려 틀린다", "float"],
+    ["solve · diff", "solve(diff(f, x), x)", "리스트 [−1, 1]", "교과서 풀이 그대로", "극대·극소는 따로 판정"],
     ["stationary_points", "stationary_points(f, x)", "집합 {−1, 1}", "임계점을 바로 준다", "극대·극소는 따로 판정"],
-    ["이계도함수 판정", "diff(f, x, 2).subs(x, c)", "부호로 극대·극소", "판정이 빠르다", "0이면 판정할 수 없다 (x³)"],
-    ["solveset(f′ > 0)", "solveset(diff(f, x) > 0, x, S.Reals)", "증가 구간", "구간을 정확히 준다", "부등식을 직접 세워야 한다"],
-    ["minimum vs minimize_scalar", "minimum(f, x, Interval(-3, 3))", "−18 / 수치는 −2", "minimum은 끝점까지 비교한다", "minimize_scalar는 극소에 머문다"],
-    ["f″ = 0 vs 부호 변화 (변곡점)", "solve(diff(f, x, 2), x)", "[0, 3] → 변곡점은 3뿐", "변곡점 후보를 바로 준다", "부호가 바뀌는지 따로 확인해야 한다"]
+    ["극값 판정 비교", "diff(f, x, 2).subs(x, c)", "부호로 극대·극소", "판정이 빠르다", "0이면 판정할 수 없다 (x³)"],
+    ["증가 구간 비교", "solveset(diff(f, x) > 0, x, S.Reals)", "증가 구간", "구간을 정확히 준다", "부등식을 직접 세워야 한다"],
+    ["minimum · minimize_scalar", "minimum(f, x, Interval(-3, 3))", "−18 / 수치는 −2", "minimum은 끝점까지 비교한다", "minimize_scalar는 극소에 머문다"],
+    ["변곡점 비교", "solve(diff(f, x, 2), x)", "[0, 3] → 변곡점은 3뿐", "변곡점 후보를 바로 준다", "부호가 바뀌는지 따로 확인해야 한다"]
   ],
   verdict: "도함수는 diff, 풀이 과정을 보일 때는 Derivative, 미분 가능성처럼 존재 여부가 문제이면 정의로 좌·우 극한을 따로 구한다. 극값은 stationary_points로 찾고 이계도함수나 부호 변화로 판정하며, 최댓값·최솟값은 minimum(닫힌 구간)으로 구한다.",
   widget: ["secant", "minimum"]
@@ -584,16 +584,16 @@ const TOPICS = [
     ["두 곡선 사이의 넓이를 구하고 싶어요", "(위 곡선 − 아래 곡선)을 적분해요. 어느 쪽이 위인지는 직접 정해야 해요.", 8]
   ],
   compare: [
-    ["Integral + doit", "Integral(x**2, (x, 0, 1)).doit()", "식을 보여 준 뒤 1/3", "풀이 과정을 정리하기 좋다", "결과만 필요하면 길다"],
+    ["Integral · doit", "Integral(x**2, (x, 0, 1)).doit()", "식을 보여 준 뒤 1/3", "풀이 과정을 정리하기 좋다", "결과만 필요하면 길다"],
     ["integrate", "integrate(x**2, (x, 0, 1))", "정확한 값 1/3", "가장 짧다", "부정적분에 적분상수가 없다"],
-    ["구분구적법 Sum + limit", "limit(Sum((k/n)**2/n, (k, 1, n)).doit(), n, oo)", "1/3", "교과서 정의 그대로", "식이 길다"],
+    ["구분구적법 비교", "limit(Sum((k/n)**2/n, (k, 1, n)).doit(), n, oo)", "1/3", "교과서 정의 그대로", "식이 길다"],
     ["as_sum", "Integral(x**2, (x, 0, 1)).as_sum(n, method='right')", "n에 대한 합", "왼쪽·오른쪽·중점·사다리꼴을 고른다", "심프슨은 없다"],
-    ["사다리꼴", "np.trapezoid(np.sin(xs), xs)", "근삿값 1.896…", "원리가 단순하다", "점이 적으면 오차가 크다"],
-    ["심프슨 (심화)", "simpson(np.sin(xs), x=xs)", "근삿값 2.0045…", "같은 점으로 훨씬 정확하다", "구간 개수가 짝수여야 교과서 공식과 같다"],
+    ["np.trapezoid", "np.trapezoid(np.sin(xs), xs)", "근삿값 1.896…", "원리가 단순하다", "점이 적으면 오차가 크다"],
+    ["simpson", "simpson(np.sin(xs), x=xs)", "근삿값 2.0045…", "같은 점으로 훨씬 정확하다", "구간 개수가 짝수여야 교과서 공식과 같다"],
     ["quad · evalf", "quad(np.sin, 0, np.pi)", "(2.0, 오차 2e-14)", "오차 크기까지 알려 준다", "소수"],
-    ["넓이 (Abs)", "integrate(Abs(sin(x)), (x, 0, 2*pi))", "4", "x축 아래 부분까지 넓이로", "Abs를 직접 씌워야 한다"],
-    ["두 곡선 사이 넓이", "integrate((x + 2) - x**2, (x, -1, 2))", "9/2", "교점은 solve로 구한다", "위아래를 직접 정해야 한다"],
-    ["lambdify (상수함수)", "lambdify(x, 3, 'numpy')(xs)", "배열이 아닌 수 3", "수치적분에 함수를 넘길 수 있다", "상수함수는 수 하나만 나와 배열 계산에서 오류가 난다"]
+    ["정적분과 넓이 비교", "integrate(Abs(sin(x)), (x, 0, 2*pi))", "4", "x축 아래 부분까지 넓이로", "Abs를 직접 씌워야 한다"],
+    ["두 곡선 사이 넓이 비교", "integrate((x + 2) - x**2, (x, -1, 2))", "9/2", "교점은 solve로 구한다", "위아래를 직접 정해야 한다"],
+    ["lambdify", "lambdify(x, 3, 'numpy')(xs)", "배열이 아닌 수 3", "수치적분에 함수를 넘길 수 있다", "상수함수는 수 하나만 나와 배열 계산에서 오류가 난다"]
   ],
   verdict: "정확한 넓이는 integrate(필요하면 Abs, 두 곡선이면 교점을 solve로), 구분구적법의 원리 확인은 Sum + limit이나 as_sum, 기호로 안 풀리거나 erf가 나오면 심프슨이나 quad를 쓴다.",
   widget: "simpson"
@@ -1720,7 +1720,7 @@ function bindFn(f) {
 }
 
 /* ---------- 주제 ---------- */
-function methodFns(row) { const txt = row[0] + " " + row[1]; return FUNCS.filter(f => f.re.test(row[1]) || txt.includes(f.k) && f.k.length > 2).map(f => f.k).filter((k, i, a) => a.indexOf(k) === i).slice(0, 4); }
+function methodFns(row) { const txt = row[0] + " " + row[1] + " " + (row[5] || ""); return FUNCS.filter(f => f.re.test(row[1]) || txt.includes(f.k) && f.k.length > 2).map(f => f.k).filter((k, i, a) => a.indexOf(k) === i).slice(0, 4); }
 function topic(t) {
   const prev = TOPICS[t.n - 2], next = TOPICS[t.n];
   return `<div class="in page"><div style="min-width:0">
@@ -1742,7 +1742,7 @@ function topic(t) {
 
     <div class="tags" style="justify-content:space-between;margin-top:36px">${prev ? `<a class="fchip" href="#${prev.slug}">← ${esc(prev.title)}</a>` : "<span></span>"}${next ? `<a class="fchip" href="#${next.slug}">${esc(next.title)} →</a>` : ""}</div>
   </div>
-  <aside class="rail"><div><p class="lbl">주제</p>${COURSES.map(c => { const ts = TOPICS.filter(x => x.courses[0] === c); return ts.length ? `<p class="lbl" style="margin:10px 0 6px;font-weight:700;color:var(--ink)">${c}</p>` + ts.map(x => `<a class="rel" href="#${x.slug}" ${x === t ? 'style="border-left-color:var(--brand)"' : ""}><b style="font-size:14.5px;${x === t ? "color:var(--brand)" : ""}">${esc(x.title)}</b></a>`).join("") : ""; }).join("")}</div></aside>
+  <aside class="rail"><div><p class="lbl">주제</p>${COURSES.map(c => { const ts = TOPICS.filter(x => x.courses[0] === c); return ts.length ? `<p class="lbl" style="margin:10px 0 6px;font-weight:700;color:var(--ink)">${c === "미적분Ⅰ" ? "미적분 Ⅰ·Ⅱ" : c}</p>` + ts.map(x => `<a class="rel" href="#${x.slug}" ${x === t ? 'style="border-left-color:var(--brand)"' : ""}><b style="font-size:14.5px;${x === t ? "color:var(--brand)" : ""}">${esc(x.title)}</b></a>`).join("") : ""; }).join("")}</div></aside>
   </div>${foot()}`;
 }
 function methodHTML(t, i) {
