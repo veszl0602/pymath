@@ -474,6 +474,29 @@ def build(fn, text):
             return f"D = Derivative({pr(e)}, {v}{oo_})\nprint(D)\nprint(D.doit())" + (f"\nprint(D.doit().subs({v}, {pr(p)}))" if p is not None else "")
         s = f"df = diff({pr(e)}, {v}{oo_})\nprint(df)"
         return s + (f"\nprint(df.subs({v}, {pr(p)}))   # {v} = {pr(p)}에서의 값" if p is not None else "")
+    if fn == "transform":
+        sub = next((r for l, r in d["eqs"] if l.is_Symbol and l != v), None)
+        if sub is None:
+            _need("무엇으로 치환할지 'u = x^2 + 1'처럼 적어 주세요.")
+        exprs = [x_ for x_ in d["exprs"] if x_ != sub]
+        if not exprs:
+            _need("적분할 식을 찾지 못했어요. 예: 2x(x^2+1)^3을 0부터 1까지, u = x^2+1로 치환")
+        e = max(exprs, key=lambda x_: len(str(x_)))
+        u_ = next(l for l, r in d["eqs"] if r == sub)
+        rng = f"({v}, {pr(d['a'])}, {pr(d['b'])})" if "a" in d else str(v)
+        return (f"{u_} = symbols('{u_}')\nI = Integral({pr(e)}, {rng})\nJ = I.transform({pr(sub)}, {u_})\nprint(J)\n"
+                f"print(J.doit())\nprint(integrate({pr(e)}, {rng}))   # 비교: integrate")
+    if fn in ("manualintegrate", "integral_steps"):
+        need_e()
+        if fn == "manualintegrate":
+            return (f"from sympy.integrals.manualintegrate import manualintegrate\nF = integrate({pr(e)}, {v})\nG = manualintegrate({pr(e)}, {v})\n"
+                    f"print(F)\nprint(G)\nprint(simplify(G - F))   # 상수이면 둘 다 맞는 답")
+        return (f"from sympy.integrals.manualintegrate import integral_steps\nst = integral_steps({pr(e)}, {v})\n"
+                f"while type(st).__name__ in ('ConstantTimesRule', 'AlternativeRule'):   # 상수배·여러 방법 묶음은 한 단계 들어간다\n"
+                f"    st = st.substep if hasattr(st, 'substep') else st.alternatives[0]\n"
+                f"print(type(st).__name__)   # PartsRule: 부분적분, URule: 치환적분\n"
+                f"if hasattr(st, 'dv'): print('u =', st.u, '  dv =', st.dv)\nif hasattr(st, 'u_func'): print('u =', st.u_func)\n"
+                f"print(integrate({pr(e)}, {v}))")
     if fn in ("integrate", "Integral"):
         need_e()
         area = "넓이" in T
